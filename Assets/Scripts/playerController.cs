@@ -5,8 +5,11 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float BASE_SPEED = 5f;
+
     private Rigidbody2D rb;
     private float currentSpeed;
+
+    private Vector2 movementInput;
 
     void Start()
     {
@@ -14,7 +17,7 @@ public class PlayerController : MonoBehaviour
         currentSpeed = BASE_SPEED;
     }
 
-    // Optional speed boost coroutine (kept from your original script)
+    // Optional speed boost coroutine
     public IEnumerator SpeedChange(float newSpeed, float timeInSecs)
     {
         currentSpeed = newSpeed;
@@ -24,17 +27,12 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        // Get raw input (allows multiple keys at once)
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
 
-        // Disable diagonal movement
-        if (horizontal != 0)
-        {
-            vertical = 0;
-        }
-
-        Vector2 movement = new Vector2(horizontal, vertical).normalized;
-        rb.linearVelocity = movement * currentSpeed;
+        // Allow diagonal movement
+        movementInput = new Vector2(horizontal, vertical).normalized;
 
         // Flip sprite left/right
         if (horizontal < 0)
@@ -45,5 +43,11 @@ public class PlayerController : MonoBehaviour
         {
             transform.rotation = new Quaternion(0, 0, 0, 0);
         }
+    }
+
+    void FixedUpdate()
+    {
+        // Apply movement using physics
+        rb.linearVelocity = movementInput * currentSpeed;
     }
 }
