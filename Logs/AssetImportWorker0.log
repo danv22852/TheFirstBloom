@@ -6515,3 +6515,27 @@ Memory consumption went from 214.3 MB to 213.0 MB.
 Total: 7.896208 ms (FindLiveObjects: 0.174417 ms CreateObjectMapping: 0.088541 ms MarkObjects: 6.503334 ms  DeleteObjects: 1.129500 ms)
 
 Prepare: number of updated asset objects reloaded= 0
+========================================================================
+Received Import Request.
+  Time since last request: 2146.524367 seconds.
+  path: Assets/TextMesh Pro/Sprites/EmojiOne.png
+  artifactKey: Guid(dffef66376be4fa480fb02b19edbe903) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/TextMesh Pro/Sprites/EmojiOne.png using Guid(dffef66376be4fa480fb02b19edbe903) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '716455c9383f70cc9680f1fac0030155') in 0.043377583 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 2
+
+========================================================================
+Received Import Request.
+  Time since last request: 1.521867 seconds.
+  path: Packages/com.unity.purchasing/Icons/LinkBlack.png
+  artifactKey: Guid(33d3dd2c39dfd49a3b2d36b20225624a) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Packages/com.unity.purchasing/Icons/LinkBlack.png using Guid(33d3dd2c39dfd49a3b2d36b20225624a) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'a4fddc6eed373074badfeee94b47760c') in 0.003877958 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 2
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.495229 seconds.
+  path: Assets/TextMesh Pro/Resources/Fonts & Materials/NewFont.asset
+  artifactKey: Guid(b4bfd2ddcd0af4084a4314922031c752) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/TextMesh Pro/Resources/Fonts & Materials/NewFont.asset using Guid(b4bfd2ddcd0af4084a4314922031c752) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '5359cb0282259202772cde3a936918aa') in 0.027032459 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 4
+
