@@ -8,7 +8,7 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
   - 
@@ -21,7 +21,7 @@ TagManager:
   - 
   - 
   - 
-  - 
+  - CamBoundary
   - 
   - 
   - 
@@ -41,8 +41,14 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Level
-    uniqueID: 2060951573
+  - name: UnderPlayer
+    uniqueID: 1040284061
+    locked: 0
+  - name: Collide
+    uniqueID: 3953866989
+    locked: 0
+  - name: OverPlayer
+    uniqueID: 4217676923
     locked: 0
   m_RenderingLayers:
   - Default
