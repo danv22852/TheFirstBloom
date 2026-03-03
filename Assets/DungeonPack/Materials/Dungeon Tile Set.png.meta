@@ -69,10 +69,10 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 4096
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 2
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -126,9 +126,9 @@ TextureImporter:
       name: Dungeon Tile Set_0
       rect:
         serializedVersion: 2
-        x: 16
+        x: 0
         y: 224
-        width: 48
+        width: 72
         height: 48
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -149,9 +149,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 80
-        y: 160
-        width: 144
-        height: 112
+        y: 158
+        width: 160
+        height: 122
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -258,10 +258,10 @@ TextureImporter:
       name: Dungeon Tile Set_6
       rect:
         serializedVersion: 2
-        x: 155
+        x: 160
         y: 112
-        width: 21
-        height: 32
+        width: 16
+        height: 15
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -390,10 +390,10 @@ TextureImporter:
       name: Dungeon Tile Set_12
       rect:
         serializedVersion: 2
-        x: 192
+        x: 188
         y: 80
-        width: 15
-        height: 47
+        width: 19
+        height: 48
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -413,9 +413,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 208
-        y: 96
-        width: 16
-        height: 31
+        y: 80
+        width: 32
+        height: 47
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -480,7 +480,7 @@ TextureImporter:
         serializedVersion: 2
         x: 112
         y: 64
-        width: 46
+        width: 48
         height: 44
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -522,10 +522,10 @@ TextureImporter:
       name: Dungeon Tile Set_18
       rect:
         serializedVersion: 2
-        x: 21
-        y: 82
-        width: 5
-        height: 14
+        x: 0
+        y: 69
+        width: 26
+        height: 29
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -544,10 +544,10 @@ TextureImporter:
       name: Dungeon Tile Set_19
       rect:
         serializedVersion: 2
-        x: 37
+        x: 32
         y: 76
-        width: 5
-        height: 20
+        width: 10
+        height: 23
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -588,10 +588,10 @@ TextureImporter:
       name: Dungeon Tile Set_21
       rect:
         serializedVersion: 2
-        x: 68
-        y: 81
-        width: 38
-        height: 15
+        x: 61
+        y: 73
+        width: 45
+        height: 23
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -721,9 +721,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 16
-        y: 32
+        y: 8
         width: 142
-        height: 25
+        height: 49
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -742,10 +742,10 @@ TextureImporter:
       name: Dungeon Tile Set_28
       rect:
         serializedVersion: 2
-        x: 162
-        y: 32
-        width: 44
-        height: 16
+        x: 160
+        y: 0
+        width: 48
+        height: 48
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
