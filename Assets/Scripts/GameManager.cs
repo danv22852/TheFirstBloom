@@ -9,7 +9,7 @@ public class GameManager : MonoBehaviour
     public int maxHP = 5;
 
     [Header("Equipment")]
-    public bool hasAlien;
+    public bool hasAlien = true;
     public bool hasBow;
 
     private void Awake()
