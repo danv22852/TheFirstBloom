@@ -10,7 +10,8 @@ public class PlayerController : MonoBehaviour
     private float currentSpeed;
 
     private Vector2 movementInput;
-
+    public Transform Aim;
+    
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -31,23 +32,23 @@ public class PlayerController : MonoBehaviour
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
 
+        if (horizontal > 0)
+        transform.localScale = new Vector3(1, 1, 1); // Facing right
+    else if (horizontal < 0)
+        transform.localScale = new Vector3(-1, 1, 1); // Facing left
+
         // Allow diagonal movement
         movementInput = new Vector2(horizontal, vertical).normalized;
 
-        // Flip sprite left/right
-        if (horizontal < 0)
-        {
-            transform.rotation = new Quaternion(0, -1, 0, 0);
-        }
-        else if (horizontal > 0)
-        {
-            transform.rotation = new Quaternion(0, 0, 0, 0);
-        }
+        Vector2 direction = movementInput;
+
+     
     }
 
     void FixedUpdate()
     {
         // Apply movement using physics
         rb.linearVelocity = movementInput * currentSpeed;
+
     }
 }
