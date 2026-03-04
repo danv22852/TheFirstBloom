@@ -1500,6 +1500,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1167e58a41e647ec82807d0b97d497d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  alienSprite: {fileID: -8916664396963134753, guid: 3ac0ae4ff26384270a63a41644c26a93, type: 3}
 --- !u!68 &818794482
 EdgeCollider2D:
   m_ObjectHideFlags: 0
