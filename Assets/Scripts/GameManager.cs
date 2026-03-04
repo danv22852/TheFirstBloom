@@ -8,6 +8,15 @@ public class GameManager : MonoBehaviour
     public int currentHP = 5;
     public int maxHP = 5;
 
+    public int playerStrength = 15; // [cite: 3]
+    public int playerSpeed = 10; // [cite: 4]
+    public int playerDefense = 5; // [cite: 5]
+
+    [Header("Bloom System")]
+    public int currentBloom = 0; // [cite: 11]
+    public int lowBloomThreshold = 30; // Defined arbitrary threshold for testing
+
+
     [Header("Equipment")]
     public bool hasAlien = true;
     public bool hasBow;

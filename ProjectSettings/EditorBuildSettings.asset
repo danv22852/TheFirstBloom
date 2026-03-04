@@ -14,5 +14,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/firstFloor.unity
     guid: ed85f30de5868473fb0f85ef38020288
+  - enabled: 1
+    path: Assets/Scenes/CombatUI.unity
+    guid: 43b58bcad0c92cd43aa7330f2b5dd351
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0
