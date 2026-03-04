@@ -32,10 +32,10 @@ public class SymbioteSwing : MonoBehaviour
             }
 
             // Attack input
-            if (Input.GetKeyDown(KeyCode.Z))
+            if (Input.GetKeyDown(KeyCode.O))
             {
                 OnAttack();
-                Debug.Log("Z key pressed!");
+                Debug.Log("O key pressed!");
                 Debug.Log("Current last direction: " + lastDirection);
 
                 // Use lastDirection if stationary
