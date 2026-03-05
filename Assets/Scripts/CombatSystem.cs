@@ -64,6 +64,10 @@ public class CombatSystem : MonoBehaviour
     public GameObject skillMenuPanel;
     public GameObject itemMenuPanel;
 
+    [Header("Item Menu UI")]
+    public UnityEngine.UI.Button healItemButton; 
+    public TextMeshProUGUI healItemText;
+
     [Header("Animation Settings")]
     public Transform playerTransform;
     public Transform enemyTransform;
@@ -133,19 +137,19 @@ public class CombatSystem : MonoBehaviour
 
     public void UseSymbioteSwipe()
     {
-        isPlayerTurn = false; // Prevent spam clicking
-        BackToMainMenu();     // Close the menu automatically
+        isPlayerTurn = false; 
+        BackToMainMenu();     
 
         Debug.Log("Player uses Symbiote Swipe!");
 
-        var bloomCost = 1;
-        var baseSkillDamage = 10;
+        var bloomCost = 1; 
+        var baseSkillDamage = 10; 
 
         currentBloom += bloomCost;
         UpdateBloomState();
-        Debug.Log("Bloom increased by " + bloomCost + ". State is now: " + currentBloomState);
-
-        StartCoroutine(PerformMeleeAttack(playerTransform, enemyTransform,
+        
+        // CALLING THE NEW SKILL COROUTINE
+        StartCoroutine(PerformSkillAnimation(playerTransform, enemyTransform,
             onHit: () =>
             {
                 enemyHealth -= baseSkillDamage;
@@ -169,20 +173,37 @@ public class CombatSystem : MonoBehaviour
             return;
         }
 
-        Debug.Log("Player uses a Healing Item!");
-        var healAmount = 20;
-        playerHealth += healAmount;
+        // Double check just in case!
+        if (GameManager.healthPotions <= 0)
+        {
+            Debug.Log("No potions left!");
+            return;
+        }
 
-        hasUsedItemThisTurn = true;
-        UpdateHealthUI();
-        BackToMainMenu(); // Close the menu
+        // --- DEDUCT THE ITEM FROM INVENTORY ---
+        GameManager.healthPotions--;
+
+        isPlayerTurn = false; 
+        BackToMainMenu(); 
+
+        StartCoroutine(PerformItemAnimation(playerTransform, 
+            onComplete: () => 
+            {
+                Debug.Log("Player uses a Healing Item!");
+                var healAmount = 20; 
+                playerHealth += healAmount;
+                
+                hasUsedItemThisTurn = true;
+                UpdateHealthUI();
+                
+                isPlayerTurn = true; 
+            }));
     }
 
     public void OnRunButton()
     {
         if (!isPlayerTurn) return;
 
-        // The player loses the ability to run from combat at low bloom.
         if (currentBloomState >= BloomState.Low)
         {
             Debug.Log("You are in " + currentBloomState + " Bloom! The symbiote won't let you run!");
@@ -190,10 +211,18 @@ public class CombatSystem : MonoBehaviour
         }
 
         var escapeChance = UnityEngine.Random.Range(0, 100);
-        if (escapeChance > 50)
+        if (escapeChance > 50) 
         {
             Debug.Log("Escaped successfully!");
-            SceneManager.LoadScene("firstFloor");
+            isPlayerTurn = false; // Lock controls
+            
+            // CALLING THE NEW RUN COROUTINE
+            StartCoroutine(PerformRunAnimation(playerTransform, 
+                onComplete: () => 
+                {
+                    // Load the overworld AFTER the player has run offscreen
+                    SceneManager.LoadScene("firstFloor");
+                }));
         }
         else
         {
@@ -261,6 +290,8 @@ public class CombatSystem : MonoBehaviour
         bloomText.text = "Bloom: " + currentBloom;
     }
 
+    
+
     private IEnumerator PerformMeleeAttack(Transform attacker, Transform target, Action onHit, Action onComplete)
     {
         var startPos = attacker.position;
@@ -285,6 +316,89 @@ public class CombatSystem : MonoBehaviour
         onComplete?.Invoke();
     }
 
+    // --- NEW ANIMATIONS ---
+
+    private IEnumerator PerformItemAnimation(Transform actor, Action onComplete)
+    {
+        var startPos = actor.position;
+        var peakPos = startPos + Vector3.up * 1.5f; // Move up 1.5 units
+
+        // 1. Move straight up
+        while (Vector3.Distance(actor.position, peakPos) > 0.05f)
+        {
+            actor.position = Vector3.MoveTowards(actor.position, peakPos, moveSpeed * Time.deltaTime);
+            yield return null;
+        }
+
+        // Pause for a tiny fraction of a second at the top
+        yield return new WaitForSeconds(0.1f);
+
+        // 2. Move straight down back to start
+        while (Vector3.Distance(actor.position, startPos) > 0.05f)
+        {
+            actor.position = Vector3.MoveTowards(actor.position, startPos, moveSpeed * Time.deltaTime);
+            yield return null;
+        }
+
+        actor.position = startPos;
+        onComplete?.Invoke();
+    }
+
+    private IEnumerator PerformSkillAnimation(Transform attacker, Transform target, Action onHit, Action onComplete)
+    {
+        var startPos = attacker.position;
+        var targetPos = Vector3.Lerp(startPos, target.position, 0.6f); // Target point slightly in front of enemy
+        
+        // Calculate the peak of the jump (halfway forward, and 2 units up)
+        var midPoint = Vector3.Lerp(startPos, targetPos, 0.5f);
+        var peakPos = midPoint + Vector3.up * 2f; 
+
+        // 1. Leap diagonally up to the peak
+        while (Vector3.Distance(attacker.position, peakPos) > 0.05f)
+        {
+            attacker.position = Vector3.MoveTowards(attacker.position, peakPos, moveSpeed * Time.deltaTime);
+            yield return null;
+        }
+
+        // 2. Dive diagonally down to the enemy
+        while (Vector3.Distance(attacker.position, targetPos) > 0.05f)
+        {
+            attacker.position = Vector3.MoveTowards(attacker.position, targetPos, moveSpeed * 1.5f * Time.deltaTime); // Dive slightly faster
+            yield return null;
+        }
+
+        // We hit the enemy! Apply damage.
+        onHit?.Invoke();
+        yield return new WaitForSeconds(0.1f);
+
+        // 3. Return to the start position
+        while (Vector3.Distance(attacker.position, startPos) > 0.05f)
+        {
+            attacker.position = Vector3.MoveTowards(attacker.position, startPos, moveSpeed * Time.deltaTime);
+            yield return null;
+        }
+
+        attacker.position = startPos;
+        onComplete?.Invoke();
+    }
+
+    private IEnumerator PerformRunAnimation(Transform actor, Action onComplete)
+    {
+        var startPos = actor.position;
+        var offscreenPos = startPos + (Vector3.left * 10f); // Move 10 units to the left
+
+        // 1. Sprint offscreen
+        while (Vector3.Distance(actor.position, offscreenPos) > 0.05f)
+        {
+            // Multiplying speed by 1.5 so running away feels urgent
+            actor.position = Vector3.MoveTowards(actor.position, offscreenPos, moveSpeed * 1.5f * Time.deltaTime);
+            yield return null;
+        }
+
+        // 2. Transition scene
+        onComplete?.Invoke();
+    }
+
     // --- MENU NAVIGATION ---
 
     public void OpenSkillMenu()
@@ -297,9 +411,28 @@ public class CombatSystem : MonoBehaviour
     public void OpenItemMenu()
     {
         if (!isPlayerTurn) return;
+        
+        UpdateItemUI(); // Refresh the numbers before showing the menu
+
         mainMenuPanel.SetActive(false);
         itemMenuPanel.SetActive(true);
     }
+
+    private void UpdateItemUI()
+    {
+        // Check our global inventory
+        if (GameManager.healthPotions > 0)
+        {
+            healItemText.text = "Heal +20 (x" + GameManager.healthPotions + ")";
+            healItemButton.interactable = true; // Button is clickable
+        }
+        else
+        {
+            healItemText.text = "Out of Potions!";
+            healItemButton.interactable = false; // Grays out the button
+        }
+    }
+    
 
     public void BackToMainMenu()
     {
