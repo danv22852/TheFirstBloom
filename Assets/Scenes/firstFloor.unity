@@ -831,6 +831,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHP: 5
   maxHP: 5
+  alienSprite: {fileID: 0}
+  playerSpriteRenderer: {fileID: 0}
   hasAlien: 0
   hasBow: 0
 --- !u!114 &376451548
@@ -2122,7 +2124,7 @@ Transform:
   m_GameObject: {fileID: 818794480}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
-  m_LocalPosition: {x: 16.8, y: -3.77, z: -0.0938295}
+  m_LocalPosition: {x: 15.55, y: -0.58, z: -0.0938295}
   m_LocalScale: {x: 7, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5486,6 +5488,7 @@ GameObject:
   - component: {fileID: 1728656796}
   - component: {fileID: 1728656801}
   - component: {fileID: 1728656800}
+  - component: {fileID: 1728656802}
   m_Layer: 0
   m_Name: Spike (1)
   m_TagString: Untagged
@@ -5674,6 +5677,19 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &1728656802
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1728656795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 813bd039a4ffb694696d61575d1cfcff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uniqueEnemyID: Slime_01
 --- !u!4 &1735297611 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4676804877151511556, guid: 72816a4314ceb436ca12cec2b0072856, type: 3}
