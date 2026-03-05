@@ -4,6 +4,10 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
 
+    [SerializeField] Sprite alienSprite;
+
+    [SerializeField] private SpriteRenderer playerSpriteRenderer; // assign in Inspector
+
     [Header("Player Stats")]
     public int currentHP = 5;
     public int maxHP = 5;
@@ -18,11 +22,12 @@ public class GameManager : MonoBehaviour
 
 
     [Header("Equipment")]
-    public bool hasAlien = true;
+    public bool hasAlien = false;
     public bool hasBow;
 
     private void Awake()
     {
+        
         if (Instance == null)
         {
             Instance = this;
@@ -31,6 +36,15 @@ public class GameManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+        }
+    }
+
+    private void Update()
+    {
+        if (hasAlien)
+        {
+            Debug.Log("Alien acquired!");
+            playerSpriteRenderer.sprite = alienSprite;
         }
     }
 
