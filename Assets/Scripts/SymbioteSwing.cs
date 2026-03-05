@@ -32,7 +32,7 @@ public class SymbioteSwing : MonoBehaviour
             }
 
             // Attack input
-            if (Input.GetKeyDown(KeyCode.O))
+            if (Input.GetKeyDown(KeyCode.O) || Input.GetKeyDown(KeyCode.Z))
             {
                 OnAttack();
                 Debug.Log("O key pressed!");
