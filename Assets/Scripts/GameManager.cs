@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
@@ -24,6 +25,15 @@ public class GameManager : MonoBehaviour
     [Header("Equipment")]
     public bool hasAlien = false;
     public bool hasBow;
+
+    public static Vector3 lastPlayerPosition;
+    public static bool isReturningFromCombat = false;
+
+    // Remembers the ID of the enemy we are currently fighting
+    public static string currentEnemyID = "";
+
+    // The "Graveyard" list of enemies that have been killed
+    public static List<string> defeatedEnemies = new List<string>();
 
     private void Awake()
     {

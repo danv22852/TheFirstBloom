@@ -7,18 +7,19 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float BASE_SPEED = 5f;
 
     private Rigidbody2D rb;
+    private Animator animator;
     private float currentSpeed;
 
     private Vector2 movementInput;
     public Transform Aim;
-    
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
         currentSpeed = BASE_SPEED;
     }
 
-    // Optional speed boost coroutine
     public IEnumerator SpeedChange(float newSpeed, float timeInSecs)
     {
         currentSpeed = newSpeed;
@@ -28,27 +29,25 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        // Get raw input (allows multiple keys at once)
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
 
-        if (horizontal > 0)
-        transform.localScale = new Vector3(1, 1, 1); // Facing right
-    else if (horizontal < 0)
-        transform.localScale = new Vector3(-1, 1, 1); // Facing left
-
-        // Allow diagonal movement
+        // Calculate movement FIRST
         movementInput = new Vector2(horizontal, vertical).normalized;
 
-        Vector2 direction = movementInput;
+        // Flip sprite
+        if (horizontal > 0)
+            transform.localScale = new Vector3(1, 1, 1);
+        else if (horizontal < 0)
+            transform.localScale = new Vector3(-1, 1, 1);
 
-     
+        // Set Animator parameter
+        bool isRunning = movementInput.magnitude > 0;
+        animator.SetBool("isRunning", isRunning);
     }
 
     void FixedUpdate()
     {
-        // Apply movement using physics
         rb.linearVelocity = movementInput * currentSpeed;
-
     }
 }
