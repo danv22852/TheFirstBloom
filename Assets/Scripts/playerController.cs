@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float BASE_SPEED = 5f;
@@ -11,12 +13,6 @@ public class PlayerController : MonoBehaviour
 
     private Vector2 movementInput;
     public Transform Aim;
-    
-    void Start()
-    {
-        rb = GetComponent<Rigidbody2D>();
-        currentSpeed = BASE_SPEED;
-    }
 
     // Optional speed boost coroutine
     public IEnumerator SpeedChange(float newSpeed, float timeInSecs)
@@ -26,6 +22,23 @@ public class PlayerController : MonoBehaviour
         currentSpeed = BASE_SPEED;
     }
 
+    private void Start()
+    {
+        // When the scene loads, check if we just finished a battle
+        if (GameManager.isReturningFromCombat == true)
+        {
+            // Teleport the player to the saved coordinates!
+            transform.position = GameManager.lastPlayerPosition;
+
+            // Turn the switch back off so we don't accidentally teleport again later
+            GameManager.isReturningFromCombat = false;
+
+            Debug.Log("TELEPORTED PLAYER TO: " + transform.position);
+        }
+
+        rb = GetComponent<Rigidbody2D>();
+        currentSpeed = BASE_SPEED;
+    }
     void Update()
     {
         // Get raw input (allows multiple keys at once)

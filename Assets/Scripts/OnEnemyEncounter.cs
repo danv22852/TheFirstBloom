@@ -1,21 +1,36 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class EnemyEncounter : MonoBehaviour
+public class EnemyEncounter : MonoBehaviour // (Or whatever you named this script)
 {
-    
-    public string combatSceneName = "CombatUI";
+    [Header("Enemy Identity")]
+    // You MUST type a unique name for every single enemy in the Unity Inspector!
+    public string uniqueEnemyID = "Slime_01";
+
+    private void Start()
+    {
+        // When the Overworld loads, check if this enemy's ID is in the graveyard
+        if (GameManager.defeatedEnemies.Contains(uniqueEnemyID))
+        {
+            // If it is, destroy this object immediately before the player even sees it
+            Destroy(gameObject);
+        }
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // We check if the object that bumped into us has the "Player" tag
         if (other.CompareTag("Player"))
         {
-            // Prints a message to the Console so you know it worked
-            Debug.Log("Enemy Encountered! Switching to Combat Scene...");
+            // Calculate safe spawn zone
+            Vector3 pushDirection = (other.transform.position - transform.position).normalized;
+            float safeDistance = 1.5f;
+            GameManager.lastPlayerPosition = other.transform.position + (pushDirection * safeDistance);
+            GameManager.isReturningFromCombat = true;
 
-            // This line actually loads the new scene
-            SceneManager.LoadScene(combatSceneName);
+            // --- NEW: Tell the GameManager exactly who we are fighting ---
+            GameManager.currentEnemyID = this.uniqueEnemyID;
+
+            SceneManager.LoadScene("CombatUI");
         }
     }
 }
