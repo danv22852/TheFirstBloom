@@ -6,9 +6,12 @@ using Unity.Cinemachine; // Needed for the Confiner
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float BASE_SPEED = 5f;
+    // Added this so you can set the color in the Inspector once
+    [SerializeField] private Color alienTint = Color.black; 
 
     private Rigidbody2D rb;
     private Animator animator;
+    private SpriteRenderer spriteRenderer; // Added reference
     private float currentSpeed;
 
     private Vector2 movementInput;
@@ -18,7 +21,11 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>(); // Initialize reference
         currentSpeed = BASE_SPEED;
+
+        // --- Persistent State Checks ---
+        UpdateAppearance(); 
 
         if (GameManager.isReturningFromCombat)
         {
@@ -29,6 +36,18 @@ public class PlayerController : MonoBehaviour
             RestoreCameraBoundary();
 
             GameManager.isReturningFromCombat = false;
+        }
+    }
+
+    // Logic to check if the player should look like an alien
+    public void UpdateAppearance()
+    {
+        if (GameManager.Instance != null && GameManager.Instance.hasAlien)
+        {
+            if (spriteRenderer != null)
+            {
+                spriteRenderer.color = alienTint;
+            }
         }
     }
 
