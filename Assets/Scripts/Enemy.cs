@@ -103,16 +103,19 @@ Vector2 RandomPointInArea()
 }
 
 #if UNITY_EDITOR
-    void OnDrawGizmosSelected()
+void OnDrawGizmosSelected()
+{
+    // Draw the wander area
+    if (area != null)
     {
-        if (points == null || points.Length < 2) return;
-        Gizmos.color = Color.yellow;
-        for (int i = 0; i < points.Length - 1; i++)
-            if (points[i] && points[i + 1]) Gizmos.DrawLine(points[i].position, points[i + 1].position);
-
-        if (loop && points[0] && points[^1])
-            Gizmos.DrawLine(points[^1].position, points[0].position);
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireCube(area.bounds.center, area.bounds.size);
     }
+
+    // Draw current target
+    Gizmos.color = Color.green;
+    Gizmos.DrawSphere(target, 0.08f);
+}
 #endif
     public void TakeDamage(float damage)
     {
