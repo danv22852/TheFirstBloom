@@ -15,6 +15,18 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        // When the scene loads, check if we just finished a battle
+        if (GameManager.isReturningFromCombat == true)
+        {
+            // Teleport the player to the saved coordinates!
+            transform.position = GameManager.lastPlayerPosition;
+
+            // Turn the switch back off so we don't accidentally teleport again later
+            GameManager.isReturningFromCombat = false;
+
+            Debug.Log("TELEPORTED PLAYER TO: " + transform.position);
+        }
+        
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         currentSpeed = BASE_SPEED;
