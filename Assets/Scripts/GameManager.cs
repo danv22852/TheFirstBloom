@@ -9,21 +9,17 @@ public class GameManager : MonoBehaviour
     public int currentHP = 5;
     public int maxHP = 5;
 
-    [SerializeField] Sprite alienSprite;
-
-    [SerializeField] private SpriteRenderer playerSpriteRenderer; // assign in Inspector
-
     [Header("Equipment")]
     public bool hasAlien = false;
     public bool hasBow;
 
+    [Header("Persistence")]
     public static Vector3 lastPlayerPosition;
     public static bool isReturningFromCombat = false;
+    // Store the NAME of the boundary object to find it across scenes
+    public static string currentMapBoundaryName; 
 
-    // Remembers the ID of the enemy we are currently fighting
     public static string currentEnemyID = "";
-
-    // The "Graveyard" list of enemies that have been killed
     public static List<string> defeatedEnemies = new List<string>();
 
     private void Awake()
@@ -42,8 +38,10 @@ public class GameManager : MonoBehaviour
     public void TakeDamage(int damage)
     {
         currentHP -= damage;
-        if (currentHP <= 0){currentHP = 0;
-        Debug.Log("Player died" + currentHP);
+        if (currentHP <= 0)
+        {
+            currentHP = 0;
+            Debug.Log("Player died");
         }
     }
 }

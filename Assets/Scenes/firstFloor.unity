@@ -831,6 +831,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHP: 5
   maxHP: 5
+  alienSprite: {fileID: -5623194428626525839, guid: 4f3b0c4d9eb164e01a123a7cc35af862, type: 3}
+  playerSpriteRenderer: {fileID: 680971540}
   hasAlien: 0
   hasBow: 0
 --- !u!114 &376451548
@@ -1930,6 +1932,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 577ae9effed9b4b3a90c5d8f642b48c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  curRoom: {fileID: 79340848}
   BASE_SPEED: 5
   Aim: {fileID: 1497343644}
 --- !u!212 &680971540
@@ -2069,7 +2072,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1167e58a41e647ec82807d0b97d497d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  alienSprite: {fileID: -5623194428626525839, guid: 4f3b0c4d9eb164e01a123a7cc35af862, type: 3}
 --- !u!68 &818794482
 EdgeCollider2D:
   m_ObjectHideFlags: 0
@@ -3899,6 +3901,7 @@ GameObject:
   - component: {fileID: 1284231890}
   - component: {fileID: 1284231893}
   - component: {fileID: 1284231892}
+  - component: {fileID: 1284231894}
   m_Layer: 0
   m_Name: CMCam
   m_TagString: Untagged
@@ -4003,6 +4006,18 @@ MonoBehaviour:
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
   FollowOffset: {x: 0, y: 0, z: -10}
+--- !u!114 &1284231894
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1284231888}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f20574e1c1e984a67971814cdd938fa7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1323658489
 GameObject:
   m_ObjectHideFlags: 0
@@ -5486,6 +5501,7 @@ GameObject:
   - component: {fileID: 1728656796}
   - component: {fileID: 1728656801}
   - component: {fileID: 1728656800}
+  - component: {fileID: 1728656802}
   m_Layer: 0
   m_Name: Spike (1)
   m_TagString: Untagged
@@ -5623,7 +5639,8 @@ Transform:
   m_LocalPosition: {x: 0.29, y: -0.328, z: 0}
   m_LocalScale: {x: 4.1535, y: 3.8875, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1729489943}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1728656800
@@ -5638,13 +5655,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 320da3d400b8947278c22798a313d546, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  points:
-  - {fileID: 979195567}
-  - {fileID: 664726888}
-  - {fileID: 1587808228}
-  - {fileID: 1037114668}
-  loop: 1
+  area: {fileID: 0}
   arriveDistance: 0.2
+  minChooseTime: 1
+  maxChooseTime: 2.5
+  wallMask:
+    serializedVersion: 2
+    m_Bits: 0
+  probeRadius: 0.15
   speed: 2
   waitAtPointSeconds: 0
 --- !u!50 &1728656801
@@ -5674,6 +5692,97 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &1728656802
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1728656795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 813bd039a4ffb694696d61575d1cfcff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uniqueEnemyID: Slime_01
+--- !u!1 &1729489942
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1729489943}
+  - component: {fileID: 1729489944}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1729489943
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1729489942}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1728656799}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &1729489944
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1729489942}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
 --- !u!4 &1735297611 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4676804877151511556, guid: 72816a4314ceb436ca12cec2b0072856, type: 3}
