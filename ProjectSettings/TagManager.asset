@@ -50,5 +50,8 @@ TagManager:
   - name: OverPlayer
     uniqueID: 4217676923
     locked: 0
+  - name: Tutorial
+    uniqueID: 1396634757
+    locked: 0
   m_RenderingLayers:
   - Default
