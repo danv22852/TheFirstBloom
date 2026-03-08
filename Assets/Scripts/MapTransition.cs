@@ -3,7 +3,7 @@ using Unity.Cinemachine;
 
 public class MapTransition : MonoBehaviour 
 { 
-    [SerializeField] private PolygonCollider2D mapBoundary;
+    [SerializeField] PolygonCollider2D mapBoundary;
     private CinemachineConfiner2D confiner;
     [SerializeField] Direction direction;
 
@@ -20,7 +20,7 @@ public class MapTransition : MonoBehaviour
             UpdateCameraBoundary(mapBoundary);
             
             // Save the boundary name for later (returning from combat)
-            GameManager.currentMapBoundaryName = mapBoundary.gameObject.name;
+            
 
             UpdatePlayerPosition(collision.gameObject);
         }
@@ -28,6 +28,7 @@ public class MapTransition : MonoBehaviour
 
     private void UpdateCameraBoundary(PolygonCollider2D newBoundary) {
         if (confiner != null) {
+            GameManager.currentMapBoundaryName = mapBoundary.gameObject.name;
             confiner.BoundingShape2D = newBoundary;
             confiner.InvalidateBoundingShapeCache();
         }
@@ -42,5 +43,7 @@ public class MapTransition : MonoBehaviour
             case Direction.Right: newPosition.x += moveDistance; break;
         }
         player.transform.position = newPosition;
-    }
+    }   
+
+    
 }

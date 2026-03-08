@@ -6,9 +6,11 @@ using Unity.Cinemachine; // Needed for the Confiner
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float BASE_SPEED = 5f;
-    // Added this so you can set the color in the Inspector once
+
     [SerializeField] private Color alienTint = Color.black; 
 
+    public bool canMove = true;
+    public float slownessFactor = 1f;
     private Rigidbody2D rb;
     private Animator animator;
     private SpriteRenderer spriteRenderer; // Added reference
@@ -16,6 +18,8 @@ public class PlayerController : MonoBehaviour
 
     private Vector2 movementInput;
     public Transform Aim;
+
+    private bool isRunning = false;
 
     void Start()
     {
@@ -79,22 +83,42 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+       
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
 
         movementInput = new Vector2(horizontal, vertical).normalized;
 
-        if (horizontal > 0)
-            transform.localScale = new Vector3(1, 1, 1);
+        if(movementInput != Vector2.zero && canMove)
+        {
+              if (horizontal > 0)
+            spriteRenderer.flipX= false;
         else if (horizontal < 0)
-            transform.localScale = new Vector3(-1, 1, 1);
-
-        bool isRunning = movementInput.magnitude > 0;
+            spriteRenderer.flipX = true;
+        isRunning = movementInput.magnitude > 0;
         animator.SetBool("isRunning", isRunning);
+        }
+        else
+        {
+            animator.SetBool("isRunning", false);
+        }
+      
+
+         
     }
 
     void FixedUpdate()
     {
-        rb.linearVelocity = movementInput * currentSpeed;
+        if(canMove)
+        {
+            rb.linearVelocity = movementInput * currentSpeed * slownessFactor;
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation; 
+        }
+        else
+        {
+
+        rb.linearVelocity = Vector2.zero;
+        rb.constraints = RigidbodyConstraints2D.FreezeAll;
+        }
     }
 }
