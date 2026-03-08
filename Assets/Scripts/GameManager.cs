@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Player Stats")]
     public int currentHP = 5;
+    public static int healthPotions = 3;
     public int maxHP = 5;
 
     [Header("Equipment")]

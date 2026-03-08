@@ -16,6 +16,7 @@ public class CombatSystem : MonoBehaviour
     // --- PLAYER STATS ---
     [Header("Player Stats")]
     public int playerHealth = 100; // [cite: 2]
+    public int playerMaxHealth = 100;
     public int playerStrength = 15; // [cite: 3]
     public int playerSpeed = 10; // [cite: 4]
     public int playerDefense = 5; // [cite: 5]
@@ -45,9 +46,9 @@ public class CombatSystem : MonoBehaviour
 
     // --- ENEMY STATS ---
     [Header("Enemy Stats")]
-    public int enemyHealth = 50;
-    public int enemyStrength = 8;
-    public int enemySpeed = 8;
+    public EnemyData currentEnemy;
+    private int enemyHealth;
+    private int enemySpeed; // Runtime copy — modifications here won't affect the asset
 
     // --- COMBAT STATE ---
     private bool isPlayerTurn = false;
@@ -75,6 +76,8 @@ public class CombatSystem : MonoBehaviour
 
     private void Start()
     {
+        enemyHealth = currentEnemy.maxHP;
+        enemySpeed = currentEnemy.speed;
         UpdateBloomState();
         UpdateHealthUI();
         DetermineFirstTurn();
@@ -116,10 +119,7 @@ public class CombatSystem : MonoBehaviour
         StartCoroutine(PerformMeleeAttack(playerTransform, enemyTransform,
             onHit: () =>
             {
-                // Damage from the attack scales with the player's strength stat[cite: 77].
-                var damage = playerStrength;
-                var actualDamage = Mathf.Max(1, damage);
-
+                var actualDamage = Mathf.Max(1, playerStrength - currentEnemy.defense);
                 enemyHealth -= actualDamage;
                 UpdateHealthUI();
                 Debug.Log("Dealt " + actualDamage + " damage to the enemy.");
@@ -147,9 +147,9 @@ public class CombatSystem : MonoBehaviour
 
         currentBloom += bloomCost;
         UpdateBloomState();
-        
-        // CALLING THE NEW SKILL COROUTINE
-        StartCoroutine(PerformSkillAnimation(playerTransform, enemyTransform,
+        //Debug.Log("Bloom increased by " + bloomCost + ". State is now: " + currentBloomState);
+
+       StartCoroutine(PerformSkillAnimation(playerTransform, enemyTransform,
             onHit: () =>
             {
                 enemyHealth -= baseSkillDamage;
@@ -173,7 +173,6 @@ public class CombatSystem : MonoBehaviour
             return;
         }
 
-        // Double check just in case!
         if (GameManager.healthPotions <= 0)
         {
             Debug.Log("No potions left!");
@@ -182,7 +181,6 @@ public class CombatSystem : MonoBehaviour
 
         // --- DEDUCT THE ITEM FROM INVENTORY ---
         GameManager.healthPotions--;
-
         isPlayerTurn = false; 
         BackToMainMenu(); 
 
@@ -191,7 +189,7 @@ public class CombatSystem : MonoBehaviour
             {
                 Debug.Log("Player uses a Healing Item!");
                 var healAmount = 20; 
-                playerHealth += healAmount;
+                playerHealth = Mathf.Min(playerHealth + healAmount, playerMaxHealth);
                 
                 hasUsedItemThisTurn = true;
                 UpdateHealthUI();
@@ -211,7 +209,7 @@ public class CombatSystem : MonoBehaviour
         }
 
         var escapeChance = UnityEngine.Random.Range(0, 100);
-        if (escapeChance > 50) 
+         if (escapeChance > 50) 
         {
             Debug.Log("Escaped successfully!");
             isPlayerTurn = false; // Lock controls
@@ -253,21 +251,25 @@ public class CombatSystem : MonoBehaviour
         }
     }
 
-    // --- ENEMY LOGIC ---
-
     private void EnemyTurn()
     {
-        Debug.Log("Enemy attacks!");
+        Debug.Log(currentEnemy.enemyName + "'s turn!");
+
+        var skill = PickSkill();
 
         StartCoroutine(PerformMeleeAttack(enemyTransform, playerTransform,
             onHit: () =>
             {
-                var damage = enemyStrength;
-                var actualDamage = Mathf.Max(1, damage - playerDefense);
-
-                playerHealth -= actualDamage;
-                UpdateHealthUI();
-                Debug.Log("Player takes " + actualDamage + " damage.");
+                if (skill != null)
+                    skill.Execute(this, currentEnemy);
+                else
+                {
+                    // Fallback basic attack if no skills assigned
+                    var actualDamage = Mathf.Max(1, currentEnemy.strength - playerDefense);
+                    playerHealth -= actualDamage;
+                    UpdateHealthUI();
+                    Debug.Log("Player takes " + actualDamage + " damage.");
+                }
             },
             onComplete: () =>
             {
@@ -283,10 +285,39 @@ public class CombatSystem : MonoBehaviour
             }));
     }
 
+    private SkillBase PickSkill()
+    {
+        if (currentEnemy.skills == null || currentEnemy.skills.Count == 0) return null;
+
+        int totalWeight = 0;
+        foreach (var skill in currentEnemy.skills)
+            totalWeight += skill.weight;
+
+        int roll = UnityEngine.Random.Range(0, totalWeight);
+        int cumulative = 0;
+        foreach (var skill in currentEnemy.skills)
+        {
+            cumulative += skill.weight;
+            if (roll < cumulative) return skill;
+        }
+
+        return currentEnemy.skills[0];
+    }
+
+    // Called by skills
+    public void DealDamageToPlayer(int amount, bool ignoreDefense)
+    {
+        var actualDamage = ignoreDefense ? amount : Mathf.Max(1, amount - playerDefense);
+        playerHealth -= actualDamage;
+        UpdateHealthUI();
+    }
+
+    public void EndEnemyTurn() { }
+
     private void UpdateHealthUI()
     {
-        playerHP.text = "Player HP: " + playerHealth;
-        enemyHP.text = "Enemy HP: " + enemyHealth;
+        playerHP.text = "Player HP: " + playerHealth + " / " + playerMaxHealth;
+        enemyHP.text = "Enemy HP: " + enemyHealth + " / " + currentEnemy.maxHP;
         bloomText.text = "Bloom: " + currentBloom;
     }
 
@@ -316,7 +347,7 @@ public class CombatSystem : MonoBehaviour
         onComplete?.Invoke();
     }
 
-    // --- NEW ANIMATIONS ---
+     // --- NEW ANIMATIONS ---
 
     private IEnumerator PerformItemAnimation(Transform actor, Action onComplete)
     {
@@ -411,12 +442,26 @@ public class CombatSystem : MonoBehaviour
     public void OpenItemMenu()
     {
         if (!isPlayerTurn) return;
-        
         UpdateItemUI(); // Refresh the numbers before showing the menu
-
         mainMenuPanel.SetActive(false);
         itemMenuPanel.SetActive(true);
     }
+    private void UpdateItemUI()
+    {
+        // Check our global inventory
+        if (GameManager.healthPotions > 0)
+        {
+            healItemText.text = "Heal +20 (x" + GameManager.healthPotions + ")";
+            healItemButton.interactable = true; // Button is clickable
+        }
+        else
+        {
+            healItemText.text = "Out of Potions!";
+            healItemButton.interactable = false; // Grays out the button
+        }
+    }
+    
+
 
     private void UpdateItemUI()
     {

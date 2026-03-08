@@ -1131,21 +1131,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerHealth: 100
+  playerMaxHealth: 100
   playerStrength: 15
   playerSpeed: 10
   playerDefense: 5
   currentBloom: 0
   currentBloomState: 0
-  enemyHealth: 50
-  enemyStrength: 8
-  enemySpeed: 8
+  currentEnemy: {fileID: 11400000, guid: 92d20c9f2802e6a4a99196250dff6460, type: 2}
   playerHP: {fileID: 2087856261}
   enemyHP: {fileID: 1692223888}
   bloomText: {fileID: 1101394523}
   mainMenuPanel: {fileID: 1565584632}
   skillMenuPanel: {fileID: 1168045367}
   itemMenuPanel: {fileID: 913304586}
-  healItemButton: {fileID: 1421073228}
+  healItemButton: {fileID: 7379748}
   healItemText: {fileID: 2082639633}
   playerTransform: {fileID: 401412437}
   enemyTransform: {fileID: 1194458563}
