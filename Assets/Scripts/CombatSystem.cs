@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 using TMPro;
 using System.Collections;
 using System;
@@ -60,6 +61,11 @@ public class CombatSystem : MonoBehaviour
     public TextMeshProUGUI enemyHP;
     public TextMeshProUGUI bloomText;
 
+    [Header("Keyboard Navigation Defaults")]
+    public GameObject mainDefaultButton;  // E.g., The Attack Button
+    public GameObject skillDefaultButton; // E.g., Symbiote Swipe
+    public GameObject itemDefaultButton;  // E.g., The Heal Button
+
     [Header("Menu Panels")]
     public GameObject mainMenuPanel;
     public GameObject skillMenuPanel;
@@ -81,6 +87,10 @@ public class CombatSystem : MonoBehaviour
         UpdateBloomState();
         UpdateHealthUI();
         DetermineFirstTurn();
+
+        // Snap focus to the Main Menu's default button when combat starts!
+        EventSystem.current.SetSelectedGameObject(null); 
+        EventSystem.current.SetSelectedGameObject(mainDefaultButton);
     }
 
     private void DetermineFirstTurn()
@@ -437,52 +447,65 @@ public class CombatSystem : MonoBehaviour
         if (!isPlayerTurn) return;
         mainMenuPanel.SetActive(false);
         skillMenuPanel.SetActive(true);
+
+        // Use the new coroutine to highlight the button safely
+        StartCoroutine(HighlightButtonSafe(skillDefaultButton));
     }
 
     public void OpenItemMenu()
     {
         if (!isPlayerTurn) return;
-        UpdateItemUI(); // Refresh the numbers before showing the menu
+        UpdateItemUI(); 
+        
         mainMenuPanel.SetActive(false);
         itemMenuPanel.SetActive(true);
-    }
-    private void UpdateItemUI()
-    {
-        // Check our global inventory
-        if (GameManager.healthPotions > 0)
-        {
-            healItemText.text = "Heal +20 (x" + GameManager.healthPotions + ")";
-            healItemButton.interactable = true; // Button is clickable
-        }
-        else
-        {
-            healItemText.text = "Out of Potions!";
-            healItemButton.interactable = false; // Grays out the button
-        }
-    }
-    
 
-
-    private void UpdateItemUI()
-    {
-        // Check our global inventory
-        if (GameManager.healthPotions > 0)
-        {
-            healItemText.text = "Heal +20 (x" + GameManager.healthPotions + ")";
-            healItemButton.interactable = true; // Button is clickable
-        }
-        else
-        {
-            healItemText.text = "Out of Potions!";
-            healItemButton.interactable = false; // Grays out the button
-        }
+        // Use the new coroutine to highlight the button safely
+        StartCoroutine(HighlightButtonSafe(itemDefaultButton));
     }
-    
 
     public void BackToMainMenu()
     {
         skillMenuPanel.SetActive(false);
         itemMenuPanel.SetActive(false);
         mainMenuPanel.SetActive(true);
+
+        // Use the new coroutine to highlight the button safely
+        StartCoroutine(HighlightButtonSafe(mainDefaultButton));
+    }
+
+    // THE MAGIC FIX: This forces Unity to wait one frame so the button is fully awake before highlighting it
+    private IEnumerator HighlightButtonSafe(GameObject buttonToHighlight)
+    {
+        EventSystem.current.SetSelectedGameObject(null); // Clear the old selection
+        yield return null; // Wait exactly one frame
+        EventSystem.current.SetSelectedGameObject(buttonToHighlight); // Highlight the new button
+    }
+
+    private void UpdateItemUI()
+    {
+        // Check our global inventory
+        if (GameManager.healthPotions > 0)
+        {
+            healItemText.text = "Heal +20 (x" + GameManager.healthPotions + ")";
+            healItemButton.interactable = true; // Button is clickable
+        }
+        else
+        {
+            healItemText.text = "Out of Potions!";
+            healItemButton.interactable = false; // Grays out the button
+        }
+    }
+    private void Update()
+    {
+        // If it is the player's turn and they press the Escape key...
+        if (isPlayerTurn && Input.GetKeyDown(KeyCode.Escape))
+        {
+            // If either sub-menu is currently open, close it and go back!
+            if (skillMenuPanel.activeSelf || itemMenuPanel.activeSelf)
+            {
+                BackToMainMenu();
+            }
+        }
     }
 }

@@ -23,9 +23,6 @@ public class GameManager : MonoBehaviour
     public static string currentEnemyID = "";
     public static List<string> defeatedEnemies = new List<string>();
 
-    // player inventory
-    public static int healthPotions = 3;
-
     private void Awake()
     {
         if (Instance == null)
