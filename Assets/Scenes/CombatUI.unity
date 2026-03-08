@@ -1145,6 +1145,8 @@ MonoBehaviour:
   mainMenuPanel: {fileID: 1565584632}
   skillMenuPanel: {fileID: 1168045367}
   itemMenuPanel: {fileID: 913304586}
+  healItemButton: {fileID: 1421073228}
+  healItemText: {fileID: 2082639633}
   playerTransform: {fileID: 401412437}
   enemyTransform: {fileID: 1194458563}
   moveSpeed: 15
