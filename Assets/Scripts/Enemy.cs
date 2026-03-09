@@ -3,39 +3,33 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class Enemy : MonoBehaviour
 {
-    [Header("Wander Area")]
-    public BoxCollider2D area;                 // Drag PatrolArea (BoxCollider2D, IsTrigger) here
-    public float arriveDistance = 0.25f;
+    [Header("Patrol Area")]
+    public BoxCollider2D area;                 // Assign PatrolArea (BoxCollider2D, IsTrigger)
+    public float padding = 0.2f;               // keep away from edges
+    public LayerMask obstacleMask;             // Walls + Barrels/Obstacles (anything with colliders)
 
     [Header("Movement")]
     public float speed = 2.0f;
-    public float waitAtPointSeconds = 0.2f;
+    public float arriveDistance = 0.25f;
 
-    [Header("Random Timing")]
-    public float minChooseTime = 1.0f;
-    public float maxChooseTime = 2.5f;
+    [Header("Wander Timing")]
+    public float minRetargetTime = 0.8f;
+    public float maxRetargetTime = 2.0f;
 
-    [Header("Wall Avoidance")]
-    public LayerMask wallMask;                 // Set this to your Walls layer
-    public float probeRadius = 0.15f;          // roughly your enemy "radius"
-    public float probeDistance = 0.25f;        // how far ahead to check
+    [Header("Obstacle Probe")]
+    public float probeRadius = 0.18f;
+    public float probeDistance = 0.35f;
 
-    [Header("Approach Player")]
+    [Header("Chase (only if player is inside patrol area)")]
     public string playerTag = "Player";
-    public float noticeRadius = 4.0f;          // start approaching when player is within this radius
-    public float stopDistance = 1.2f;          // stop this far from player
-    public float forgetRadius = 6.0f;          // stop approaching if player goes beyond this radius
-
-    [Header("Patrol Area Clamp")]
-    public float areaPadding = 0.2f;           // keep enemy inside the area with some padding
+    public float chaseRadius = 4.0f;           // begin chasing when player is within this distance
+    public float stopDistance = 1.1f;          // stop this far from player
 
     private Rigidbody2D rb;
     private Transform player;
 
     private Vector2 target;
-    private float chooseTimer = 0f;
-    private float waitTimer = 0f;
-    private bool approaching = false;
+    private float retargetTimer;
 
     void Awake()
     {
@@ -60,54 +54,25 @@ public class Enemy : MonoBehaviour
             return;
         }
 
-        // Optional pause
-        if (waitTimer > 0f)
+        // Chase only if the player is inside the patrol area AND within chase radius
+        if (player != null && IsInsideArea(player.position) && InRange(rb.position, player.position, chaseRadius))
         {
-            waitTimer -= Time.fixedDeltaTime;
-            rb.linearVelocity = Vector2.zero;
-            ClampEnemyToArea();
-            return;
+            Chase();
+        }
+        else
+        {
+            Patrol();
         }
 
-        // Decide if we should approach the player (ONLY if player is inside patrol area)
-        if (player != null)
-        {
-            Vector2 playerPos = player.position;
-
-            if (!IsInsideArea(playerPos, areaPadding))
-            {
-                // Player left our zone -> stop chasing and resume wandering
-                approaching = false;
-            }
-            else
-            {
-                float dToPlayer = Vector2.Distance(rb.position, playerPos);
-
-                if (!approaching && dToPlayer <= noticeRadius)
-                    approaching = true;
-
-                if (approaching && dToPlayer >= forgetRadius)
-                    approaching = false;
-
-                if (approaching)
-                {
-                    ApproachPlayer(playerPos);
-                    ClampEnemyToArea();
-                    return;
-                }
-            }
-        }
-
-        Wander();
-        ClampEnemyToArea();
+        ClampToArea();
     }
 
-    void ApproachPlayer(Vector2 playerPos)
+    void Chase()
     {
         Vector2 pos = rb.position;
+        Vector2 playerPos = player.position;
         Vector2 toPlayer = playerPos - pos;
 
-        // Close enough -> stop
         if (toPlayer.magnitude <= stopDistance)
         {
             rb.linearVelocity = Vector2.zero;
@@ -116,37 +81,41 @@ public class Enemy : MonoBehaviour
 
         Vector2 dir = toPlayer.normalized;
 
-        // If we'd run into a wall, stop approaching and wander instead
-        if (Physics2D.OverlapCircle(pos + dir * probeDistance, probeRadius, wallMask))
+        // If obstacle ahead, don't freeze: pick a new patrol target and patrol instead
+        if (Physics2D.OverlapCircle(pos + dir * probeDistance, probeRadius, obstacleMask))
         {
-            approaching = false;
             PickNewTarget();
-            rb.linearVelocity = Vector2.zero;
+            Patrol();
             return;
         }
 
         rb.linearVelocity = dir * speed;
     }
 
-    void Wander()
+    void Patrol()
     {
-        chooseTimer -= Time.fixedDeltaTime;
+        retargetTimer -= Time.fixedDeltaTime;
 
         Vector2 pos = rb.position;
         Vector2 toTarget = target - pos;
 
-        // Pick a new target if arrived or timer expired
-        if (toTarget.magnitude <= arriveDistance || chooseTimer <= 0f)
+        // If reached target or timer expired -> new target
+        if (toTarget.magnitude <= arriveDistance || retargetTimer <= 0f)
         {
             PickNewTarget();
+            toTarget = target - pos;
+        }
+
+        if (toTarget.magnitude <= arriveDistance)
+        {
             rb.linearVelocity = Vector2.zero;
             return;
         }
 
         Vector2 dir = toTarget.normalized;
 
-        // If we'd run into a wall, pick another target
-        if (Physics2D.OverlapCircle(pos + dir * probeDistance, probeRadius, wallMask))
+        // If obstacle ahead, repick target (no pausing)
+        if (Physics2D.OverlapCircle(pos + dir * probeDistance, probeRadius, obstacleMask))
         {
             PickNewTarget();
             rb.linearVelocity = Vector2.zero;
@@ -158,61 +127,56 @@ public class Enemy : MonoBehaviour
 
     void PickNewTarget()
     {
-        // Try multiple random points so we don't pick inside walls
-        for (int i = 0; i < 25; i++)
+        // Try multiple points inside the area that aren't inside obstacles
+        for (int i = 0; i < 40; i++)
         {
             Vector2 candidate = RandomPointInArea();
-
-            // Candidate must not be inside a wall
-            if (!Physics2D.OverlapCircle(candidate, probeRadius, wallMask))
+            if (!Physics2D.OverlapCircle(candidate, probeRadius, obstacleMask))
             {
                 target = candidate;
-                chooseTimer = Random.Range(minChooseTime, maxChooseTime);
-
-                if (waitAtPointSeconds > 0f)
-                    waitTimer = waitAtPointSeconds;
-
+                retargetTimer = Random.Range(minRetargetTime, maxRetargetTime);
                 return;
             }
         }
 
-        // Fallback: stay put briefly
-        target = rb.position;
-        chooseTimer = 0.5f;
-        waitTimer = 0.1f;
+        // Fallback so it doesn't freeze
+        target = RandomPointInArea();
+        retargetTimer = 0.5f;
     }
 
     Vector2 RandomPointInArea()
     {
         Bounds b = area.bounds;
 
-        // Choose points INSIDE bounds with padding so we don't hug edges
-        float minX = b.min.x + areaPadding;
-        float maxX = b.max.x - areaPadding;
-        float minY = b.min.y + areaPadding;
-        float maxY = b.max.y - areaPadding;
+        float minX = b.min.x + padding;
+        float maxX = b.max.x - padding;
+        float minY = b.min.y + padding;
+        float maxY = b.max.y - padding;
 
-        return new Vector2(
-            Random.Range(minX, maxX),
-            Random.Range(minY, maxY)
-        );
+        return new Vector2(Random.Range(minX, maxX), Random.Range(minY, maxY));
     }
 
-    bool IsInsideArea(Vector2 p, float padding)
+    bool IsInsideArea(Vector2 p)
     {
         Bounds b = area.bounds;
+
         return (p.x >= b.min.x + padding && p.x <= b.max.x - padding &&
                 p.y >= b.min.y + padding && p.y <= b.max.y - padding);
     }
 
-    void ClampEnemyToArea()
+    bool InRange(Vector2 a, Vector2 b, float r)
+    {
+        return (a - b).sqrMagnitude <= r * r;
+    }
+
+    void ClampToArea()
     {
         Bounds b = area.bounds;
 
-        float minX = b.min.x + areaPadding;
-        float maxX = b.max.x - areaPadding;
-        float minY = b.min.y + areaPadding;
-        float maxY = b.max.y - areaPadding;
+        float minX = b.min.x + padding;
+        float maxX = b.max.x - padding;
+        float minY = b.min.y + padding;
+        float maxY = b.max.y - padding;
 
         Vector2 p = rb.position;
         Vector2 clamped = new Vector2(
@@ -224,7 +188,6 @@ public class Enemy : MonoBehaviour
         {
             rb.position = clamped;
             rb.linearVelocity = Vector2.zero;
-            approaching = false;
             PickNewTarget();
         }
     }
@@ -238,19 +201,21 @@ public class Enemy : MonoBehaviour
             Gizmos.DrawWireCube(area.bounds.center, area.bounds.size);
         }
 
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, chaseRadius);
+
         Gizmos.color = Color.green;
         Gizmos.DrawSphere(target, 0.08f);
-
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, noticeRadius);
-
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, stopDistance);
     }
 #endif
 
     public void TakeDamage(float damage)
     {
         Debug.Log("Enemy took " + damage + " damage!");
+    }
+
+    public void TakeDamage(int damage)
+    {
+        TakeDamage((float)damage);
     }
 }
