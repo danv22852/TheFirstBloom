@@ -25,7 +25,7 @@ public abstract class CoreTemplate : ScriptableObject
     // Note: move to PlayerData / save system when migration happens
     public bool isKnown = false;
 
-    public abstract void Execute(CombatSystem system);
+    // public abstract void Execute(CombatSystem system);
 
     // Called by the CombatSystem the first time this core is cast in combat
     public void OnFirstCast()
