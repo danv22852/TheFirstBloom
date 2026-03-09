@@ -1,35 +1,77 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Cinemachine; // Needed for the Confiner
 
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float BASE_SPEED = 5f;
 
+    [SerializeField] private Color alienTint = Color.black; 
+
+    public bool canMove = true;
+    public float slownessFactor = 1f;
     private Rigidbody2D rb;
     private Animator animator;
+    private SpriteRenderer spriteRenderer; // Added reference
     private float currentSpeed;
 
     private Vector2 movementInput;
     public Transform Aim;
 
+    private bool isRunning = false;
+
     void Start()
     {
-        // When the scene loads, check if we just finished a battle
-        if (GameManager.isReturningFromCombat == true)
-        {
-            // Teleport the player to the saved coordinates!
-            transform.position = GameManager.lastPlayerPosition;
-
-            // Turn the switch back off so we don't accidentally teleport again later
-            GameManager.isReturningFromCombat = false;
-
-            Debug.Log("TELEPORTED PLAYER TO: " + transform.position);
-        }
-        
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>(); // Initialize reference
         currentSpeed = BASE_SPEED;
+
+        // --- Persistent State Checks ---
+        UpdateAppearance(); 
+
+        if (GameManager.isReturningFromCombat)
+        {
+            // 1. Teleport Player
+            transform.position = GameManager.lastPlayerPosition;
+
+            // 2. Restore Camera Boundary
+            RestoreCameraBoundary();
+
+            GameManager.isReturningFromCombat = false;
+        }
+    }
+
+    // Logic to check if the player should look like an alien
+    public void UpdateAppearance()
+    {
+        if (GameManager.Instance != null && GameManager.Instance.hasAlien)
+        {
+            if (spriteRenderer != null)
+            {
+                spriteRenderer.color = alienTint;
+            }
+        }
+    }
+
+    private void RestoreCameraBoundary()
+    {
+        if (!string.IsNullOrEmpty(GameManager.currentMapBoundaryName))
+        {
+            GameObject boundaryObj = GameObject.Find(GameManager.currentMapBoundaryName);
+            if (boundaryObj != null)
+            {
+                PolygonCollider2D poly = boundaryObj.GetComponent<PolygonCollider2D>();
+                CinemachineConfiner2D confiner = FindFirstObjectByType<CinemachineConfiner2D>();
+                
+                if (confiner != null && poly != null)
+                {
+                    confiner.BoundingShape2D = poly;
+                    confiner.InvalidateBoundingShapeCache();
+                }
+            }
+        }
     }
 
     public IEnumerator SpeedChange(float newSpeed, float timeInSecs)
@@ -41,25 +83,42 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+       
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
 
-        // Calculate movement FIRST
         movementInput = new Vector2(horizontal, vertical).normalized;
 
-        // Flip sprite
-        if (horizontal > 0)
-            transform.localScale = new Vector3(1, 1, 1);
+        if(movementInput != Vector2.zero && canMove)
+        {
+              if (horizontal > 0)
+            spriteRenderer.flipX= false;
         else if (horizontal < 0)
-            transform.localScale = new Vector3(-1, 1, 1);
-
-        // Set Animator parameter
-        bool isRunning = movementInput.magnitude > 0;
+            spriteRenderer.flipX = true;
+        isRunning = movementInput.magnitude > 0;
         animator.SetBool("isRunning", isRunning);
+        }
+        else
+        {
+            animator.SetBool("isRunning", false);
+        }
+      
+
+         
     }
 
     void FixedUpdate()
     {
-        rb.linearVelocity = movementInput * currentSpeed;
+        if(canMove)
+        {
+            rb.linearVelocity = movementInput * currentSpeed * slownessFactor;
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation; 
+        }
+        else
+        {
+
+        rb.linearVelocity = Vector2.zero;
+        rb.constraints = RigidbodyConstraints2D.FreezeAll;
+        }
     }
 }

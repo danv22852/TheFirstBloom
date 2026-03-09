@@ -16,6 +16,7 @@ public class CombatSystem : MonoBehaviour
     // --- PLAYER STATS ---
     [Header("Player Stats")]
     public int playerHealth = 100; // [cite: 2]
+    public int playerMaxHealth = 100;
     public int playerStrength = 15; // [cite: 3]
     public int playerSpeed = 10; // [cite: 4]
     public int playerDefense = 5; // [cite: 5]
@@ -45,9 +46,9 @@ public class CombatSystem : MonoBehaviour
 
     // --- ENEMY STATS ---
     [Header("Enemy Stats")]
-    public int enemyHealth = 50;
-    public int enemyStrength = 8;
-    public int enemySpeed = 8;
+    public EnemyData currentEnemy;
+    private int enemyHealth;
+    private int enemySpeed; // Runtime copy — modifications here won't affect the asset
 
     // --- COMBAT STATE ---
     private bool isPlayerTurn = false;
@@ -64,6 +65,10 @@ public class CombatSystem : MonoBehaviour
     public GameObject skillMenuPanel;
     public GameObject itemMenuPanel;
 
+    [Header("Item Menu UI")]
+    public UnityEngine.UI.Button healItemButton; 
+    public TextMeshProUGUI healItemText;
+
     [Header("Animation Settings")]
     public Transform playerTransform;
     public Transform enemyTransform;
@@ -71,6 +76,8 @@ public class CombatSystem : MonoBehaviour
 
     private void Start()
     {
+        enemyHealth = currentEnemy.maxHP;
+        enemySpeed = currentEnemy.speed;
         UpdateBloomState();
         UpdateHealthUI();
         DetermineFirstTurn();
@@ -112,10 +119,7 @@ public class CombatSystem : MonoBehaviour
         StartCoroutine(PerformMeleeAttack(playerTransform, enemyTransform,
             onHit: () =>
             {
-                // Damage from the attack scales with the player's strength stat[cite: 77].
-                var damage = playerStrength;
-                var actualDamage = Mathf.Max(1, damage);
-
+                var actualDamage = Mathf.Max(1, playerStrength - currentEnemy.defense);
                 enemyHealth -= actualDamage;
                 UpdateHealthUI();
                 Debug.Log("Dealt " + actualDamage + " damage to the enemy.");
@@ -143,9 +147,9 @@ public class CombatSystem : MonoBehaviour
 
         currentBloom += bloomCost;
         UpdateBloomState();
-        Debug.Log("Bloom increased by " + bloomCost + ". State is now: " + currentBloomState);
+        //Debug.Log("Bloom increased by " + bloomCost + ". State is now: " + currentBloomState);
 
-        StartCoroutine(PerformMeleeAttack(playerTransform, enemyTransform,
+       StartCoroutine(PerformSkillAnimation(playerTransform, enemyTransform,
             onHit: () =>
             {
                 enemyHealth -= baseSkillDamage;
@@ -169,13 +173,29 @@ public class CombatSystem : MonoBehaviour
             return;
         }
 
-        Debug.Log("Player uses a Healing Item!");
-        var healAmount = 20;
-        playerHealth += healAmount;
+        if (GameManager.healthPotions <= 0)
+        {
+            Debug.Log("No potions left!");
+            return;
+        }
 
-        hasUsedItemThisTurn = true;
-        UpdateHealthUI();
-        BackToMainMenu(); // Close the menu
+        // --- DEDUCT THE ITEM FROM INVENTORY ---
+        GameManager.healthPotions--;
+        isPlayerTurn = false; 
+        BackToMainMenu(); 
+
+        StartCoroutine(PerformItemAnimation(playerTransform, 
+            onComplete: () => 
+            {
+                Debug.Log("Player uses a Healing Item!");
+                var healAmount = 20; 
+                playerHealth = Mathf.Min(playerHealth + healAmount, playerMaxHealth);
+                
+                hasUsedItemThisTurn = true;
+                UpdateHealthUI();
+                
+                isPlayerTurn = true; 
+            }));
     }
 
     public void OnRunButton()
@@ -190,10 +210,18 @@ public class CombatSystem : MonoBehaviour
         }
 
         var escapeChance = UnityEngine.Random.Range(0, 100);
-        if (escapeChance > 50)
+         if (escapeChance > 50) 
         {
             Debug.Log("Escaped successfully!");
-            SceneManager.LoadScene("firstFloor");
+            isPlayerTurn = false; // Lock controls
+            
+            // CALLING THE NEW RUN COROUTINE
+            StartCoroutine(PerformRunAnimation(playerTransform, 
+                onComplete: () => 
+                {
+                    // Load the overworld AFTER the player has run offscreen
+                    SceneManager.LoadScene("firstFloor");
+                }));
         }
         else
         {
@@ -224,21 +252,25 @@ public class CombatSystem : MonoBehaviour
         }
     }
 
-    // --- ENEMY LOGIC ---
-
     private void EnemyTurn()
     {
-        Debug.Log("Enemy attacks!");
+        Debug.Log(currentEnemy.enemyName + "'s turn!");
+
+        var skill = PickSkill();
 
         StartCoroutine(PerformMeleeAttack(enemyTransform, playerTransform,
             onHit: () =>
             {
-                var damage = enemyStrength;
-                var actualDamage = Mathf.Max(1, damage - playerDefense);
-
-                playerHealth -= actualDamage;
-                UpdateHealthUI();
-                Debug.Log("Player takes " + actualDamage + " damage.");
+                if (skill != null)
+                    skill.Execute(this, currentEnemy);
+                else
+                {
+                    // Fallback basic attack if no skills assigned
+                    var actualDamage = Mathf.Max(1, currentEnemy.strength - playerDefense);
+                    playerHealth -= actualDamage;
+                    UpdateHealthUI();
+                    Debug.Log("Player takes " + actualDamage + " damage.");
+                }
             },
             onComplete: () =>
             {
@@ -254,10 +286,39 @@ public class CombatSystem : MonoBehaviour
             }));
     }
 
+    private SkillBase PickSkill()
+    {
+        if (currentEnemy.skills == null || currentEnemy.skills.Count == 0) return null;
+
+        int totalWeight = 0;
+        foreach (var skill in currentEnemy.skills)
+            totalWeight += skill.weight;
+
+        int roll = UnityEngine.Random.Range(0, totalWeight);
+        int cumulative = 0;
+        foreach (var skill in currentEnemy.skills)
+        {
+            cumulative += skill.weight;
+            if (roll < cumulative) return skill;
+        }
+
+        return currentEnemy.skills[0];
+    }
+
+    // Called by skills
+    public void DealDamageToPlayer(int amount, bool ignoreDefense)
+    {
+        var actualDamage = ignoreDefense ? amount : Mathf.Max(1, amount - playerDefense);
+        playerHealth -= actualDamage;
+        UpdateHealthUI();
+    }
+
+    public void EndEnemyTurn() { }
+
     private void UpdateHealthUI()
     {
-        playerHP.text = "Player HP: " + playerHealth;
-        enemyHP.text = "Enemy HP: " + enemyHealth;
+        playerHP.text = "Player HP: " + playerHealth + " / " + playerMaxHealth;
+        enemyHP.text = "Enemy HP: " + enemyHealth + " / " + currentEnemy.maxHP;
         bloomText.text = "Bloom: " + currentBloom;
     }
 
@@ -285,6 +346,90 @@ public class CombatSystem : MonoBehaviour
         onComplete?.Invoke();
     }
 
+     // --- NEW ANIMATIONS ---
+
+    private IEnumerator PerformItemAnimation(Transform actor, Action onComplete)
+    {
+        var startPos = actor.position;
+        var peakPos = startPos + Vector3.up * 1.5f; // Move up 1.5 units
+
+        // 1. Move straight up
+        while (Vector3.Distance(actor.position, peakPos) > 0.05f)
+        {
+            actor.position = Vector3.MoveTowards(actor.position, peakPos, moveSpeed * Time.deltaTime);
+            yield return null;
+        }
+
+        // Pause for a tiny fraction of a second at the top
+        yield return new WaitForSeconds(0.1f);
+
+        // 2. Move straight down back to start
+        while (Vector3.Distance(actor.position, startPos) > 0.05f)
+        {
+            actor.position = Vector3.MoveTowards(actor.position, startPos, moveSpeed * Time.deltaTime);
+            yield return null;
+        }
+
+        actor.position = startPos;
+        onComplete?.Invoke();
+    }
+
+    private IEnumerator PerformSkillAnimation(Transform attacker, Transform target, Action onHit, Action onComplete)
+    {
+        var startPos = attacker.position;
+        var targetPos = Vector3.Lerp(startPos, target.position, 0.6f); // Target point slightly in front of enemy
+        
+        // Calculate the peak of the jump (halfway forward, and 2 units up)
+        var midPoint = Vector3.Lerp(startPos, targetPos, 0.5f);
+        var peakPos = midPoint + Vector3.up * 2f; 
+
+        // 1. Leap diagonally up to the peak
+        while (Vector3.Distance(attacker.position, peakPos) > 0.05f)
+        {
+            attacker.position = Vector3.MoveTowards(attacker.position, peakPos, moveSpeed * Time.deltaTime);
+            yield return null;
+        }
+
+        // 2. Dive diagonally down to the enemy
+        while (Vector3.Distance(attacker.position, targetPos) > 0.05f)
+        {
+            attacker.position = Vector3.MoveTowards(attacker.position, targetPos, moveSpeed * 1.5f * Time.deltaTime); // Dive slightly faster
+            yield return null;
+        }
+
+        // We hit the enemy! Apply damage.
+        onHit?.Invoke();
+        yield return new WaitForSeconds(0.1f);
+
+        // 3. Return to the start position
+        while (Vector3.Distance(attacker.position, startPos) > 0.05f)
+        {
+            attacker.position = Vector3.MoveTowards(attacker.position, startPos, moveSpeed * Time.deltaTime);
+            yield return null;
+        }
+
+        attacker.position = startPos;
+        onComplete?.Invoke();
+    }
+
+    private IEnumerator PerformRunAnimation(Transform actor, Action onComplete)
+    {
+        var startPos = actor.position;
+        var offscreenPos = startPos + (Vector3.left * 10f); // Move 10 units to the left
+
+        // 1. Sprint offscreen
+        while (Vector3.Distance(actor.position, offscreenPos) > 0.05f)
+        {
+            // Multiplying speed by 1.5 so running away feels urgent
+            actor.position = Vector3.MoveTowards(actor.position, offscreenPos, moveSpeed * 1.5f * Time.deltaTime);
+            yield return null;
+        }
+
+        // 2. Transition scene
+        onComplete?.Invoke();
+    }
+
+
     // --- MENU NAVIGATION ---
 
     public void OpenSkillMenu()
@@ -297,9 +442,26 @@ public class CombatSystem : MonoBehaviour
     public void OpenItemMenu()
     {
         if (!isPlayerTurn) return;
+        UpdateItemUI(); // Refresh the numbers before showing the menu
         mainMenuPanel.SetActive(false);
         itemMenuPanel.SetActive(true);
     }
+    private void UpdateItemUI()
+    {
+        // Check our global inventory
+        if (GameManager.healthPotions > 0)
+        {
+            healItemText.text = "Heal +20 (x" + GameManager.healthPotions + ")";
+            healItemButton.interactable = true; // Button is clickable
+        }
+        else
+        {
+            healItemText.text = "Out of Potions!";
+            healItemButton.interactable = false; // Grays out the button
+        }
+    }
+    
+
 
     public void BackToMainMenu()
     {

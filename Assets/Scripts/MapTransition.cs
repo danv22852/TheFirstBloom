@@ -1,7 +1,9 @@
 using UnityEngine;
 using Unity.Cinemachine;
-public class MapTransition : MonoBehaviour { 
-    [SerializeField] private PolygonCollider2D mapBoundary;
+
+public class MapTransition : MonoBehaviour 
+{ 
+    [SerializeField] PolygonCollider2D mapBoundary;
     private CinemachineConfiner2D confiner;
     [SerializeField] Direction direction;
 
@@ -11,30 +13,37 @@ public class MapTransition : MonoBehaviour {
     private void Awake() { 
         confiner = FindFirstObjectByType<CinemachineConfiner2D>();
     }
+
     private void OnTriggerEnter2D(Collider2D collision) {
         if (collision.CompareTag("Player")) { 
-            confiner.BoundingShape2D = mapBoundary;
-            confiner.InvalidateBoundingShapeCache();
+            // Update the camera now
+            UpdateCameraBoundary(mapBoundary);
+            
+            // Save the boundary name for later (returning from combat)
+            
+
             UpdatePlayerPosition(collision.gameObject);
-            }
         }
+    }
+
+    private void UpdateCameraBoundary(PolygonCollider2D newBoundary) {
+        if (confiner != null) {
+            GameManager.currentMapBoundaryName = mapBoundary.gameObject.name;
+            confiner.BoundingShape2D = newBoundary;
+            confiner.InvalidateBoundingShapeCache();
+        }
+    }
 
     private void UpdatePlayerPosition(GameObject player) { 
         Vector3 newPosition = player.transform.position;
         switch (direction) { 
-            case Direction.Up:
-                newPosition.y += moveDistance; 
-                break;
-            case Direction.Down:
-                newPosition.y -= moveDistance; 
-                break;
-            case Direction.Left:
-                newPosition.x -= moveDistance; 
-                break;
-            case Direction.Right:
-                newPosition.x += moveDistance; 
-                break;
+            case Direction.Up: newPosition.y += moveDistance; break;
+            case Direction.Down: newPosition.y -= moveDistance; break;
+            case Direction.Left: newPosition.x -= moveDistance; break;
+            case Direction.Right: newPosition.x += moveDistance; break;
         }
         player.transform.position = newPosition;
-    }
+    }   
+
+    
 }
