@@ -6,13 +6,20 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     [Header("Player Stats")]
-    public int currentHP = 5;
+    public static int currentHP = 5;
     public static int healthPotions = 3;
-    public int maxHP = 5;
+    public static int maxHP = 5;
+
+     public static int playerStrength = 15; // [cite: 3]
+    public static int playerSpeed = 10; // [cite: 4]
+    public static int playerDefense = 5;
+
 
     [Header("Equipment")]
     public bool hasAlien = false;
     public bool hasBow;
+
+    public static bool finishedTutorial = false;
 
     [Header("Persistence")]
     public static Vector3 lastPlayerPosition;
@@ -56,6 +63,7 @@ public class GameManager : MonoBehaviour
             if (enemy.enemyID == id)
                 return enemy;
         }
+        Debug.LogWarning("No enemy found with ID: " + id);
         Debug.LogWarning("No enemy found with ID: " + id);
         return null;
     }

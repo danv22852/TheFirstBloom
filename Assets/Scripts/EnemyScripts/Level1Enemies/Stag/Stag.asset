@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyID: stag_01
   enemyName: Stag
-  maxHP: 80
+  maxHP: 90
   strength: 10
   speed: 8
   defense: 5

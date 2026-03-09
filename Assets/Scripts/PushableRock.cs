@@ -7,6 +7,18 @@ public class PushableRock : MonoBehaviour
     public LayerMask blockingLayer; // Set this to "Walls" or "Obstacles"
     private bool isMoving = false;
 
+    public Vector2 targetCoordinates;
+
+    void Start()
+    {
+        // Check if the tutorial is already done (using finishedTutorial based on your GameManager)
+        if (GameManager.finishedTutorial)
+        {
+       
+            transform.position = targetCoordinates;
+        }
+    }
+
     public void Push(Vector2 direction)
     {
         if (isMoving) return;

@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyID: tutorial_boss
   enemyName: Monster
-  maxHP: 999
+  enemySprite: {fileID: 21300000, guid: 2c485f404f6b79e46bf40f28682b23d3, type: 3}
+  maxHP: 30
   strength: 5
   speed: 5
   defense: 5

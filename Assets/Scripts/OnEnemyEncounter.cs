@@ -29,8 +29,11 @@ public class EnemyEncounter : MonoBehaviour // (Or whatever you named this scrip
 
             // --- NEW: Tell the GameManager exactly who we are fighting ---
             GameManager.currentEnemyID = this.uniqueEnemyID;
-
-            SceneManager.LoadScene("CombatUI");
+            if (!GameManager.finishedTutorial){
+                Debug.Log("Starting tutorial battle...");
+                SceneManager.LoadScene("TutorialBattle");
+            }
+            else SceneManager.LoadScene("CombatUI");
         }
     }
 }

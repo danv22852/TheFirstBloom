@@ -9,7 +9,7 @@ public class UIPlayerHP : MonoBehaviour
     {
         if (GameManager.Instance == null) return;
 
-        hpText.text = "HP: " + GameManager.Instance.currentHP + "/" +
-                      GameManager.Instance.maxHP;
+        hpText.text = "HP: " + GameManager.currentHP + "/" +
+                      GameManager.maxHP;
     }
 }

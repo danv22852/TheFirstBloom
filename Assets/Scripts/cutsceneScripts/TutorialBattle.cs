@@ -4,15 +4,7 @@ using UnityEngine.EventSystems;
 using TMPro;
 using System.Collections;
 using System;
-public enum BloomState
-{
-    Stable, // 0-24
-    Low,    // 25-49
-    Medium, // 50-74
-    High,   // 75-99
-    Max     // 100
-}
-public class CombatSystem : MonoBehaviour
+public class TutorialBattle : MonoBehaviour
 {
     // --- PLAYER STATS ---
     [Header("Player Stats")]
@@ -51,9 +43,12 @@ public class CombatSystem : MonoBehaviour
     private int enemyHealth;
     private int enemySpeed; // Runtime copy — modifications here won't affect the asset
 
+
+
     // --- COMBAT STATE ---
     private bool isPlayerTurn = false;
     private bool hasUsedItemThisTurn = false;
+    private int enemyTurnCount = 0;
 
     // --- UI ELEMENTS ---
     [Header("UI Elements")]
@@ -63,12 +58,10 @@ public class CombatSystem : MonoBehaviour
 
     [Header("Keyboard Navigation Defaults")]
     public GameObject mainDefaultButton;  // E.g., The Attack Button
-    public GameObject skillDefaultButton; // E.g., Symbiote Swipe
     public GameObject itemDefaultButton;  // E.g., The Heal Button
 
     [Header("Menu Panels")]
     public GameObject mainMenuPanel;
-    public GameObject skillMenuPanel;
     public GameObject itemMenuPanel;
 
     [Header("Item Menu UI")]
@@ -82,19 +75,6 @@ public class CombatSystem : MonoBehaviour
 
     private void Start()
     {
-        // Load the enemy from GameManager if an ID has been set
-        if (!string.IsNullOrEmpty(GameManager.currentEnemyID))
-        {
-            var found = GameManager.Instance.GetEnemyByID(GameManager.currentEnemyID);
-            if (found != null) currentEnemy = found;
-        }
-
-        var sr = enemyTransform.GetComponent<SpriteRenderer>();
-        if (currentEnemy.enemySprite != null && sr != null)
-        {
-            sr.sprite = currentEnemy.enemySprite;
-        }
-
         enemyHealth = currentEnemy.maxHP;
         enemySpeed = currentEnemy.speed;
         UpdateBloomState();
@@ -153,37 +133,8 @@ public class CombatSystem : MonoBehaviour
             }));
     }
 
-    public void OnSkillButton()
-    {
-        OpenSkillMenu();
-    }
 
-    public void UseSymbioteSwipe()
-    {
-        isPlayerTurn = false; 
-        BackToMainMenu();     
-
-        Debug.Log("Player uses Symbiote Swipe!");
-
-        var bloomCost = 1; 
-        var baseSkillDamage = 10; 
-
-        currentBloom += bloomCost;
-        UpdateBloomState();
-        //Debug.Log("Bloom increased by " + bloomCost + ". State is now: " + currentBloomState);
-
-       StartCoroutine(PerformSkillAnimation(playerTransform, enemyTransform,
-            onHit: () =>
-            {
-                enemyHealth -= baseSkillDamage;
-                UpdateHealthUI();
-            },
-            onComplete: () =>
-            {
-                CheckWinConditionOrContinue();
-            }));
-    }
-
+   
     public void OnItemButton()
     {
         OpenItemMenu();
@@ -193,12 +144,14 @@ public class CombatSystem : MonoBehaviour
         if (hasUsedItemThisTurn)
         {
             Debug.Log("You have already used an item this turn!");
+            BackToMainMenu();
             return;
         }
 
         if (GameManager.healthPotions <= 0)
         {
             Debug.Log("No potions left!");
+            BackToMainMenu();
             return;
         }
 
@@ -276,36 +229,51 @@ public class CombatSystem : MonoBehaviour
 
     private void EnemyTurn()
     {
-        Debug.Log(currentEnemy.enemyName + "'s turn!");
+        enemyTurnCount++;
+        Debug.Log(currentEnemy.enemyName + "'s turn! (Turn " + enemyTurnCount + ")");
 
-        var skill = PickSkill();
-
-        StartCoroutine(PerformMeleeAttack(enemyTransform, playerTransform,
-            onHit: () =>
-            {
-                if (skill != null)
-                    skill.Execute(this, currentEnemy);
-                else
+        // --- THE SCRIPTED EVENT: TURN 4 ---
+        if (enemyTurnCount == 4)
+        {
+            Debug.Log("Enemy prepares a devastating scripted skill!");
+            
+            StartCoroutine(PerformSkillAnimation(enemyTransform, playerTransform,
+                onHit: () =>
                 {
-                    // Fallback basic attack if no skills assigned
+                    Debug.Log("DEVASTATING BLOW! Player drops to 1 HP!");
+                    playerHealth = 1;
+                    UpdateHealthUI();
+                },
+                onComplete: () =>
+                {
+                   
+                    GameManager.finishedTutorial = true; // Set the flag to indicate the tutorial is finished
+                    SceneManager.LoadScene("firstFloor");
+                    // Straight back to the player!
+                    PlayerStartTurn();
+                }));
+                
+            return;     
+        }
+
+        // --- NORMAL COMBAT LOGIC ---
+        else
+        {
+            Debug.Log("Enemy uses a Basic Attack!");
+            StartCoroutine(PerformMeleeAttack(enemyTransform, playerTransform,
+                onHit: () =>
+                {
                     var actualDamage = Mathf.Max(1, currentEnemy.strength - playerDefense);
                     playerHealth -= actualDamage;
                     UpdateHealthUI();
                     Debug.Log("Player takes " + actualDamage + " damage.");
-                }
-            },
-            onComplete: () =>
-            {
-                if (playerHealth <= 0)
+                },
+                onComplete: () =>
                 {
-                    Debug.Log("Player died. Game Over.");
-                    SceneManager.LoadScene("MainMenu");
-                }
-                else
-                {
+                    // Straight back to the player!
                     PlayerStartTurn();
-                }
-            }));
+                }));
+        }
     }
 
     private SkillBase PickSkill()
@@ -455,15 +423,7 @@ public class CombatSystem : MonoBehaviour
 
     // --- MENU NAVIGATION ---
 
-    public void OpenSkillMenu()
-    {
-        if (!isPlayerTurn) return;
-        mainMenuPanel.SetActive(false);
-        skillMenuPanel.SetActive(true);
 
-        // Use the new coroutine to highlight the button safely
-        StartCoroutine(HighlightButtonSafe(skillDefaultButton));
-    }
 
     public void OpenItemMenu()
     {
@@ -479,7 +439,6 @@ public class CombatSystem : MonoBehaviour
 
     public void BackToMainMenu()
     {
-        skillMenuPanel.SetActive(false);
         itemMenuPanel.SetActive(false);
         mainMenuPanel.SetActive(true);
 
@@ -515,7 +474,7 @@ public class CombatSystem : MonoBehaviour
         if (isPlayerTurn && (Input.GetKeyDown(KeyCode.P)) || (Input.GetKeyDown(KeyCode.X)))
         {
             // If either sub-menu is currently open, close it and go back!
-            if (skillMenuPanel.activeSelf || itemMenuPanel.activeSelf)
+            if ( itemMenuPanel.activeSelf)
             {
                 BackToMainMenu();
             }

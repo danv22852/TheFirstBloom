@@ -6,6 +6,8 @@ public class PressurePlate : MonoBehaviour
     public UnityEvent onActivate;
     public UnityEvent onDeactivate;
 
+    public Transform pressurePlate;
+
     // This keeps track of how many valid objects are on the plate
     private int objectsOnPlate = 0;
 
