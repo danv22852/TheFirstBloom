@@ -11,7 +11,7 @@ public class PlayerPush : MonoBehaviour
     {
         UpdateFacingDirection();
 
-        if (Input.GetKeyDown(KeyCode.O))
+        if (Input.GetKeyDown(KeyCode.O) || Input.GetKeyDown(KeyCode.Z)) // O key or X button on controller
         {
             TryPushRock();
         }

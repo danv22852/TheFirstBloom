@@ -6,11 +6,11 @@ using Unity.Cinemachine; // Needed for the Confiner
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float BASE_SPEED = 5f;
-
+    // Added this so you can set the color in the Inspector once
     [SerializeField] private Color alienTint = Color.black; 
 
     public bool canMove = true;
-    public float slownessFactor = 1f;
+
     private Rigidbody2D rb;
     private Animator animator;
     private SpriteRenderer spriteRenderer; // Added reference
@@ -111,8 +111,8 @@ public class PlayerController : MonoBehaviour
     {
         if(canMove)
         {
-            rb.linearVelocity = movementInput * currentSpeed * slownessFactor;
-            rb.constraints = RigidbodyConstraints2D.FreezeRotation; 
+            rb.linearVelocity = movementInput * currentSpeed;
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
         else
         {
