@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class CutsceneEnemy : MonoBehaviour
 {
@@ -20,7 +21,7 @@ public class CutsceneEnemy : MonoBehaviour
         {
             // If the tutorial is already done, don't hide! Just start chasing.
             if(gameObject.name == "Symbiote") {
-               
+               StartCoroutine(freezePlayerForCutscene());
                 StartChasing();
             }
 
@@ -59,5 +60,12 @@ public class CutsceneEnemy : MonoBehaviour
     public void StartChasing()
     {
         isChasing = true;
+    }
+
+    IEnumerator freezePlayerForCutscene()
+    {
+        
+
+        yield return new WaitForSeconds(4f);
     }
 }
