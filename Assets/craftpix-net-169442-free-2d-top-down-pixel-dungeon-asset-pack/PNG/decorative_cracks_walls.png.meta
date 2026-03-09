@@ -66,10 +66,10 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 32
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -148,9 +148,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 458
-        width: 64
-        height: 35
+        y: 474
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -169,10 +169,10 @@ TextureImporter:
       name: decorative_cracks_walls_1
       rect:
         serializedVersion: 2
-        x: 64
-        y: 458
-        width: 64
-        height: 35
+        x: 32
+        y: 474
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -191,10 +191,10 @@ TextureImporter:
       name: decorative_cracks_walls_2
       rect:
         serializedVersion: 2
-        x: 0
-        y: 423
-        width: 64
-        height: 35
+        x: 64
+        y: 474
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -213,10 +213,10 @@ TextureImporter:
       name: decorative_cracks_walls_3
       rect:
         serializedVersion: 2
-        x: 64
-        y: 423
-        width: 64
-        height: 35
+        x: 96
+        y: 474
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -236,9 +236,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 388
-        width: 64
-        height: 35
+        y: 442
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -257,10 +257,10 @@ TextureImporter:
       name: decorative_cracks_walls_5
       rect:
         serializedVersion: 2
-        x: 64
-        y: 388
-        width: 64
-        height: 35
+        x: 32
+        y: 442
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -279,10 +279,10 @@ TextureImporter:
       name: decorative_cracks_walls_6
       rect:
         serializedVersion: 2
-        x: 0
-        y: 353
-        width: 64
-        height: 35
+        x: 64
+        y: 442
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -301,10 +301,10 @@ TextureImporter:
       name: decorative_cracks_walls_7
       rect:
         serializedVersion: 2
-        x: 64
-        y: 353
-        width: 64
-        height: 35
+        x: 96
+        y: 442
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -313,7 +313,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8f18f223ce11c437c949b1a8f022d373
+      spriteID: 281168edbda634299bfacd9b0f0e675a
       internalID: -662967529
       vertices: []
       indices: 
@@ -324,9 +324,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 318
-        width: 64
-        height: 35
+        y: 410
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -335,7 +335,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8c93e7e0f3b7d49f198f5d8ac6047482
+      spriteID: 49def1f4cc42e4e0dafaae5fbd1e25a9
       internalID: -1775740770
       vertices: []
       indices: 
@@ -345,10 +345,10 @@ TextureImporter:
       name: decorative_cracks_walls_9
       rect:
         serializedVersion: 2
-        x: 64
-        y: 318
-        width: 64
-        height: 35
+        x: 32
+        y: 410
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -357,7 +357,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 62f2de8a80f3b464eac0fce7e4f6c72e
+      spriteID: dec6d2ccc9ca045f5baa58a0610a9c87
       internalID: -113015474
       vertices: []
       indices: 
@@ -367,10 +367,10 @@ TextureImporter:
       name: decorative_cracks_walls_10
       rect:
         serializedVersion: 2
-        x: 0
-        y: 283
-        width: 64
-        height: 35
+        x: 64
+        y: 410
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -379,7 +379,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 168962422bdfb434ba9ac1876f68bf07
+      spriteID: 09a191332541a4a8681013e044372027
       internalID: -2066335250
       vertices: []
       indices: 
@@ -389,10 +389,10 @@ TextureImporter:
       name: decorative_cracks_walls_11
       rect:
         serializedVersion: 2
-        x: 64
-        y: 283
-        width: 64
-        height: 35
+        x: 96
+        y: 410
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -401,7 +401,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 44c101fc1359a4d2eba06edcc193cc06
+      spriteID: 112cfe0a46ceb4429874bdca297b4a32
       internalID: 1669655599
       vertices: []
       indices: 
@@ -412,9 +412,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 248
-        width: 64
-        height: 35
+        y: 378
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -423,7 +423,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e917c0b58d92140db86a5d216b952f79
+      spriteID: 019185863af994b2886cadcfe7a3024b
       internalID: 589120351
       vertices: []
       indices: 
@@ -433,10 +433,10 @@ TextureImporter:
       name: decorative_cracks_walls_13
       rect:
         serializedVersion: 2
-        x: 64
-        y: 248
-        width: 64
-        height: 35
+        x: 32
+        y: 378
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -445,7 +445,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ce53ab95fc233444ca4593d3e757132a
+      spriteID: 80480ae11f0304ecf85de0e41ccc24bc
       internalID: -104529535
       vertices: []
       indices: 
@@ -455,10 +455,10 @@ TextureImporter:
       name: decorative_cracks_walls_14
       rect:
         serializedVersion: 2
-        x: 0
-        y: 213
-        width: 64
-        height: 35
+        x: 64
+        y: 378
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -467,7 +467,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ac6a73ee2c2804e89bd8922bd2cf4141
+      spriteID: 16375341ed349497aa4432a2c12856ea
       internalID: 1809647176
       vertices: []
       indices: 
@@ -477,10 +477,10 @@ TextureImporter:
       name: decorative_cracks_walls_15
       rect:
         serializedVersion: 2
-        x: 64
-        y: 213
-        width: 64
-        height: 35
+        x: 96
+        y: 378
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -489,7 +489,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8a34ba958c3464ebea0236b67b963b46
+      spriteID: bab2efc55a1ee483d8f89e3907fcfbc3
       internalID: 1227172257
       vertices: []
       indices: 
@@ -500,9 +500,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 178
-        width: 64
-        height: 35
+        y: 346
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -511,7 +511,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 93d0a342edc64402d89bdcccba54bbd8
+      spriteID: cd04066ef47f744af9f1e934d13167fd
       internalID: -1438490015
       vertices: []
       indices: 
@@ -521,10 +521,10 @@ TextureImporter:
       name: decorative_cracks_walls_17
       rect:
         serializedVersion: 2
-        x: 64
-        y: 178
-        width: 64
-        height: 35
+        x: 32
+        y: 346
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -533,7 +533,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5d115ada1c8684aa6b85434c66b13681
+      spriteID: e83cc29ecfbb84e31947c9e0bb87705c
       internalID: -992096824
       vertices: []
       indices: 
@@ -543,10 +543,10 @@ TextureImporter:
       name: decorative_cracks_walls_18
       rect:
         serializedVersion: 2
-        x: 0
-        y: 143
-        width: 64
-        height: 35
+        x: 64
+        y: 346
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -555,7 +555,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5fc27c629e36f453d804e8ea80339cff
+      spriteID: 367c9d6b9e9764c90b481604cd44d9dd
       internalID: 882974393
       vertices: []
       indices: 
@@ -565,10 +565,10 @@ TextureImporter:
       name: decorative_cracks_walls_19
       rect:
         serializedVersion: 2
-        x: 64
-        y: 143
-        width: 64
-        height: 35
+        x: 96
+        y: 346
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -577,7 +577,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3b9ab45c6d5134303b9fae54af28e9e0
+      spriteID: 3adb12f12423e4b02aeb2bc52fdc491a
       internalID: 1655200668
       vertices: []
       indices: 
@@ -588,9 +588,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 108
-        width: 64
-        height: 35
+        y: 314
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -599,7 +599,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 379388124f48742a4a8311cab8ae5fbd
+      spriteID: 6b31955d2750e4d32b7555519d911e8b
       internalID: 611811852
       vertices: []
       indices: 
@@ -609,10 +609,10 @@ TextureImporter:
       name: decorative_cracks_walls_21
       rect:
         serializedVersion: 2
-        x: 64
-        y: 108
-        width: 64
-        height: 35
+        x: 32
+        y: 314
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -621,7 +621,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7fcf5c10f1f9e470295a6b4a08870dc8
+      spriteID: 3d79e28d0e1f447ebb09e32aa5cf9a60
       internalID: -1402073570
       vertices: []
       indices: 
@@ -631,10 +631,10 @@ TextureImporter:
       name: decorative_cracks_walls_22
       rect:
         serializedVersion: 2
-        x: 0
-        y: 73
-        width: 64
-        height: 35
+        x: 64
+        y: 314
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -643,7 +643,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3c85554b5d7874666829cdf49d2daa85
+      spriteID: 4877e437f81694391816c3b1aab86ff9
       internalID: 732938949
       vertices: []
       indices: 
@@ -653,10 +653,10 @@ TextureImporter:
       name: decorative_cracks_walls_23
       rect:
         serializedVersion: 2
-        x: 64
-        y: 73
-        width: 64
-        height: 35
+        x: 96
+        y: 314
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -665,7 +665,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7def95fd0f8c44487bd156db973aad0d
+      spriteID: d5252ee69e9014568a3a9d7750dd13a9
       internalID: -420785487
       vertices: []
       indices: 
@@ -676,9 +676,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 38
-        width: 64
-        height: 35
+        y: 282
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -687,7 +687,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3d7f3c765c7b647b380308cba8e6c2d9
+      spriteID: 7b176177b40c5438f9e68dc31b7afde1
       internalID: 1422840127
       vertices: []
       indices: 
@@ -697,10 +697,10 @@ TextureImporter:
       name: decorative_cracks_walls_25
       rect:
         serializedVersion: 2
-        x: 64
-        y: 38
-        width: 64
-        height: 35
+        x: 32
+        y: 282
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -709,7 +709,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ef11923367fcc4bdbb1fc3b157403da7
+      spriteID: e538b88f35c3d4e839fc8efa3d0307b8
       internalID: -2131973862
       vertices: []
       indices: 
@@ -719,10 +719,10 @@ TextureImporter:
       name: decorative_cracks_walls_26
       rect:
         serializedVersion: 2
-        x: 0
-        y: 3
-        width: 64
-        height: 35
+        x: 64
+        y: 282
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -731,7 +731,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 24baa1a6dcb1447f3acd4c9b065f95b0
+      spriteID: 03e5ad3bc597e492f87644b51179f3b8
       internalID: -663590008
       vertices: []
       indices: 
@@ -741,10 +741,10 @@ TextureImporter:
       name: decorative_cracks_walls_27
       rect:
         serializedVersion: 2
-        x: 64
-        y: 3
-        width: 64
-        height: 35
+        x: 96
+        y: 282
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -753,8 +753,712 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7b3cbfea3176143778bc965332ac2301
+      spriteID: c4bce90c673c34db6b9fc4b85aae05d9
       internalID: -1872244016
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decorative_cracks_walls_28
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 250
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: afa8dd3e753ad408e84f410906762728
+      internalID: 2074056451
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decorative_cracks_walls_29
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 250
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4f503f755ee434c5b82a73b7dcd41004
+      internalID: 45245187
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decorative_cracks_walls_30
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 250
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ff6ba8cf680fc41d4be026f030acde6b
+      internalID: 941116162
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decorative_cracks_walls_31
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 250
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c4614f3d5d8174a3c994e6fe0c0e6417
+      internalID: -917892331
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decorative_cracks_walls_32
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 218
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a87935c2fcb5f4ea983c37967327e5c5
+      internalID: -2011217193
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decorative_cracks_walls_33
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 218
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eee91e6fb984447d0b153a1e3e490a13
+      internalID: -1063533018
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decorative_cracks_walls_34
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 218
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3488dbb99ef72425da6a95c79c155247
+      internalID: 2147361046
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decorative_cracks_walls_35
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 218
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7c85dace95c254a808a5b31b7ff0fbad
+      internalID: -1333000603
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decorative_cracks_walls_36
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 186
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7f19b146245a04bdc97fe8d4aa3ef991
+      internalID: -457469761
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decorative_cracks_walls_37
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 186
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 810174c6e78cc42d08cfba40a903bdc5
+      internalID: -1803810260
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decorative_cracks_walls_38
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 186
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ff512cd277d014913b9c511ae3b9a1e3
+      internalID: -2048071579
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decorative_cracks_walls_39
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 186
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ae7aedcde3eb3454bbed1318ab66a7e5
+      internalID: -299865455
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decorative_cracks_walls_40
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 154
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 712465c894c2444308eec5ba5c2ebf0d
+      internalID: -1750600073
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decorative_cracks_walls_41
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 154
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 08fe5d2becddb4508a7fec08477682be
+      internalID: 1585637298
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decorative_cracks_walls_42
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 154
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c38e043cf87f841c5b78b55f248322ab
+      internalID: -2097998808
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decorative_cracks_walls_43
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 154
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fcc22f1f04f4545ce89b787d2397ab04
+      internalID: 2036478951
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decorative_cracks_walls_44
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 122
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 51938444708d14b9ba27f1265a615885
+      internalID: 264970132
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decorative_cracks_walls_45
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 122
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f9d1a278edb2741c1b702b526b0a6659
+      internalID: 1571580494
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decorative_cracks_walls_46
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 122
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9bc69e9ca74dd4f129c2dc83b21786f7
+      internalID: 303411366
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decorative_cracks_walls_47
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 122
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d75f4c0c89fbf40629122d5161e0dbac
+      internalID: 438387013
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decorative_cracks_walls_48
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 90
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 05d7addde27f242c29cc2ce38053fa39
+      internalID: 1040859180
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decorative_cracks_walls_49
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 90
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 035bfacf828524147a5380d39963b917
+      internalID: 968605002
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decorative_cracks_walls_50
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 90
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 303c2430ae2324379ac757c49f27c80e
+      internalID: 74079033
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decorative_cracks_walls_51
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 90
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d974b385683284b65b08fe85961f9afa
+      internalID: -1234041241
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decorative_cracks_walls_52
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 58
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e8de841b7d7034ee1820ab3b0fdb4c66
+      internalID: 1331189388
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decorative_cracks_walls_53
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 58
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: abd63d2549220433ea7cfd84e25ec753
+      internalID: 1099677998
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decorative_cracks_walls_54
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 58
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c67b449df884b4481a632411c3a347ac
+      internalID: 512972994
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decorative_cracks_walls_55
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 58
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fa5ea3f16d45041fcad9f39e0b5be83b
+      internalID: -925033399
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decorative_cracks_walls_56
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 26
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0400050aff39e4b4a8d7aede5731b6d2
+      internalID: -1774424944
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decorative_cracks_walls_57
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 26
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 462ff9f34d5524bdbb54ed3e19243efd
+      internalID: -582997970
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decorative_cracks_walls_58
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 26
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fe489d5c26a974fc5859e8a46847a09c
+      internalID: 1906934958
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: decorative_cracks_walls_59
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 26
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3164c261c7a764d2d83c8c744843f00d
+      internalID: 1037395486
       vertices: []
       indices: 
       edges: []
@@ -794,9 +1498,41 @@ TextureImporter:
       decorative_cracks_walls_25: -2131973862
       decorative_cracks_walls_26: -663590008
       decorative_cracks_walls_27: -1872244016
+      decorative_cracks_walls_28: 2074056451
+      decorative_cracks_walls_29: 45245187
       decorative_cracks_walls_3: 3078729324998488032
+      decorative_cracks_walls_30: 941116162
+      decorative_cracks_walls_31: -917892331
+      decorative_cracks_walls_32: -2011217193
+      decorative_cracks_walls_33: -1063533018
+      decorative_cracks_walls_34: 2147361046
+      decorative_cracks_walls_35: -1333000603
+      decorative_cracks_walls_36: -457469761
+      decorative_cracks_walls_37: -1803810260
+      decorative_cracks_walls_38: -2048071579
+      decorative_cracks_walls_39: -299865455
       decorative_cracks_walls_4: -2393479837115753245
+      decorative_cracks_walls_40: -1750600073
+      decorative_cracks_walls_41: 1585637298
+      decorative_cracks_walls_42: -2097998808
+      decorative_cracks_walls_43: 2036478951
+      decorative_cracks_walls_44: 264970132
+      decorative_cracks_walls_45: 1571580494
+      decorative_cracks_walls_46: 303411366
+      decorative_cracks_walls_47: 438387013
+      decorative_cracks_walls_48: 1040859180
+      decorative_cracks_walls_49: 968605002
       decorative_cracks_walls_5: -5166554519593993859
+      decorative_cracks_walls_50: 74079033
+      decorative_cracks_walls_51: -1234041241
+      decorative_cracks_walls_52: 1331189388
+      decorative_cracks_walls_53: 1099677998
+      decorative_cracks_walls_54: 512972994
+      decorative_cracks_walls_55: -925033399
+      decorative_cracks_walls_56: -1774424944
+      decorative_cracks_walls_57: -582997970
+      decorative_cracks_walls_58: 1906934958
+      decorative_cracks_walls_59: 1037395486
       decorative_cracks_walls_6: -1420034055698121715
       decorative_cracks_walls_7: -662967529
       decorative_cracks_walls_8: -1775740770
