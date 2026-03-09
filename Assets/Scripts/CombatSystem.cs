@@ -82,6 +82,13 @@ public class CombatSystem : MonoBehaviour
 
     private void Start()
     {
+        // Load the enemy from GameManager if an ID has been set
+        if (!string.IsNullOrEmpty(GameManager.currentEnemyID))
+        {
+            var found = GameManager.Instance.GetEnemyByID(GameManager.currentEnemyID);
+            if (found != null) currentEnemy = found;
+        }
+
         enemyHealth = currentEnemy.maxHP;
         enemySpeed = currentEnemy.speed;
         UpdateBloomState();

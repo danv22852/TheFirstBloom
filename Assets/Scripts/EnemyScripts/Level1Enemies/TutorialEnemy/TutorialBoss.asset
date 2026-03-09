@@ -10,15 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b0566ed46712c3a4ca4ddde06a429795, type: 3}
-  m_Name: Stag
+  m_Name: TutorialBoss
   m_EditorClassIdentifier: 
-  enemyID: stag_01
-  enemyName: Stag
-  maxHP: 80
-  strength: 10
-  speed: 8
+  enemyID: tutorial_boss
+  enemyName: Monster
+  maxHP: 999
+  strength: 5
+  speed: 5
   defense: 5
-  skills:
-  - {fileID: 11400000, guid: b82d5658507633a498bec0905665d400, type: 2}
-  - {fileID: 11400000, guid: 30c7a6f2d58cf0a4e8a4c660b6c66fbb, type: 2}
-  - {fileID: 11400000, guid: a662d6c363e70ff469adf11fc0d5652c, type: 2}
+  skills: []

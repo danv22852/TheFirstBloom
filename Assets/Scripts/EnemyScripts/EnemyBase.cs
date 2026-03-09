@@ -4,7 +4,7 @@ using System.Collections.Generic;
 [CreateAssetMenu(fileName = "NewEnemy", menuName = "Enemies/Enemy Data")]
 public class EnemyData : ScriptableObject
 {
-    
+    public string enemyID;
     public string enemyName;
     public int maxHP;
     public int strength;

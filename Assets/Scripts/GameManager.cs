@@ -22,6 +22,9 @@ public class GameManager : MonoBehaviour
 
     public static string currentEnemyID = "";
     public static List<string> defeatedEnemies = new List<string>();
+    
+    [Header("Enemy Roster")]
+    public EnemyData[] enemyRoster;
 
     private void Awake()
     {
@@ -44,5 +47,16 @@ public class GameManager : MonoBehaviour
             currentHP = 0;
             Debug.Log("Player died");
         }
+    }
+
+    public EnemyData GetEnemyByID(string id)
+    {
+        foreach (var enemy in enemyRoster)
+        {
+            if (enemy.enemyID == id)
+                return enemy;
+        }
+        Debug.LogWarning("No enemy found with ID: " + id);
+        return null;
     }
 }
