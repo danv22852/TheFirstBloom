@@ -12,15 +12,17 @@ public enum BloomState
     High,   // 75-99
     Max     // 100
 }
+
 public class CombatSystem : MonoBehaviour
 {
     // --- PLAYER STATS ---
-    [Header("Player Stats")]
-    public int playerHealth = GameManager.currentHP; // [cite: 2]
-    public int playerMaxHealth = GameManager.maxHP;
-    public int playerStrength = GameManager.playerStrength; // [cite: 3]
-    public int playerSpeed = GameManager.playerSpeed; // [cite: 4]
-    public int playerDefense = GameManager.playerDefense; // [cite: 5]
+    // All player stats are read from PlayerData at the start of combat.
+    // Modify these runtime copies during combat — never write back to PlayerData directly.
+    private int playerHealth;
+    private int playerMaxHealth;
+    public int playerStrength;
+    public int playerSpeed;
+    public int playerDefense;
 
     // --- BLOOM SYSTEM ---
     [Header("Bloom System")]
@@ -82,6 +84,14 @@ public class CombatSystem : MonoBehaviour
 
     private void Start()
     {
+        // Read player stats from PlayerData
+        var pd = GameManager.Instance.playerData;
+        playerHealth = pd.currentHP;
+        playerMaxHealth = pd.maxHP;
+        playerStrength = pd.strength;
+        playerSpeed = pd.speed;
+        playerDefense = pd.defense;
+
         // Load the enemy from GameManager if an ID has been set
         if (!string.IsNullOrEmpty(GameManager.currentEnemyID))
         {
@@ -101,8 +111,8 @@ public class CombatSystem : MonoBehaviour
         UpdateHealthUI();
         DetermineFirstTurn();
 
-        // Snap focus to the Main Menu's default button when combat starts!
-        EventSystem.current.SetSelectedGameObject(null); 
+        // Snap focus to the Main Menu's default button when combat starts
+        EventSystem.current.SetSelectedGameObject(null);
         EventSystem.current.SetSelectedGameObject(mainDefaultButton);
     }
 
@@ -196,14 +206,14 @@ public class CombatSystem : MonoBehaviour
             return;
         }
 
-        if (GameManager.healthPotions <= 0)
+        if (GameManager.Instance.playerData.healthPotions <= 0)
         {
             Debug.Log("No potions left!");
             return;
         }
 
         // --- DEDUCT THE ITEM FROM INVENTORY ---
-        GameManager.healthPotions--;
+        GameManager.Instance.playerData.healthPotions--;
         isPlayerTurn = false; 
         BackToMainMenu(); 
 
@@ -259,10 +269,13 @@ public class CombatSystem : MonoBehaviour
         {
             Debug.Log("Enemy defeated!");
 
+            // Persist remaining HP back to PlayerData
+            GameManager.Instance.playerData.currentHP = playerHealth;
+
             // Add the current enemy's ID to the graveyard list
-            if (!GameManager.defeatedEnemies.Contains(GameManager.currentEnemyID))
+            if (!GameManager.Instance.playerData.defeatedEnemies.Contains(GameManager.currentEnemyID))
             {
-                GameManager.defeatedEnemies.Add(GameManager.currentEnemyID);
+                GameManager.Instance.playerData.defeatedEnemies.Add(GameManager.currentEnemyID);
                 Debug.Log(GameManager.currentEnemyID + " added to the graveyard.");
             }
 
@@ -487,7 +500,7 @@ public class CombatSystem : MonoBehaviour
         StartCoroutine(HighlightButtonSafe(mainDefaultButton));
     }
 
-    // THE MAGIC FIX: This forces Unity to wait one frame so the button is fully awake before highlighting it
+    // This forces Unity to wait one frame so the button is fully awake before highlighting it
     private IEnumerator HighlightButtonSafe(GameObject buttonToHighlight)
     {
         EventSystem.current.SetSelectedGameObject(null); // Clear the old selection
@@ -497,16 +510,16 @@ public class CombatSystem : MonoBehaviour
 
     private void UpdateItemUI()
     {
-        // Check our global inventory
-        if (GameManager.healthPotions > 0)
+        var potions = GameManager.Instance.playerData.healthPotions;
+        if (potions > 0)
         {
-            healItemText.text = "Heal +20 (x" + GameManager.healthPotions + ")";
-            healItemButton.interactable = true; // Button is clickable
+            healItemText.text = "Heal +20 (x" + potions + ")";
+            healItemButton.interactable = true;
         }
         else
         {
             healItemText.text = "Out of Potions!";
-            healItemButton.interactable = false; // Grays out the button
+            healItemButton.interactable = false;
         }
     }
     private void Update()

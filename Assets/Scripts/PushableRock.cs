@@ -12,7 +12,7 @@ public class PushableRock : MonoBehaviour
     void Start()
     {
         // Check if the tutorial is already done (using finishedTutorial based on your GameManager)
-        if (GameManager.finishedTutorial)
+        if (GameManager.Instance.playerData.finishedTutorial)
         {
        
             transform.position = targetCoordinates;

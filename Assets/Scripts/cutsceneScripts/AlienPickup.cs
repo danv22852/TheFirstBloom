@@ -17,7 +17,7 @@ public class AlienPickup : MonoBehaviour
     {
        
         // Check the tutorial status immediately when the scene loads
-        if (GameManager.finishedTutorial && GameObject.Find("Symbiote") != null)
+        if (GameManager.Instance.playerData.finishedTutorial && GameObject.Find("Symbiote") != null)
         {
             
              UpdateCameraBoundary(targetTransition);
@@ -38,7 +38,7 @@ public class AlienPickup : MonoBehaviour
 {
     if (other.CompareTag("Player"))
     {
-        GameManager.Instance.hasAlien = true;
+        GameManager.Instance.playerData.hasAlien = true;
 
         // Tell the player to update their look immediately
         var playerScript = other.GetComponent<PlayerController>();

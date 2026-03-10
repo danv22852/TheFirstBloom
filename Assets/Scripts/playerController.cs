@@ -46,7 +46,7 @@ public class PlayerController : MonoBehaviour
     // Logic to check if the player should look like an alien
     public void UpdateAppearance()
     {
-        if (GameManager.Instance != null && GameManager.Instance.hasAlien)
+        if (GameManager.Instance != null && GameManager.Instance.playerData.hasAlien)
         {
             if (spriteRenderer != null)
             {

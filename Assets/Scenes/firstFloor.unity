@@ -973,8 +973,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72e5624fb1750402286e19df2aed8b8c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hasAlien: 0
-  hasBow: 0
+  playerData: {fileID: 11400000, guid: bd7a55abcffdb6543b43fb6753c17475, type: 2}
   enemyRoster:
   - {fileID: 11400000, guid: 09416be33c6bc6d46a04e245c8521d2c, type: 2}
   - {fileID: 11400000, guid: 92d20c9f2802e6a4a99196250dff6460, type: 2}

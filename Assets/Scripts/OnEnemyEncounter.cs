@@ -10,7 +10,7 @@ public class EnemyEncounter : MonoBehaviour // (Or whatever you named this scrip
     private void Start()
     {
         // When the Overworld loads, check if this enemy's ID is in the graveyard
-        if (GameManager.defeatedEnemies.Contains(uniqueEnemyID))
+        if (GameManager.Instance.playerData.defeatedEnemies.Contains(uniqueEnemyID))
         {
             // If it is, destroy this object immediately before the player even sees it
             Destroy(gameObject);
@@ -29,7 +29,7 @@ public class EnemyEncounter : MonoBehaviour // (Or whatever you named this scrip
 
             // --- NEW: Tell the GameManager exactly who we are fighting ---
             GameManager.currentEnemyID = this.uniqueEnemyID;
-            if (!GameManager.finishedTutorial){
+            if (!GameManager.Instance.playerData.finishedTutorial){
                 Debug.Log("Starting tutorial battle...");
                 SceneManager.LoadScene("TutorialBattle");
             }

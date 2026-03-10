@@ -20,7 +20,7 @@ public class SymbioteSwing : MonoBehaviour
     {
         CheckMeleeTimer();
 
-        if (GameManager.Instance.hasAlien)
+        if (GameManager.Instance.playerData.hasAlien)
         {
             // Update lastDirection whenever moving
             Vector2 moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;

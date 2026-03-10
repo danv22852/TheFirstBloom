@@ -17,7 +17,7 @@ public class CutsceneEnemy : MonoBehaviour
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
 
         // Check the tutorial status immediately when the scene loads
-        if (GameManager.finishedTutorial)
+        if (GameManager.Instance.playerData.finishedTutorial)
         {
             // If the tutorial is already done, don't hide! Just start chasing.
             if(gameObject.name == "Symbiote") {

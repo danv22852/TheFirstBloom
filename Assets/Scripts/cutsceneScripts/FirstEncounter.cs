@@ -19,7 +19,7 @@ public class FirstEncounter : MonoBehaviour
     
     private void Awake() { 
         confiner = FindFirstObjectByType<CinemachineConfiner2D>();
-        if (GameManager.finishedTutorial)
+        if (GameManager.Instance.playerData.finishedTutorial)
         {
             Destroy(gameObject); // No need for this cutscene if the tutorial is already done
         }
