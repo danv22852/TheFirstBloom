@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyID: stag_01
   enemyName: Stag
-  maxHP: 90
+  enemySprite: {fileID: 0}
+  maxHP: 130
   strength: 10
   speed: 8
   defense: 5

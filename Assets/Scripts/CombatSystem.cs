@@ -10,11 +10,13 @@ public enum BloomState
     Low,    // 25-49
     Medium, // 50-74
     High,   // 75-99
-    Max     // 100
+    Total     // 100
 }
 
 public class CombatSystem : MonoBehaviour
 {
+    private UnityEngine.EventSystems.EventSystem cachedEventSystem;
+
     // --- PLAYER STATS ---
     // All player stats are read from PlayerData at the start of combat.
     // Modify these runtime copies during combat — never write back to PlayerData directly.
@@ -29,22 +31,43 @@ public class CombatSystem : MonoBehaviour
     public int currentBloom = 0;
     public BloomState currentBloomState = BloomState.Stable;
 
-    // This function automatically categorizes the bloom number into a state
-    private void UpdateBloomState()
-    {
-        // Clamp the bloom so it never accidentally drops below 0 or goes above 100
-        currentBloom = Mathf.Clamp(currentBloom, 0, 100);
+    [Header("Bloom Hijack UI")]
+    public TextMeshProUGUI attackButtonText; // To visually change "Attack" to "Symbiote Swipe"
+    private bool isAttackHijacked = false;   // Tracks if the current turn is hijacked
 
+    // This function automatically categorizes the bloom number into a state
+    public void UpdateBloomState()
+    {
+        // Cap the Bloom at 100 so it doesn't break the UI
+        if (currentBloom > 100) 
+        {
+            currentBloom = 100;
+        }
+
+        // --- NEW 100-POINT THRESHOLD LOGIC ---
         if (currentBloom >= 100)
-            currentBloomState = BloomState.Max;
+        {
+            currentBloomState = BloomState.Total;
+        }
         else if (currentBloom >= 75)
+        {
             currentBloomState = BloomState.High;
+        }
         else if (currentBloom >= 50)
+        {
             currentBloomState = BloomState.Medium;
+        }
         else if (currentBloom >= 25)
+        {
             currentBloomState = BloomState.Low;
+        }
         else
+        {
             currentBloomState = BloomState.Stable;
+        }
+
+        Debug.Log("Current Bloom: " + currentBloom + " | State: " + currentBloomState);
+        // (Update your UI text/sliders here if you have them!)
     }
 
     // --- ENEMY STATS ---
@@ -82,15 +105,54 @@ public class CombatSystem : MonoBehaviour
     public Transform enemyTransform;
     public float moveSpeed = 15f;
 
+    [Header("Player Stats (Testing Fallbacks)")]
+    public int testPlayerMaxHealth = 100;
+    public int testPlayerStrength = 15;
+    public int testPlayerSpeed = 10;
+    public int testPlayerDefense = 5;
+
     private void Start()
     {
-        // Read player stats from PlayerData
-        var pd = GameManager.Instance.playerData;
-        playerHealth = pd.currentHP;
-        playerMaxHealth = pd.maxHP;
-        playerStrength = pd.strength;
-        playerSpeed = pd.speed;
-        playerDefense = pd.defense;
+        cachedEventSystem = UnityEngine.EventSystems.EventSystem.current;
+
+
+        if (GameManager.Instance != null && GameManager.Instance.playerData != null)
+        {
+            // The GameManager exists! We must be playing the full game.
+            var pd = GameManager.Instance.playerData;
+            playerHealth = pd.currentHP;
+            playerMaxHealth = pd.maxHP;
+            playerStrength = pd.strength;
+            playerSpeed = pd.speed;
+            playerDefense = pd.defense;
+        }
+        else
+        {
+            // The GameManager is missing! We must be testing the Combat Scene directly.
+            Debug.Log("<color=cyan>TESTING MODE:</color> No GameManager found. Using Inspector Fallback Stats!");
+            playerMaxHealth = testPlayerMaxHealth;
+            playerHealth = testPlayerMaxHealth; // Start testing at full health
+            playerStrength = testPlayerStrength;
+            playerSpeed = testPlayerSpeed;
+            playerDefense = testPlayerDefense;
+        }
+
+        // Load the enemy from GameManager if an ID has been set
+        if (GameManager.Instance != null && !string.IsNullOrEmpty(GameManager.currentEnemyID))
+        {
+            var found = GameManager.Instance.GetEnemyByID(GameManager.currentEnemyID);
+            if (found != null) currentEnemy = found;
+        }
+
+        // Safety Check: Make sure we have an enemy to fight!
+        if (currentEnemy == null)
+        {
+            Debug.LogError("CRASH AVOIDED: No Enemy Data! Drag an Enemy ScriptableObject into the Inspector!");
+            return;
+        }
+
+        // 1. Memorize the EventSystem so the Killswitch never loses it!
+        
 
         // Load the enemy from GameManager if an ID has been set
         if (!string.IsNullOrEmpty(GameManager.currentEnemyID))
@@ -107,13 +169,21 @@ public class CombatSystem : MonoBehaviour
 
         enemyHealth = currentEnemy.maxHP;
         enemySpeed = currentEnemy.speed;
+        
+        // Calculate your Bloom thresholds right away
         UpdateBloomState();
         UpdateHealthUI();
+        
         DetermineFirstTurn();
 
-        // Snap focus to the Main Menu's default button when combat starts
-        EventSystem.current.SetSelectedGameObject(null);
-        EventSystem.current.SetSelectedGameObject(mainDefaultButton);
+        // --- THE TURN 1 FIX ---
+        // If the player won the speed tie and goes first, run the menu setup.
+        // This guarantees the Medium Bloom hijack dice is rolled on Turn 1!
+        // --- TURN 1 ---
+        if (isPlayerTurn)
+        {
+            PlayerStartTurn(); // This triggers the roll and opens the menu
+        }
     }
 
     private void DetermineFirstTurn()
@@ -130,12 +200,41 @@ public class CombatSystem : MonoBehaviour
         }
     }
 
-    private void PlayerStartTurn()
+    public void PlayerStartTurn()
     {
         isPlayerTurn = true;
         hasUsedItemThisTurn = false;
         Debug.Log("It is now the Player's turn.");
-        // Check for 100% Bloom takeover logic here in the future [cite: 45]
+
+        // 1. Reset the button to its safe, normal state
+        isAttackHijacked = false;
+        attackButtonText.text = "Attack"; 
+        attackButtonText.color = Color.white; 
+
+        // --- NEW: THE HIGH BLOOM GLASS CANNON (75-99) ---
+        if (currentBloomState >= BloomState.High)
+        {
+            Debug.Log("High Bloom! The Symbiote completely takes over your basic attacks.");
+            
+            // 100% chance to hijack the attack button
+            isAttackHijacked = true;
+            attackButtonText.text = "Symbiote Swipe"; 
+            attackButtonText.color = Color.red; // Red for danger/health cost!
+        }
+        // --- THE MEDIUM BLOOM HIJACK (50-74) ---
+        else if (currentBloomState >= BloomState.Medium)
+        {
+            var hijackChance = UnityEngine.Random.Range(0, 100); 
+            if (hijackChance < 30) 
+            {
+                isAttackHijacked = true;
+                attackButtonText.text = "Symbiote Swipe"; 
+                attackButtonText.color = Color.magenta; 
+            }
+        }
+
+        // 3. Now that the math is done, safely bring up the menu
+        BackToMainMenu();
     }
 
     // --- PLAYER ACTIONS ---
@@ -145,6 +244,15 @@ public class CombatSystem : MonoBehaviour
         if (!isPlayerTurn) return;
 
         // Disable turn immediately so player can't spam click while animating
+
+        if (isAttackHijacked)
+        {
+            Debug.Log("The Symbiote hijacked your attack!");
+            UseSymbioteSwipe(); 
+            return; // Stop reading this function completely!
+        }
+
+        HideAllMenus();
         isPlayerTurn = false;
 
         Debug.Log("Player uses Basic Attack!");
@@ -156,6 +264,9 @@ public class CombatSystem : MonoBehaviour
                 enemyHealth -= actualDamage;
                 UpdateHealthUI();
                 Debug.Log("Dealt " + actualDamage + " damage to the enemy.");
+
+                // Shakes Enemy for 0.2 seconds, with a strength of 0.15
+                StartCoroutine(ShakeSprite(enemyTransform, 0.2f, 0.15f));
             },
             onComplete: () =>
             {
@@ -170,23 +281,53 @@ public class CombatSystem : MonoBehaviour
 
     public void UseSymbioteSwipe()
     {
+        if (!isPlayerTurn) return; 
         isPlayerTurn = false; 
-        BackToMainMenu();     
+        HideAllMenus();     
 
-        Debug.Log("Player uses Symbiote Swipe!");
+        // 1. New Cost Rule: Exactly 3 Bloom
+        var bloomCost = 3; 
+        
+        // 2. The 10% Strength Buff
+        float statMultiplier = GetBloomStatMultiplier();
+        var baseSkillDamage = UnityEngine.Random.Range(28, 33);
+        
+        // Apply the 10% buff and round it to a whole number
+        int finalDamage = Mathf.RoundToInt(baseSkillDamage * statMultiplier); 
 
-        var bloomCost = 1; 
-        var baseSkillDamage = 10; 
+        // 3. The Self-Damage Penalty (Only applied if in High Bloom)
+        if (currentBloomState >= BloomState.High)
+        {
+            // The symbiote feeds on the host! (Takes 5 to 10 damage)
+            var selfDamage = UnityEngine.Random.Range(5, 11);
+            playerHealth -= selfDamage;
+            UpdateHealthUI();
 
+            // player shake due to self damage
+            StartCoroutine(ShakeSprite(playerTransform, 0.4f, 0.25f));
+
+            Debug.Log("High Bloom Penalty! Player takes " + selfDamage + " damage to fuel the attack!");
+
+            // Check if the symbiote just killed the player before the attack even lands!
+            if (playerHealth <= 0)
+            {
+                Debug.Log("The host was consumed. Game Over.");
+                // Run your Game Over logic here and 'return;' to stop the attack
+            }
+        }
+
+        // Apply Bloom cost
         currentBloom += bloomCost;
         UpdateBloomState();
-        //Debug.Log("Bloom increased by " + bloomCost + ". State is now: " + currentBloomState);
-
-       StartCoroutine(PerformSkillAnimation(playerTransform, enemyTransform,
+        
+        StartCoroutine(PerformSkillAnimation(playerTransform, enemyTransform,
             onHit: () =>
             {
-                enemyHealth -= baseSkillDamage;
+                enemyHealth -= finalDamage;
                 UpdateHealthUI();
+                Debug.Log("Symbiote Swipes for " + finalDamage + " damage!");
+
+                StartCoroutine(ShakeSprite(enemyTransform, 0.3f, 0.3f));
             },
             onComplete: () =>
             {
@@ -215,7 +356,9 @@ public class CombatSystem : MonoBehaviour
         // --- DEDUCT THE ITEM FROM INVENTORY ---
         GameManager.Instance.playerData.healthPotions--;
         isPlayerTurn = false; 
-        BackToMainMenu(); 
+        
+        // --- INSTANTLY HIDE THE MENU ---
+        HideAllMenus(); 
 
         StartCoroutine(PerformItemAnimation(playerTransform, 
             onComplete: () => 
@@ -228,6 +371,10 @@ public class CombatSystem : MonoBehaviour
                 UpdateHealthUI();
                 
                 isPlayerTurn = true; 
+                
+                // --- BRING THE MENU BACK NOW ---
+                // The animation is done, so it's safe to give the player control again!
+                BackToMainMenu(); 
             }));
     }
 
@@ -240,6 +387,9 @@ public class CombatSystem : MonoBehaviour
             Debug.Log("You are in " + currentBloomState + " Bloom! The symbiote won't let you run!");
             return;
         }
+
+        // --- THE PLAYER COMMITTED: HIDE THE MENUS ---
+        HideAllMenus();
 
         var escapeChance = UnityEngine.Random.Range(0, 100);
          if (escapeChance > 50) 
@@ -259,7 +409,7 @@ public class CombatSystem : MonoBehaviour
         {
             Debug.Log("Failed to escape!");
             isPlayerTurn = false;
-            EnemyTurn();
+            EnemyTurn(); // The enemy's coroutine will naturally bring the menu back when it finishes!
         }
     }
 
@@ -287,38 +437,73 @@ public class CombatSystem : MonoBehaviour
         }
     }
 
+    // Call this whenever you calculate damage, speed, or defense
+    public float GetBloomStatMultiplier()
+    {
+        if (currentBloomState >= BloomState.High)
+        {
+            return 1.10f; // 10% Increase
+        }
+        return 1.0f; // Normal stats
+    }
+
     private void EnemyTurn()
     {
         Debug.Log(currentEnemy.enemyName + "'s turn!");
-
+        
         var skill = PickSkill();
 
         StartCoroutine(PerformMeleeAttack(enemyTransform, playerTransform,
             onHit: () =>
             {
                 if (skill != null)
+                {
                     skill.Execute(this, currentEnemy);
+                    
+                    // Shake the player even if it's a special skill!
+                    StartCoroutine(ShakeSprite(playerTransform, 0.3f, 0.2f));
+                }
                 else
                 {
-                    // Fallback basic attack if no skills assigned
-                    var actualDamage = Mathf.Max(1, currentEnemy.strength - playerDefense);
+                    // --- NEW: APPLY 10% HIGH BLOOM DEFENSE BUFF ---
+                    float statMultiplier = GetBloomStatMultiplier();
+                    int effectiveDefense = Mathf.RoundToInt(playerDefense * statMultiplier);
+
+                    // Fallback basic attack using the buffed defense
+                    var actualDamage = Mathf.Max(1, currentEnemy.strength - effectiveDefense);
                     playerHealth -= actualDamage;
                     UpdateHealthUI();
-                    Debug.Log("Player takes " + actualDamage + " damage.");
+                    
+                    Debug.Log("Player takes " + actualDamage + " damage. (Effective Defense: " + effectiveDefense + ")");
+
+                    // --- SHAKE THE PLAYER ---
+                    StartCoroutine(ShakeSprite(playerTransform, 0.3f, 0.2f));
                 }
             },
             onComplete: () =>
             {
-                if (playerHealth <= 0)
-                {
-                    Debug.Log("Player died. Game Over.");
-                    SceneManager.LoadScene("MainMenu");
-                }
-                else
-                {
-                    PlayerStartTurn();
-                }
+                // --- NEW: TRIGGER THE PAUSE COROUTINE ---
+                // Wait 1 second before doing the Game Over check or passing the turn
+                StartCoroutine(WaitAndPassTurn(1.0f));
             }));
+    }
+
+    private IEnumerator WaitAndPassTurn(float delayTime)
+    {
+        // 1. Give the player a second to process the damage/shake they just took
+        yield return new WaitForSeconds(delayTime);
+
+        // 2. Now check if they survived
+        if (playerHealth <= 0)
+        {
+            Debug.Log("Player died. Game Over.");
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+        }
+        else
+        {
+            // 3. Bring the menu back up
+            PlayerStartTurn();
+        }
     }
 
     private SkillBase PickSkill()
@@ -466,6 +651,29 @@ public class CombatSystem : MonoBehaviour
         onComplete?.Invoke();
     }
 
+    private IEnumerator ShakeSprite(Transform targetTransform, float duration, float magnitude)
+    {
+        // 1. Remember the exact starting position
+        Vector3 originalPos = targetTransform.localPosition;
+        float elapsed = 0.0f;
+
+        // 2. Vibrate the sprite until the timer runs out
+        while (elapsed < duration)
+        {
+            // Pick a tiny random direction
+            float x = originalPos.x + UnityEngine.Random.Range(-1f, 1f) * magnitude;
+            float y = originalPos.y + UnityEngine.Random.Range(-1f, 1f) * magnitude;
+
+            targetTransform.localPosition = new Vector3(x, y, originalPos.z);
+
+            elapsed += Time.deltaTime;
+            yield return null; // Wait for the next frame
+        }
+
+        // 3. Snap back to the exact starting position so they don't drift away!
+        targetTransform.localPosition = originalPos;
+    }
+
     // --- MENU NAVIGATION ---
 
     public void OpenSkillMenu()
@@ -492,13 +700,35 @@ public class CombatSystem : MonoBehaviour
 
     public void BackToMainMenu()
     {
+        // 1. Turn the EventSystem back on
+        if (cachedEventSystem != null)
+        {
+            cachedEventSystem.enabled = true; 
+        }
+
+        // 2. Just swap the panels
         skillMenuPanel.SetActive(false);
         itemMenuPanel.SetActive(false);
         mainMenuPanel.SetActive(true);
 
-        // Use the new coroutine to highlight the button safely
+        // 3. Highlight the default button
         StartCoroutine(HighlightButtonSafe(mainDefaultButton));
     }
+
+    private void HideAllMenus()
+    {
+        // 1. Unplug the keyboard/controller so no hidden buttons can be spammed
+        if (cachedEventSystem != null)
+        {
+            cachedEventSystem.enabled = false;
+        }
+
+        // 2. Hide all the visual UI panels
+        if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
+        if (skillMenuPanel != null) skillMenuPanel.SetActive(false);
+        if (itemMenuPanel != null) itemMenuPanel.SetActive(false);
+    }
+
 
     // This forces Unity to wait one frame so the button is fully awake before highlighting it
     private IEnumerator HighlightButtonSafe(GameObject buttonToHighlight)

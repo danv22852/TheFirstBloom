@@ -416,7 +416,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Symbiote Swipe (1 Bloom)
+  m_text: Symbiote Swipe (3 Bloom)
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1137,6 +1137,7 @@ MonoBehaviour:
   playerDefense: 5
   currentBloom: 0
   currentBloomState: 0
+  attackButtonText: {fileID: 1935187538}
   currentEnemy: {fileID: 11400000, guid: 92d20c9f2802e6a4a99196250dff6460, type: 2}
   playerHP: {fileID: 2087856261}
   enemyHP: {fileID: 1692223888}

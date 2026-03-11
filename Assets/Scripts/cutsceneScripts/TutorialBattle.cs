@@ -27,7 +27,7 @@ public class TutorialBattle : MonoBehaviour
         currentBloom = Mathf.Clamp(currentBloom, 0, 100);
 
         if (currentBloom >= 100)
-            currentBloomState = BloomState.Max;
+            currentBloomState = BloomState.Total;
         else if (currentBloom >= 75)
             currentBloomState = BloomState.High;
         else if (currentBloom >= 50)

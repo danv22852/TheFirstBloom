@@ -6,7 +6,7 @@ public class MainMenuManager : MonoBehaviour
     public void PlayGame()
     {
         // Loads the next scene in the build settings (your game scene)
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+        SceneManager.LoadScene("firstFloor");
     }
 
     public void QuitGame()
