@@ -22,9 +22,7 @@ public class AlienPickup : MonoBehaviour
             
              UpdateCameraBoundary(targetTransition);
         }
-        {
-            UpdateCameraBoundary(targetTransition);
-        }
+        
     }
 
     private void UpdateCameraBoundary(PolygonCollider2D newBoundary) {
@@ -39,6 +37,8 @@ public class AlienPickup : MonoBehaviour
     if (other.CompareTag("Player"))
     {
         GameManager.Instance.playerData.hasAlien = true;
+
+        GameManager.Instance.playerData.currentHP = GameManager.Instance.playerData.maxHP; // Heal the player to full health
 
         // Tell the player to update their look immediately
         var playerScript = other.GetComponent<PlayerController>();

@@ -4,47 +4,23 @@ using UnityEngine.EventSystems;
 using TMPro;
 using System.Collections;
 using System;
+
 public class TutorialBattle : MonoBehaviour
 {
+    private UnityEngine.EventSystems.EventSystem cachedEventSystem;
+
     // --- PLAYER STATS ---
-    // All player stats are read from PlayerData at the start of combat.
-    // Modify these runtime copies during combat — never write back to PlayerData directly.
     private int playerHealth;
     private int playerMaxHealth;
     public int playerStrength;
     public int playerSpeed;
     public int playerDefense;
 
-    // --- BLOOM SYSTEM ---
-    [Header("Bloom System")]
-    public int currentBloom = 0;
-    public BloomState currentBloomState = BloomState.Stable;
-
-    // This function automatically categorizes the bloom number into a state
-    private void UpdateBloomState()
-    {
-        // Clamp the bloom so it never accidentally drops below 0 or goes above 100
-        currentBloom = Mathf.Clamp(currentBloom, 0, 100);
-
-        if (currentBloom >= 100)
-            currentBloomState = BloomState.Total;
-        else if (currentBloom >= 75)
-            currentBloomState = BloomState.High;
-        else if (currentBloom >= 50)
-            currentBloomState = BloomState.Medium;
-        else if (currentBloom >= 25)
-            currentBloomState = BloomState.Low;
-        else
-            currentBloomState = BloomState.Stable;
-    }
-
     // --- ENEMY STATS ---
     [Header("Enemy Stats")]
     public EnemyData currentEnemy;
     private int enemyHealth;
-    private int enemySpeed; // Runtime copy — modifications here won't affect the asset
-
-
+    private int enemySpeed; 
 
     // --- COMBAT STATE ---
     private bool isPlayerTurn = false;
@@ -55,11 +31,10 @@ public class TutorialBattle : MonoBehaviour
     [Header("UI Elements")]
     public TextMeshProUGUI playerHP;
     public TextMeshProUGUI enemyHP;
-    public TextMeshProUGUI bloomText;
 
     [Header("Keyboard Navigation Defaults")]
-    public GameObject mainDefaultButton;  // E.g., The Attack Button
-    public GameObject itemDefaultButton;  // E.g., The Heal Button
+    public GameObject mainDefaultButton;  
+    public GameObject itemDefaultButton;  
 
     [Header("Menu Panels")]
     public GameObject mainMenuPanel;
@@ -76,6 +51,8 @@ public class TutorialBattle : MonoBehaviour
 
     private void Start()
     {
+        cachedEventSystem = UnityEngine.EventSystems.EventSystem.current;
+
         // Read player stats from PlayerData
         var pd = GameManager.Instance.playerData;
         playerHealth = pd.currentHP;
@@ -86,13 +63,9 @@ public class TutorialBattle : MonoBehaviour
 
         enemyHealth = currentEnemy.maxHP;
         enemySpeed = currentEnemy.speed;
-        UpdateBloomState();
+        
         UpdateHealthUI();
         DetermineFirstTurn();
-
-        // Snap focus to the Main Menu's default button when combat starts!
-        EventSystem.current.SetSelectedGameObject(null);
-        EventSystem.current.SetSelectedGameObject(mainDefaultButton);
     }
 
     private void DetermineFirstTurn()
@@ -114,7 +87,8 @@ public class TutorialBattle : MonoBehaviour
         isPlayerTurn = true;
         hasUsedItemThisTurn = false;
         Debug.Log("It is now the Player's turn.");
-        // Check for 100% Bloom takeover logic here in the future [cite: 45]
+
+        BackToMainMenu();
     }
 
     // --- PLAYER ACTIONS ---
@@ -123,7 +97,7 @@ public class TutorialBattle : MonoBehaviour
     {
         if (!isPlayerTurn) return;
 
-        // Disable turn immediately so player can't spam click while animating
+        HideAllMenus();
         isPlayerTurn = false;
 
         Debug.Log("Player uses Basic Attack!");
@@ -135,6 +109,8 @@ public class TutorialBattle : MonoBehaviour
                 enemyHealth -= actualDamage;
                 UpdateHealthUI();
                 Debug.Log("Dealt " + actualDamage + " damage to the enemy.");
+
+                StartCoroutine(ShakeSprite(enemyTransform, 0.2f, 0.15f));
             },
             onComplete: () =>
             {
@@ -142,12 +118,11 @@ public class TutorialBattle : MonoBehaviour
             }));
     }
 
-
-   
     public void OnItemButton()
     {
         OpenItemMenu();
     }
+
     public void UseHealItem()
     {
         if (hasUsedItemThisTurn)
@@ -164,10 +139,9 @@ public class TutorialBattle : MonoBehaviour
             return;
         }
 
-        // --- DEDUCT THE ITEM FROM INVENTORY ---
         GameManager.Instance.playerData.healthPotions--;
         isPlayerTurn = false; 
-        BackToMainMenu(); 
+        HideAllMenus(); 
 
         StartCoroutine(PerformItemAnimation(playerTransform, 
             onComplete: () => 
@@ -180,6 +154,7 @@ public class TutorialBattle : MonoBehaviour
                 UpdateHealthUI();
                 
                 isPlayerTurn = true; 
+                BackToMainMenu(); 
             }));
     }
 
@@ -187,32 +162,13 @@ public class TutorialBattle : MonoBehaviour
     {
         if (!isPlayerTurn) return;
 
-        if (currentBloomState >= BloomState.Low)
-        {
-            Debug.Log("You are in " + currentBloomState + " Bloom! The symbiote won't let you run!");
-            return;
-        }
+        HideAllMenus();
+        isPlayerTurn = false;
 
-        var escapeChance = UnityEngine.Random.Range(0, 100);
-         if (escapeChance > 50) 
-        {
-            Debug.Log("Escaped successfully!");
-            isPlayerTurn = false; // Lock controls
-            
-            // CALLING THE NEW RUN COROUTINE
-            StartCoroutine(PerformRunAnimation(playerTransform, 
-                onComplete: () => 
-                {
-                    // Load the overworld AFTER the player has run offscreen
-                    SceneManager.LoadScene("firstFloor");
-                }));
-        }
-        else
-        {
-            Debug.Log("Failed to escape!");
-            isPlayerTurn = false;
-            EnemyTurn();
-        }
+        Debug.Log("There's no escaping this tutorial fight! You stumbled and wasted your turn.");
+
+        // Immediately pass the turn to the enemy
+        EnemyTurn(); 
     }
 
     private void CheckWinConditionOrContinue()
@@ -221,14 +177,11 @@ public class TutorialBattle : MonoBehaviour
         {
             Debug.Log("Enemy defeated!");
 
-            // Persist remaining HP back to PlayerData
             GameManager.Instance.playerData.currentHP = playerHealth;
 
-            // Add the current enemy's ID to the graveyard list
             if (!GameManager.Instance.playerData.defeatedEnemies.Contains(GameManager.currentEnemyID))
             {
                 GameManager.Instance.playerData.defeatedEnemies.Add(GameManager.currentEnemyID);
-                Debug.Log(GameManager.currentEnemyID + " added to the graveyard.");
             }
 
             SceneManager.LoadScene("firstFloor");
@@ -247,27 +200,25 @@ public class TutorialBattle : MonoBehaviour
         // --- THE SCRIPTED EVENT: TURN 4 ---
         if (enemyTurnCount == 4)
         {
-            Debug.Log("Enemy prepares a devastating scripted skill!");
+            Debug.Log("Enemy prepares a devastating scripted attack!");
             
-            StartCoroutine(PerformSkillAnimation(enemyTransform, playerTransform,
+            StartCoroutine(PerformLeapAnimation(enemyTransform, playerTransform,
                 onHit: () =>
                 {
                     Debug.Log("DEVASTATING BLOW! Player drops to 1 HP!");
                     playerHealth = 1;
                     UpdateHealthUI();
+                    StartCoroutine(ShakeSprite(playerTransform, 0.4f, 0.3f));
                 },
                 onComplete: () =>
                 {
-                    // Persist HP and mark tutorial complete
                     GameManager.Instance.playerData.currentHP = playerHealth;
                     GameManager.Instance.playerData.finishedTutorial = true;
                     SceneManager.LoadScene("firstFloor");
-                    PlayerStartTurn();
                 }));
                 
             return;     
         }
-
         // --- NORMAL COMBAT LOGIC ---
         else
         {
@@ -278,53 +229,39 @@ public class TutorialBattle : MonoBehaviour
                     var actualDamage = Mathf.Max(1, currentEnemy.strength - playerDefense);
                     playerHealth -= actualDamage;
                     UpdateHealthUI();
-                    Debug.Log("Player takes " + actualDamage + " damage.");
+                    
+                    Debug.Log("Player takes " + actualDamage + " damage. (Effective Defense: " + playerDefense + ")");
+                    StartCoroutine(ShakeSprite(playerTransform, 0.3f, 0.2f));
                 },
                 onComplete: () =>
                 {
-                    // Straight back to the player!
-                    PlayerStartTurn();
+                    StartCoroutine(WaitAndPassTurn(1.0f));
                 }));
         }
     }
 
-    private SkillBase PickSkill()
+    private IEnumerator WaitAndPassTurn(float delayTime)
     {
-        if (currentEnemy.skills == null || currentEnemy.skills.Count == 0) return null;
+        yield return new WaitForSeconds(delayTime);
 
-        int totalWeight = 0;
-        foreach (var skill in currentEnemy.skills)
-            totalWeight += skill.weight;
-
-        int roll = UnityEngine.Random.Range(0, totalWeight);
-        int cumulative = 0;
-        foreach (var skill in currentEnemy.skills)
+        if (playerHealth <= 0)
         {
-            cumulative += skill.weight;
-            if (roll < cumulative) return skill;
+            Debug.Log("Player died. Game Over.");
+            UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
         }
-
-        return currentEnemy.skills[0];
+        else
+        {
+            PlayerStartTurn();
+        }
     }
-
-    // Called by skills
-    public void DealDamageToPlayer(int amount, bool ignoreDefense)
-    {
-        var actualDamage = ignoreDefense ? amount : Mathf.Max(1, amount - playerDefense);
-        playerHealth -= actualDamage;
-        UpdateHealthUI();
-    }
-
-    public void EndEnemyTurn() { }
 
     private void UpdateHealthUI()
     {
         playerHP.text = "Player HP: " + playerHealth + " / " + playerMaxHealth;
         enemyHP.text = "Enemy HP: " + enemyHealth + " / " + currentEnemy.maxHP;
-        bloomText.text = "Bloom: " + currentBloom;
     }
 
-    
+    // --- NEW ANIMATIONS & COROUTINES ---
 
     private IEnumerator PerformMeleeAttack(Transform attacker, Transform target, Action onHit, Action onComplete)
     {
@@ -350,24 +287,19 @@ public class TutorialBattle : MonoBehaviour
         onComplete?.Invoke();
     }
 
-     // --- NEW ANIMATIONS ---
-
     private IEnumerator PerformItemAnimation(Transform actor, Action onComplete)
     {
         var startPos = actor.position;
-        var peakPos = startPos + Vector3.up * 1.5f; // Move up 1.5 units
+        var peakPos = startPos + Vector3.up * 1.5f; 
 
-        // 1. Move straight up
         while (Vector3.Distance(actor.position, peakPos) > 0.05f)
         {
             actor.position = Vector3.MoveTowards(actor.position, peakPos, moveSpeed * Time.deltaTime);
             yield return null;
         }
 
-        // Pause for a tiny fraction of a second at the top
         yield return new WaitForSeconds(0.1f);
 
-        // 2. Move straight down back to start
         while (Vector3.Distance(actor.position, startPos) > 0.05f)
         {
             actor.position = Vector3.MoveTowards(actor.position, startPos, moveSpeed * Time.deltaTime);
@@ -378,34 +310,29 @@ public class TutorialBattle : MonoBehaviour
         onComplete?.Invoke();
     }
 
-    private IEnumerator PerformSkillAnimation(Transform attacker, Transform target, Action onHit, Action onComplete)
+    private IEnumerator PerformLeapAnimation(Transform attacker, Transform target, Action onHit, Action onComplete)
     {
         var startPos = attacker.position;
-        var targetPos = Vector3.Lerp(startPos, target.position, 0.6f); // Target point slightly in front of enemy
+        var targetPos = Vector3.Lerp(startPos, target.position, 0.6f); 
         
-        // Calculate the peak of the jump (halfway forward, and 2 units up)
         var midPoint = Vector3.Lerp(startPos, targetPos, 0.5f);
         var peakPos = midPoint + Vector3.up * 2f; 
 
-        // 1. Leap diagonally up to the peak
         while (Vector3.Distance(attacker.position, peakPos) > 0.05f)
         {
             attacker.position = Vector3.MoveTowards(attacker.position, peakPos, moveSpeed * Time.deltaTime);
             yield return null;
         }
 
-        // 2. Dive diagonally down to the enemy
         while (Vector3.Distance(attacker.position, targetPos) > 0.05f)
         {
-            attacker.position = Vector3.MoveTowards(attacker.position, targetPos, moveSpeed * 1.5f * Time.deltaTime); // Dive slightly faster
+            attacker.position = Vector3.MoveTowards(attacker.position, targetPos, moveSpeed * 1.5f * Time.deltaTime); 
             yield return null;
         }
 
-        // We hit the enemy! Apply damage.
         onHit?.Invoke();
         yield return new WaitForSeconds(0.1f);
 
-        // 3. Return to the start position
         while (Vector3.Distance(attacker.position, startPos) > 0.05f)
         {
             attacker.position = Vector3.MoveTowards(attacker.position, startPos, moveSpeed * Time.deltaTime);
@@ -416,26 +343,26 @@ public class TutorialBattle : MonoBehaviour
         onComplete?.Invoke();
     }
 
-    private IEnumerator PerformRunAnimation(Transform actor, Action onComplete)
+    private IEnumerator ShakeSprite(Transform targetTransform, float duration, float magnitude)
     {
-        var startPos = actor.position;
-        var offscreenPos = startPos + (Vector3.left * 10f); // Move 10 units to the left
+        Vector3 originalPos = targetTransform.localPosition;
+        float elapsed = 0.0f;
 
-        // 1. Sprint offscreen
-        while (Vector3.Distance(actor.position, offscreenPos) > 0.05f)
+        while (elapsed < duration)
         {
-            // Multiplying speed by 1.5 so running away feels urgent
-            actor.position = Vector3.MoveTowards(actor.position, offscreenPos, moveSpeed * 1.5f * Time.deltaTime);
-            yield return null;
+            float x = originalPos.x + UnityEngine.Random.Range(-1f, 1f) * magnitude;
+            float y = originalPos.y + UnityEngine.Random.Range(-1f, 1f) * magnitude;
+
+            targetTransform.localPosition = new Vector3(x, y, originalPos.z);
+
+            elapsed += Time.deltaTime;
+            yield return null; 
         }
 
-        // 2. Transition scene
-        onComplete?.Invoke();
+        targetTransform.localPosition = originalPos;
     }
 
     // --- MENU NAVIGATION ---
-
-
 
     public void OpenItemMenu()
     {
@@ -445,25 +372,38 @@ public class TutorialBattle : MonoBehaviour
         mainMenuPanel.SetActive(false);
         itemMenuPanel.SetActive(true);
 
-        // Use the new coroutine to highlight the button safely
         StartCoroutine(HighlightButtonSafe(itemDefaultButton));
     }
 
     public void BackToMainMenu()
     {
+        if (cachedEventSystem != null)
+        {
+            cachedEventSystem.enabled = true; 
+        }
+
         itemMenuPanel.SetActive(false);
         mainMenuPanel.SetActive(true);
 
-        // Use the new coroutine to highlight the button safely
         StartCoroutine(HighlightButtonSafe(mainDefaultButton));
     }
 
-    // This forces Unity to wait one frame so the button is fully awake before highlighting it
+    private void HideAllMenus()
+    {
+        if (cachedEventSystem != null)
+        {
+            cachedEventSystem.enabled = false;
+        }
+
+        if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
+        if (itemMenuPanel != null) itemMenuPanel.SetActive(false);
+    }
+
     private IEnumerator HighlightButtonSafe(GameObject buttonToHighlight)
     {
-        EventSystem.current.SetSelectedGameObject(null); // Clear the old selection
-        yield return null; // Wait exactly one frame
-        EventSystem.current.SetSelectedGameObject(buttonToHighlight); // Highlight the new button
+        EventSystem.current.SetSelectedGameObject(null); 
+        yield return null; 
+        EventSystem.current.SetSelectedGameObject(buttonToHighlight); 
     }
 
     private void UpdateItemUI()
@@ -480,13 +420,12 @@ public class TutorialBattle : MonoBehaviour
             healItemButton.interactable = false;
         }
     }
+
     private void Update()
     {
-        // If it is the player's turn and they press the p or x key...
         if (isPlayerTurn && (Input.GetKeyDown(KeyCode.P)) || (Input.GetKeyDown(KeyCode.X)))
         {
-            // If either sub-menu is currently open, close it and go back!
-            if ( itemMenuPanel.activeSelf)
+            if (itemMenuPanel.activeSelf)
             {
                 BackToMainMenu();
             }

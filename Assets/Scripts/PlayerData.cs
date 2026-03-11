@@ -23,7 +23,7 @@ public class PlayerData : ScriptableObject
     public CoreTemplate[] coreSlots = new CoreTemplate[5];
     public List<string> knownCoreIDs = new List<string>();
 
-    [Header("Progression")]
+   // [Header("Progression")]
     public bool finishedTutorial = false;
     public List<string> defeatedEnemies = new List<string>();
 
