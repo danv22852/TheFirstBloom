@@ -402,7 +402,7 @@ public class CombatSystem : MonoBehaviour
                 onComplete: () => 
                 {
                     // Load the overworld AFTER the player has run offscreen
-                    SceneManager.LoadScene("firstFloor");
+                    SceneManager.LoadScene(GameManager.Instance.playerData.floorName);
                 }));
         }
         else
@@ -429,7 +429,7 @@ public class CombatSystem : MonoBehaviour
                 Debug.Log(GameManager.currentEnemyID + " added to the graveyard.");
             }
 
-            SceneManager.LoadScene("firstFloor");
+            SceneManager.LoadScene(GameManager.Instance.playerData.floorName);
         }
         else
         {

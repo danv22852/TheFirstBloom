@@ -12,6 +12,8 @@ public class PlayerData : ScriptableObject
     public int defense = 5;
     public int luck = 0;
 
+    public string floorName = "firstFloor";
+
     [Header("Inventory")]
     public int healthPotions = 1;
 
@@ -38,14 +40,25 @@ public class PlayerData : ScriptableObject
         }
     }
 
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            Debug.Log("Reset for the New Run");
+            ResetForNewRun();
+        }
+    }
+
     // used if player wants to start a new run
     public void ResetForNewRun()
     {
+        Debug.Log("Resetting Player Data for New Run");
         currentHP = maxHP;
         healthPotions = 3;
         coreSlots = new CoreTemplate[5];
         knownCoreIDs = new List<string>();
         defeatedEnemies = new List<string>();
+        hasAlien = false;
         finishedTutorial = false;
     }
 }

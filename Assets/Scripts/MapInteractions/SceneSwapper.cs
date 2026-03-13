@@ -10,7 +10,7 @@ public class SceneSwapper : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-           
+            GameManager.Instance.playerData.floorName = sceneName;
             SceneManager.LoadScene(sceneName);
         }
     }
