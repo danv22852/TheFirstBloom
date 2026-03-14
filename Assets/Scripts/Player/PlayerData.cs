@@ -1,9 +1,22 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
+
+// Moved the enum here so it is globally accessible across the project
+public enum BloomState
+{
+    Stable, // 0-24
+    Low,    // 25-49
+    Medium, // 50-74
+    High,   // 75-99
+    Total   // 100
+}
 
 [CreateAssetMenu(fileName = "PlayerData", menuName = "Player/Player Data")]
 public class PlayerData : ScriptableObject
 {
+    public event Action OnStatsChanged;
+
     [Header("Stats")]
     public int currentHP = 5;
     public int maxHP = 5;
@@ -19,17 +32,32 @@ public class PlayerData : ScriptableObject
 
     [Header("Equipment")]
     public bool hasAlien = false;
-    // public bool hasBow = false; UNUSED
+
+    [Header("Symbiote / Bloom")]
+    public int currentBloom = 0;
+    public BloomState currentBloomState = BloomState.Stable;
 
     [Header("Cores")]
     public CoreTemplate[] coreSlots = new CoreTemplate[5];
     public List<string> knownCoreIDs = new List<string>();
 
-   // [Header("Progression")]
     public bool finishedTutorial = false;
     public List<string> defeatedEnemies = new List<string>();
 
-    // convenience method to apply damage to the player
+    // Call this whenever Bloom is modified outside of combat
+    public void UpdateBloomState()
+    {
+        if (currentBloom > 100) currentBloom = 100;
+
+        if (currentBloom >= 100) currentBloomState = BloomState.Total;
+        else if (currentBloom >= 75) currentBloomState = BloomState.High;
+        else if (currentBloom >= 50) currentBloomState = BloomState.Medium;
+        else if (currentBloom >= 25) currentBloomState = BloomState.Low;
+        else currentBloomState = BloomState.Stable;
+
+        OnStatsChanged?.Invoke();
+    }
+
     public void TakeDamage(int damage)
     {
         currentHP -= damage;
@@ -38,18 +66,16 @@ public class PlayerData : ScriptableObject
             currentHP = 0;
             Debug.Log("Player died.");
         }
+        
+        OnStatsChanged?.Invoke(); 
     }
 
-    void OnTriggerEnter2D(Collider2D other)
+    public void AcquireAlienPower()
     {
-        if (other.CompareTag("Player"))
-        {
-            Debug.Log("Reset for the New Run");
-            ResetForNewRun();
-        }
+        hasAlien = true;
+        OnStatsChanged?.Invoke();
     }
 
-    // used if player wants to start a new run
     public void ResetForNewRun()
     {
         Debug.Log("Resetting Player Data for New Run");
@@ -60,5 +86,12 @@ public class PlayerData : ScriptableObject
         defeatedEnemies = new List<string>();
         hasAlien = false;
         finishedTutorial = false;
+        floorName = "firstFloor";
+        
+        // Reset Bloom for the new run
+        currentBloom = 0;
+        UpdateBloomState();
+
+        OnStatsChanged?.Invoke(); 
     }
 }
