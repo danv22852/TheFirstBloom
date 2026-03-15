@@ -83,6 +83,12 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (Time.timeScale == 0)
+    {
+        Debug.LogWarning("Time.timeScale was 0! Forcing it to 1.");
+        Time.timeScale = 1f;
+    }
+        Debug.Log("Player canMove: " + canMove); // Debug statement to check movement state
        
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
@@ -108,17 +114,23 @@ public class PlayerController : MonoBehaviour
     }
 
     void FixedUpdate()
+{
+    if(canMove)
     {
-        if(canMove)
+        // 1. Ensure constraints are ONLY freezing rotation
+        if (rb.constraints != RigidbodyConstraints2D.FreezeRotation)
         {
-            rb.linearVelocity = movementInput * currentSpeed;
             rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
-        else
-        {
 
+        // 2. Apply movement
+        rb.linearVelocity = movementInput * currentSpeed;
+    }
+    else
+    {
+        // 3. When NOT moving, we freeze everything to prevent sliding
         rb.linearVelocity = Vector2.zero;
         rb.constraints = RigidbodyConstraints2D.FreezeAll;
-        }
     }
+}
 }

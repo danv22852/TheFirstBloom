@@ -5,6 +5,9 @@ public class AlienPickup : MonoBehaviour
     // The color you want the player to turn (e.g., a glowy green or blue)
     public Color pickupTint = Color.gray;
 
+    public PlayerController playerController;
+
+
     [SerializeField] PolygonCollider2D targetTransition;
     private CinemachineConfiner2D confiner;
 
@@ -37,13 +40,23 @@ public class AlienPickup : MonoBehaviour
     if (other.CompareTag("Player"))
     {
         GameManager.Instance.playerData.hasAlien = true;
+        
+
+        playerController.canMove = true;
 
         GameManager.Instance.playerData.currentHP = GameManager.Instance.playerData.maxHP; // Heal the player to full health
 
+
+
         // Tell the player to update their look immediately
         var playerScript = other.GetComponent<PlayerController>();
+      
         if (playerScript != null)
         {
+            
+            Debug.Log("enabling movement " + playerController.canMove);
+            
+
             playerScript.UpdateAppearance();
         }
 
