@@ -12,17 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 643f6fa934a3e6444af7093168124ef8, type: 3}
   m_Name: Player
   m_EditorClassIdentifier: 
-  currentHP: 99
+  currentHP: 80
   maxHP: 100
   strength: 10
   speed: 10
   defense: 5
   luck: 0
   floorName: secondFloor
-  healthPotions: 3
+  healthPotions: 2
   hasAlien: 1
-  currentBloom: 27
-  currentBloomState: 1
+  currentBloom: 15
+  currentBloomState: 0
   coreSlots:
   - {fileID: 0}
   - {fileID: 0}
@@ -33,3 +33,4 @@ MonoBehaviour:
   finishedTutorial: 1
   defeatedEnemies:
   - tutorial_boss
+  - Stag
