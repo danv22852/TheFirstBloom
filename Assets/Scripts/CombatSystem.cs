@@ -176,7 +176,7 @@ public class CombatSystem : MonoBehaviour
 
         isAttackHijacked = false;
         attackButtonText.text = "Attack"; 
-        attackButtonText.color = Color.white; 
+        attackButtonText.color = Color.black; 
 
         if (ActiveBloomState >= BloomState.High)
         {
