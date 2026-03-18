@@ -20,7 +20,7 @@ public class Enemy : MonoBehaviour
     public float probeRadius = 0.18f;
     public float probeDistance = 0.35f;
 
-    [Header("Chase (only if player is inside patrol area)")]
+    [Header("Chase")]
     public string playerTag = "Player";
     public float chaseRadius = 4.0f;           // begin chasing when player is within this distance
     public float stopDistance = 1.1f;          // stop this far from player
@@ -54,8 +54,8 @@ public class Enemy : MonoBehaviour
             return;
         }
 
-        // Chase only if the player is inside the patrol area AND within chase radius
-        if (player != null && IsInsideArea(player.position) && InRange(rb.position, player.position, chaseRadius))
+        // Chase whenever player is within chase radius, regardless of patrol area
+        if (player != null && InRange(rb.position, player.position, chaseRadius))
         {
             Chase();
         }
