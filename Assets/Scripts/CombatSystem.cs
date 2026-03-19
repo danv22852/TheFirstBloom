@@ -100,59 +100,75 @@ public class CombatSystem : MonoBehaviour
         else testBloomState = BloomState.Stable;
     }
 
-    private void Start()
+    private IEnumerator Start() // Changed from 'void' to 'IEnumerator'
+{
+    // --- 1. THE TUTORIAL PAUSE UI CHECK ---
+    // If the tutorial script has set timeScale to 0, we sit in this loop.
+    // We use WaitForSecondsRealtime because regular Time is frozen!
+    while (Time.timeScale <= 0)
     {
-        cachedEventSystem = UnityEngine.EventSystems.EventSystem.current;
-
-        if (GameManager.Instance != null && GameManager.Instance.playerData != null)
-        {
-            var pd = GameManager.Instance.playerData;
-            playerHealth = pd.currentHP;
-            playerMaxHealth = pd.maxHP;
-            playerStrength = pd.strength;
-            playerSpeed = pd.speed;
-            playerDefense = pd.defense;
-        }
-        else
-        {
-            Debug.Log("<color=cyan>TESTING MODE:</color> No GameManager found. Using Inspector Fallback Stats!");
-            playerMaxHealth = testPlayerMaxHealth;
-            playerHealth = testPlayerMaxHealth; 
-            playerStrength = testPlayerStrength;
-            playerSpeed = testPlayerSpeed;
-            playerDefense = testPlayerDefense;
-            UpdateTestBloomState(); 
-        }
-
-        if (GameManager.Instance != null && !string.IsNullOrEmpty(GameManager.currentEnemyID))
-        {
-            var found = GameManager.Instance.GetEnemyByID(GameManager.currentEnemyID);
-            if (found != null) currentEnemy = found;
-        }
-
-        if (currentEnemy == null)
-        {
-            Debug.LogError("CRASH AVOIDED: No Enemy Data! Drag an Enemy ScriptableObject into the Inspector!");
-            return;
-        }
-
-        var sr = enemyTransform.GetComponent<SpriteRenderer>();
-        if (currentEnemy.enemySprite != null && sr != null)
-        {
-            sr.sprite = currentEnemy.enemySprite;
-        }
-
-        enemyHealth = currentEnemy.maxHP;
-        enemySpeed = currentEnemy.speed;
-        
-        UpdateHealthUI();
-        DetermineFirstTurn();
-
-        if (isPlayerTurn)
-        {
-            PlayerStartTurn(); 
-        }
+        yield return new WaitForSecondsRealtime(0.1f);
     }
+
+    // Brief 0.1s buffer to ensure the Tutorial object is fully destroyed 
+    // and the EventSystem is ready for new selections.
+    yield return new WaitForSecondsRealtime(0.1f);
+
+    // --- 2. INITIALIZE SYSTEM ---
+    cachedEventSystem = UnityEngine.EventSystems.EventSystem.current;
+
+    // --- 3. LOAD PLAYER DATA ---
+    if (GameManager.Instance != null && GameManager.Instance.playerData != null)
+    {
+        var pd = GameManager.Instance.playerData;
+        playerHealth = pd.currentHP;
+        playerMaxHealth = pd.maxHP;
+        playerStrength = pd.strength;
+        playerSpeed = pd.speed;
+        playerDefense = pd.defense;
+    }
+    else
+    {
+        Debug.Log("<color=cyan>TESTING MODE:</color> No GameManager found. Using Inspector Fallback Stats!");
+        playerMaxHealth = testPlayerMaxHealth;
+        playerHealth = testPlayerMaxHealth; 
+        playerStrength = testPlayerStrength;
+        playerSpeed = testPlayerSpeed;
+        playerDefense = testPlayerDefense;
+        UpdateTestBloomState(); 
+    }
+
+    // --- 4. LOAD ENEMY DATA ---
+    if (GameManager.Instance != null && !string.IsNullOrEmpty(GameManager.currentEnemyID))
+    {
+        var found = GameManager.Instance.GetEnemyByID(GameManager.currentEnemyID);
+        if (found != null) currentEnemy = found;
+    }
+
+    if (currentEnemy == null)
+    {
+        Debug.LogError("CRASH AVOIDED: No Enemy Data! Drag an Enemy ScriptableObject into the Inspector!");
+        yield break; // Stop the coroutine if there's no enemy
+    }
+
+    // Set Enemy Visuals
+    var sr = enemyTransform.GetComponent<SpriteRenderer>();
+    if (currentEnemy.enemySprite != null && sr != null)
+    {
+        sr.sprite = currentEnemy.enemySprite;
+    }
+
+    enemyHealth = currentEnemy.maxHP;
+    enemySpeed = currentEnemy.speed;
+    
+    // --- 5. START THE ROUND ---
+    UpdateHealthUI();
+    DetermineFirstTurn();
+
+    // DetermineFirstTurn handles calling PlayerStartTurn() or EnemyTurn()
+    // so we don't need to call PlayerStartTurn() again here.
+}
+    
 
     private void DetermineFirstTurn()
     {
@@ -170,6 +186,7 @@ public class CombatSystem : MonoBehaviour
 
     public void PlayerStartTurn()
     {
+         
         isPlayerTurn = true;
         hasUsedItemThisTurn = false;
         Debug.Log("It is now the Player's turn.");
@@ -197,6 +214,7 @@ public class CombatSystem : MonoBehaviour
         }
 
         BackToMainMenu();
+        
     }
 
     public void OnAttackButton()
@@ -684,6 +702,7 @@ public class CombatSystem : MonoBehaviour
     
     private void Update()
     {
+        if (Time.timeScale <= 0) return;
         if (isPlayerTurn && (Input.GetKeyDown(KeyCode.P)) || (Input.GetKeyDown(KeyCode.X)))
         {
             if (skillMenuPanel.activeSelf || itemMenuPanel.activeSelf)

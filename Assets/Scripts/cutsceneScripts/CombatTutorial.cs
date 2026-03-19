@@ -1,57 +1,66 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class CombatTutorial : MonoBehaviour
 {
     [Header("UI References")]
-    public GameObject tutorialPanel; // The visual popup
-    public Button closeButton;       // The button to dismiss it
+    public GameObject tutorialPanel;
+    public Button closeButton; 
 
-    [Header("Settings")]
-    public string saveKey = "FirstTimeCombat";
+    private bool isTutorialActive = false;
 
     private void Start()
-    {
-        // If the key exists and is set to 1, we've seen this. Destroy the tutorial object.
-        if (PlayerPrefs.GetInt(saveKey, 0) == 1)
+    { 
+        Debug.Log("Current floor: " + GameManager.Instance.playerData.floorName);
+        if (GameManager.Instance.playerData.floorName == "firstFloor")
         {
-            Destroy(gameObject);
-            return;
+            Debug.Log("checked floor: " + GameManager.Instance.playerData.floorName);
+            ShowTutorial();
         }
+        else
+        {
+            // If it's not the first floor or they've seen it, delete this logic
+            Destroy(gameObject);
+        }
+    }
 
-        // Otherwise, show the tutorial and pause the game
-        ShowTutorial();
+    private void Update()
+    {
+        // 2. Hardcoded Key Check (Z or O)
+        if (isTutorialActive)
+        {
+            if (Input.GetKeyDown(KeyCode.Z) || Input.GetKeyDown(KeyCode.O))
+            {
+                OnDismiss();
+            }
+        }
     }
 
     void ShowTutorial()
     {
-        tutorialPanel.transform.SetAsLastSibling(); 
-    
+        isTutorialActive = true;
+        Time.timeScale = 0f; // Freeze game
         tutorialPanel.SetActive(true);
-        Time.timeScale = 0f; // Freeze combat animations/logic
-
-        // Ensure the close button is the one selected for controller/keyboard users
-        closeButton.Select();
         
-        closeButton.onClick.AddListener(OnDismiss);
+        // This makes the button "Selected" (Red) immediately
+        if (closeButton != null)
+        {
+            closeButton.Select();
+        }
     }
 
-    void OnDismiss()
+    // 3. The Click Handler (Must be PUBLIC)
+    public void OnDismiss()
     {
-        // Save that we've seen it
-        PlayerPrefs.SetInt(saveKey, 1);
+        // Save progress so it doesn't show again
+        PlayerPrefs.SetInt("FirstFloorTutorialDone", 1);
         PlayerPrefs.Save();
-
-        // Resume game and clean up
+        
+        // Resume game and cleanup
         Time.timeScale = 1f;
+        isTutorialActive = false;
         tutorialPanel.SetActive(false);
-        Destroy(gameObject); 
-    }
-
-    [ContextMenu("Reset Tutorial Flag")]
-    public void ResetTutorial()
-    {
-    PlayerPrefs.DeleteKey(saveKey);
-    Debug.Log("Tutorial Reset! It will show up next time you play.");
+        Destroy(gameObject);
     }
 }
