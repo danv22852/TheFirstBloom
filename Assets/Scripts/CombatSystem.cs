@@ -140,6 +140,8 @@ public class CombatSystem : MonoBehaviour
         if (currentEnemy.enemySprite != null && sr != null)
         {
             sr.sprite = currentEnemy.enemySprite;
+
+            enemyTransform.localScale = new Vector3(currentEnemy.combatScale, currentEnemy.combatScale, 1f);
         }
 
         enemyHealth = currentEnemy.maxHP;
