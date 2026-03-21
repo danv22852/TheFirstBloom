@@ -2171,7 +2171,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerData: {fileID: 11400000, guid: bd7a55abcffdb6543b43fb6753c17475, type: 2}
-  enemyRoster: []
+  enemyRoster:
+  - {fileID: 11400000, guid: a639f5bd9007bff4bbfac4ea51ba1f39, type: 2}
 --- !u!1 &399663865
 GameObject:
   m_ObjectHideFlags: 0
@@ -62089,7 +62090,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 813bd039a4ffb694696d61575d1cfcff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uniqueEnemyID: Hornet_01
+  uniqueEnemyID: Hornet_1
 --- !u!95 &2088863500
 Animator:
   serializedVersion: 7

@@ -28,7 +28,7 @@ public class EnemyEncounter : MonoBehaviour // (Or whatever you named this scrip
             GameManager.isReturningFromCombat = true;
 
             // --- NEW: Tell the GameManager exactly who we are fighting ---
-            GameManager.currentEnemyID = this.uniqueEnemyID;
+            GameManager.currentEnemyID = uniqueEnemyID;
             if (!GameManager.Instance.playerData.finishedTutorial){
                 Debug.Log("Starting tutorial battle...");
                 SceneManager.LoadScene("TutorialBattle");

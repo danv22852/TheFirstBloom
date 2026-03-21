@@ -137,6 +137,8 @@ public class CombatSystem : MonoBehaviour
         playerDefense = testPlayerDefense;
         UpdateTestBloomState(); 
     }
+    currentEnemy = GameManager.Instance.GetEnemyByID(GameManager.currentEnemyID);
+
 
         var sr = enemyTransform.GetComponent<SpriteRenderer>();
         if (currentEnemy.enemySprite != null && sr != null)
@@ -152,12 +154,7 @@ public class CombatSystem : MonoBehaviour
         yield break; // Stop the coroutine if there's no enemy
     }
 
-    // Set Enemy Visuals
-    var sr = enemyTransform.GetComponent<SpriteRenderer>();
-    if (currentEnemy.enemySprite != null && sr != null)
-    {
-        sr.sprite = currentEnemy.enemySprite;
-    }
+   
 
     enemyHealth = currentEnemy.maxHP;
     enemySpeed = currentEnemy.speed;
@@ -278,7 +275,7 @@ public class CombatSystem : MonoBehaviour
             if (playerHealth <= 0)
             {
                 Debug.Log("The host was consumed. Game Over.");
-                UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+                UnityEngine.SceneManagement.SceneManager.LoadScene(GameManager.Instance.playerData.floorName);
                 return;
             }
         }
@@ -467,7 +464,7 @@ public class CombatSystem : MonoBehaviour
         if (playerHealth <= 0)
         {
             Debug.Log("Player died. Game Over.");
-            UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+            UnityEngine.SceneManagement.SceneManager.LoadScene(GameManager.Instance.playerData.floorName);
         }
         else
         {
