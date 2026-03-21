@@ -138,12 +138,13 @@ public class CombatSystem : MonoBehaviour
         UpdateTestBloomState(); 
     }
 
-    // --- 4. LOAD ENEMY DATA ---
-    if (GameManager.Instance != null && !string.IsNullOrEmpty(GameManager.currentEnemyID))
-    {
-        var found = GameManager.Instance.GetEnemyByID(GameManager.currentEnemyID);
-        if (found != null) currentEnemy = found;
-    }
+        var sr = enemyTransform.GetComponent<SpriteRenderer>();
+        if (currentEnemy.enemySprite != null && sr != null)
+        {
+            sr.sprite = currentEnemy.enemySprite;
+
+            enemyTransform.localScale = new Vector3(currentEnemy.combatScale, currentEnemy.combatScale, 1f);
+        }
 
     if (currentEnemy == null)
     {
