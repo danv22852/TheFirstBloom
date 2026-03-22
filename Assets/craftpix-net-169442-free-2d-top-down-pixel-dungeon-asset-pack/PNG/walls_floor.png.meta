@@ -69,7 +69,11 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
+<<<<<<< HEAD
   spritePixelsToUnits: 32
+=======
+  spritePixelsToUnits: 100
+>>>>>>> main
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -147,12 +151,21 @@ TextureImporter:
       name: walls_floor_0
       rect:
         serializedVersion: 2
+<<<<<<< HEAD
         x: 16
         y: 320
         width: 32
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+=======
+        x: 0
+        y: 128
+        width: 208
+        height: 240
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+>>>>>>> main
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline:
@@ -233,12 +246,21 @@ TextureImporter:
       name: walls_floor_1
       rect:
         serializedVersion: 2
+<<<<<<< HEAD
         x: 48
         y: 320
         width: 32
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+=======
+        x: 10
+        y: 42
+        width: 61
+        height: 123
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+>>>>>>> main
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -255,12 +277,21 @@ TextureImporter:
       name: walls_floor_2
       rect:
         serializedVersion: 2
+<<<<<<< HEAD
         x: 80
         y: 320
         width: 32
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+=======
+        x: 82
+        y: 85
+        width: 29
+        height: 88
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+>>>>>>> main
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -277,12 +308,21 @@ TextureImporter:
       name: walls_floor_3
       rect:
         serializedVersion: 2
+<<<<<<< HEAD
         x: 112
         y: 320
         width: 32
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+=======
+        x: 93
+        y: 0
+        width: 115
+        height: 213
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+>>>>>>> main
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -299,12 +339,21 @@ TextureImporter:
       name: walls_floor_4
       rect:
         serializedVersion: 2
+<<<<<<< HEAD
         x: 144
         y: 320
         width: 32
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+=======
+        x: 0
+        y: 0
+        width: 32
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+>>>>>>> main
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -321,12 +370,21 @@ TextureImporter:
       name: walls_floor_5
       rect:
         serializedVersion: 2
+<<<<<<< HEAD
         x: 176
         y: 320
         width: 32
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+=======
+        x: 48
+        y: 37
+        width: 96
+        height: 40
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+>>>>>>> main
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -343,12 +401,21 @@ TextureImporter:
       name: walls_floor_6
       rect:
         serializedVersion: 2
+<<<<<<< HEAD
         x: 16
         y: 288
         width: 32
         height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
+=======
+        x: 48
+        y: 0
+        width: 96
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+>>>>>>> main
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -361,6 +428,7 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+<<<<<<< HEAD
     - serializedVersion: 2
       name: walls_floor_7
       rect:
@@ -1659,6 +1727,8 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+=======
+>>>>>>> main
     outline: []
     customData: 
     physicsShape: []
@@ -1675,6 +1745,7 @@ TextureImporter:
     nameFileIdTable:
       walls_floor_0: -5428076373527582109
       walls_floor_1: 3770924749621270030
+<<<<<<< HEAD
       walls_floor_10: -886194677
       walls_floor_11: 1864507790
       walls_floor_12: 1013147039
@@ -1739,6 +1810,13 @@ TextureImporter:
       walls_floor_7: 1530940185
       walls_floor_8: 1406528948
       walls_floor_9: 1460103141
+=======
+      walls_floor_2: -7609180175424432265
+      walls_floor_3: 6512568151609184976
+      walls_floor_4: 4794269290470581240
+      walls_floor_5: -1988073679404226919
+      walls_floor_6: 1749869392539340092
+>>>>>>> main
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

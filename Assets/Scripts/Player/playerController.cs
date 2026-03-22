@@ -1,0 +1,136 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Unity.Cinemachine; // Needed for the Confiner
+
+public class PlayerController : MonoBehaviour
+{
+    [SerializeField] private float BASE_SPEED = 5f;
+    // Added this so you can set the color in the Inspector once
+    [SerializeField] private Color alienTint = Color.black; 
+
+    public bool canMove = true;
+
+    private Rigidbody2D rb;
+    private Animator animator;
+    private SpriteRenderer spriteRenderer; // Added reference
+    private float currentSpeed;
+
+    private Vector2 movementInput;
+    public Transform Aim;
+
+    private bool isRunning = false;
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>(); // Initialize reference
+        currentSpeed = BASE_SPEED;
+
+        // --- Persistent State Checks ---
+        UpdateAppearance(); 
+
+        if (GameManager.isReturningFromCombat)
+        {
+            // 1. Teleport Player
+            transform.position = GameManager.lastPlayerPosition;
+
+            // 2. Restore Camera Boundary
+            RestoreCameraBoundary();
+
+            GameManager.isReturningFromCombat = false;
+        }
+    }
+
+    // Logic to check if the player should look like an alien
+    public void UpdateAppearance()
+    {
+        if (GameManager.Instance != null && GameManager.Instance.playerData.hasAlien)
+        {
+            if (spriteRenderer != null)
+            {
+                spriteRenderer.color = alienTint;
+            }
+        }
+    }
+
+    private void RestoreCameraBoundary()
+    {
+        if (!string.IsNullOrEmpty(GameManager.currentMapBoundaryName))
+        {
+            GameObject boundaryObj = GameObject.Find(GameManager.currentMapBoundaryName);
+            if (boundaryObj != null)
+            {
+                PolygonCollider2D poly = boundaryObj.GetComponent<PolygonCollider2D>();
+                CinemachineConfiner2D confiner = FindFirstObjectByType<CinemachineConfiner2D>();
+                
+                if (confiner != null && poly != null)
+                {
+                    confiner.BoundingShape2D = poly;
+                    confiner.InvalidateBoundingShapeCache();
+                }
+            }
+        }
+    }
+
+    public IEnumerator SpeedChange(float newSpeed, float timeInSecs)
+    {
+        currentSpeed = newSpeed;
+        yield return new WaitForSeconds(timeInSecs);
+        currentSpeed = BASE_SPEED;
+    }
+
+    void Update()
+    {
+        if (Time.timeScale == 0)
+    {
+        Debug.LogWarning("Time.timeScale was 0! Forcing it to 1.");
+        Time.timeScale = 1f;
+    }
+        Debug.Log("Player canMove: " + canMove); // Debug statement to check movement state
+       
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        float vertical = Input.GetAxisRaw("Vertical");
+
+        movementInput = new Vector2(horizontal, vertical).normalized;
+
+        if(movementInput != Vector2.zero && canMove)
+        {
+              if (horizontal > 0)
+            spriteRenderer.flipX= false;
+        else if (horizontal < 0)
+            spriteRenderer.flipX = true;
+        isRunning = movementInput.magnitude > 0;
+        animator.SetBool("isRunning", isRunning);
+        }
+        else
+        {
+            animator.SetBool("isRunning", false);
+        }
+      
+
+         
+    }
+
+    void FixedUpdate()
+{
+    if(canMove)
+    {
+        // 1. Ensure constraints are ONLY freezing rotation
+        if (rb.constraints != RigidbodyConstraints2D.FreezeRotation)
+        {
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        }
+
+        // 2. Apply movement
+        rb.linearVelocity = movementInput * currentSpeed;
+    }
+    else
+    {
+        // 3. When NOT moving, we freeze everything to prevent sliding
+        rb.linearVelocity = Vector2.zero;
+        rb.constraints = RigidbodyConstraints2D.FreezeAll;
+    }
+}
+}

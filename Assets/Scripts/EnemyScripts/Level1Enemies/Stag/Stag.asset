@@ -12,11 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0566ed46712c3a4ca4ddde06a429795, type: 3}
   m_Name: Stag
   m_EditorClassIdentifier: 
+  enemyID: stag_01
   enemyName: Stag
-  maxHP: 80
+  enemySprite: {fileID: 4286265989511706523, guid: 2a898f23fd96d554d9dd45a5058d7b76, type: 3}
+  maxHP: 130
   strength: 10
   speed: 8
   defense: 5
+  combatScale: 1
   skills:
   - {fileID: 11400000, guid: b82d5658507633a498bec0905665d400, type: 2}
   - {fileID: 11400000, guid: 30c7a6f2d58cf0a4e8a4c660b6c66fbb, type: 2}

@@ -1,54 +1,30 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 using TMPro;
 using System.Collections;
 using System;
-public enum BloomState
-{
-    Stable, // 0-24
-    Low,    // 25-49
-    Medium, // 50-74
-    High,   // 75-99
-    Max     // 100
-}
+
 public class CombatSystem : MonoBehaviour
 {
+    private UnityEngine.EventSystems.EventSystem cachedEventSystem;
+
     // --- PLAYER STATS ---
-    [Header("Player Stats")]
-    public int playerHealth = 100; // [cite: 2]
-    public int playerMaxHealth = 100;
-    public int playerStrength = 15; // [cite: 3]
-    public int playerSpeed = 10; // [cite: 4]
-    public int playerDefense = 5; // [cite: 5]
+    private int playerHealth;
+    private int playerMaxHealth;
+    public int playerStrength;
+    public int playerSpeed;
+    public int playerDefense;
 
-    // --- BLOOM SYSTEM ---
-    [Header("Bloom System")]
-    public int currentBloom = 0;
-    public BloomState currentBloomState = BloomState.Stable;
-
-    // This function automatically categorizes the bloom number into a state
-    private void UpdateBloomState()
-    {
-        // Clamp the bloom so it never accidentally drops below 0 or goes above 100
-        currentBloom = Mathf.Clamp(currentBloom, 0, 100);
-
-        if (currentBloom >= 100)
-            currentBloomState = BloomState.Max;
-        else if (currentBloom >= 75)
-            currentBloomState = BloomState.High;
-        else if (currentBloom >= 50)
-            currentBloomState = BloomState.Medium;
-        else if (currentBloom >= 25)
-            currentBloomState = BloomState.Low;
-        else
-            currentBloomState = BloomState.Stable;
-    }
+    [Header("Bloom Hijack UI")]
+    public TextMeshProUGUI attackButtonText; 
+    private bool isAttackHijacked = false;   
 
     // --- ENEMY STATS ---
     [Header("Enemy Stats")]
     public EnemyData currentEnemy;
     private int enemyHealth;
-    private int enemySpeed; // Runtime copy — modifications here won't affect the asset
+    private int enemySpeed; 
 
     // --- COMBAT STATE ---
     private bool isPlayerTurn = false;
@@ -59,6 +35,11 @@ public class CombatSystem : MonoBehaviour
     public TextMeshProUGUI playerHP;
     public TextMeshProUGUI enemyHP;
     public TextMeshProUGUI bloomText;
+
+    [Header("Keyboard Navigation Defaults")]
+    public GameObject mainDefaultButton;  
+    public GameObject skillDefaultButton; 
+    public GameObject itemDefaultButton;  
 
     [Header("Menu Panels")]
     public GameObject mainMenuPanel;
@@ -74,14 +55,118 @@ public class CombatSystem : MonoBehaviour
     public Transform enemyTransform;
     public float moveSpeed = 15f;
 
-    private void Start()
+    [Header("Player Stats (Testing Fallbacks)")]
+    public int testPlayerMaxHealth = 100;
+    public int testPlayerStrength = 15;
+    public int testPlayerSpeed = 10;
+    public int testPlayerDefense = 5;
+    public int testPlayerBloom = 0;
+    private BloomState testBloomState = BloomState.Stable;
+
+    // --- SMART PROPERTIES FOR BLOOM ---
+    // These automatically check if PlayerData exists. If it does, they read/write directly to it.
+    // If not, they use the testing fallbacks so you can still test combat in isolation.
+    private int ActiveBloom
     {
-        enemyHealth = currentEnemy.maxHP;
-        enemySpeed = currentEnemy.speed;
-        UpdateBloomState();
-        UpdateHealthUI();
-        DetermineFirstTurn();
+        get => GameManager.Instance != null ? GameManager.Instance.playerData.currentBloom : testPlayerBloom;
+        set
+        {
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.playerData.currentBloom = value;
+                GameManager.Instance.playerData.UpdateBloomState();
+            }
+            else
+            {
+                testPlayerBloom = value;
+                UpdateTestBloomState();
+            }
+        }
     }
+
+    private BloomState ActiveBloomState
+    {
+        get => GameManager.Instance != null ? GameManager.Instance.playerData.currentBloomState : testBloomState;
+    }
+
+    private void UpdateTestBloomState()
+    {
+        if (testPlayerBloom > 100) testPlayerBloom = 100;
+
+        if (testPlayerBloom >= 100) testBloomState = BloomState.Total;
+        else if (testPlayerBloom >= 75) testBloomState = BloomState.High;
+        else if (testPlayerBloom >= 50) testBloomState = BloomState.Medium;
+        else if (testPlayerBloom >= 25) testBloomState = BloomState.Low;
+        else testBloomState = BloomState.Stable;
+    }
+
+    private IEnumerator Start() // Changed from 'void' to 'IEnumerator'
+{
+    // --- 1. THE TUTORIAL PAUSE UI CHECK ---
+    // If the tutorial script has set timeScale to 0, we sit in this loop.
+    // We use WaitForSecondsRealtime because regular Time is frozen!
+    while (Time.timeScale <= 0)
+    {
+        yield return new WaitForSecondsRealtime(0.1f);
+    }
+
+    // Brief 0.1s buffer to ensure the Tutorial object is fully destroyed 
+    // and the EventSystem is ready for new selections.
+    yield return new WaitForSecondsRealtime(0.1f);
+
+    // --- 2. INITIALIZE SYSTEM ---
+    cachedEventSystem = UnityEngine.EventSystems.EventSystem.current;
+
+    // --- 3. LOAD PLAYER DATA ---
+    if (GameManager.Instance != null && GameManager.Instance.playerData != null)
+    {
+        var pd = GameManager.Instance.playerData;
+        playerHealth = pd.currentHP;
+        playerMaxHealth = pd.maxHP;
+        playerStrength = pd.strength;
+        playerSpeed = pd.speed;
+        playerDefense = pd.defense;
+    }
+    else
+    {
+        Debug.Log("<color=cyan>TESTING MODE:</color> No GameManager found. Using Inspector Fallback Stats!");
+        playerMaxHealth = testPlayerMaxHealth;
+        playerHealth = testPlayerMaxHealth; 
+        playerStrength = testPlayerStrength;
+        playerSpeed = testPlayerSpeed;
+        playerDefense = testPlayerDefense;
+        UpdateTestBloomState(); 
+    }
+    currentEnemy = GameManager.Instance.GetEnemyByID(GameManager.currentEnemyID);
+
+
+        var sr = enemyTransform.GetComponent<SpriteRenderer>();
+        if (currentEnemy.enemySprite != null && sr != null)
+        {
+            sr.sprite = currentEnemy.enemySprite;
+
+            enemyTransform.localScale = new Vector3(currentEnemy.combatScale, currentEnemy.combatScale, 1f);
+        }
+
+    if (currentEnemy == null)
+    {
+        Debug.LogError("CRASH AVOIDED: No Enemy Data! Drag an Enemy ScriptableObject into the Inspector!");
+        yield break; // Stop the coroutine if there's no enemy
+    }
+
+   
+
+    enemyHealth = currentEnemy.maxHP;
+    enemySpeed = currentEnemy.speed;
+    
+    // --- 5. START THE ROUND ---
+    UpdateHealthUI();
+    DetermineFirstTurn();
+
+    // DetermineFirstTurn handles calling PlayerStartTurn() or EnemyTurn()
+    // so we don't need to call PlayerStartTurn() again here.
+}
+    
 
     private void DetermineFirstTurn()
     {
@@ -97,21 +182,51 @@ public class CombatSystem : MonoBehaviour
         }
     }
 
-    private void PlayerStartTurn()
+    public void PlayerStartTurn()
     {
+         
         isPlayerTurn = true;
         hasUsedItemThisTurn = false;
         Debug.Log("It is now the Player's turn.");
-        // Check for 100% Bloom takeover logic here in the future [cite: 45]
-    }
 
-    // --- PLAYER ACTIONS ---
+        isAttackHijacked = false;
+        attackButtonText.text = "Attack"; 
+        attackButtonText.color = Color.black; 
+
+        if (ActiveBloomState >= BloomState.High)
+        {
+            Debug.Log("High Bloom! The Symbiote completely takes over your basic attacks.");
+            isAttackHijacked = true;
+            attackButtonText.text = "Symbiote Swipe"; 
+            attackButtonText.color = Color.red; 
+        }
+        else if (ActiveBloomState >= BloomState.Medium)
+        {
+            var hijackChance = UnityEngine.Random.Range(0, 100); 
+            if (hijackChance < 30) 
+            {
+                isAttackHijacked = true;
+                attackButtonText.text = "Symbiote Swipe"; 
+                attackButtonText.color = Color.magenta; 
+            }
+        }
+
+        BackToMainMenu();
+        
+    }
 
     public void OnAttackButton()
     {
         if (!isPlayerTurn) return;
 
-        // Disable turn immediately so player can't spam click while animating
+        if (isAttackHijacked)
+        {
+            Debug.Log("The Symbiote hijacked your attack!");
+            UseSymbioteSwipe(); 
+            return; 
+        }
+
+        HideAllMenus();
         isPlayerTurn = false;
 
         Debug.Log("Player uses Basic Attack!");
@@ -123,6 +238,8 @@ public class CombatSystem : MonoBehaviour
                 enemyHealth -= actualDamage;
                 UpdateHealthUI();
                 Debug.Log("Dealt " + actualDamage + " damage to the enemy.");
+
+                StartCoroutine(ShakeSprite(enemyTransform, 0.2f, 0.15f));
             },
             onComplete: () =>
             {
@@ -137,23 +254,44 @@ public class CombatSystem : MonoBehaviour
 
     public void UseSymbioteSwipe()
     {
-        isPlayerTurn = false; // Prevent spam clicking
-        BackToMainMenu();     // Close the menu automatically
+        if (!isPlayerTurn) return; 
+        isPlayerTurn = false; 
+        HideAllMenus();     
 
-        Debug.Log("Player uses Symbiote Swipe!");
+        var bloomCost = 3; 
+        float statMultiplier = GetBloomStatMultiplier();
+        var baseSkillDamage = UnityEngine.Random.Range(28, 33);
+        int finalDamage = Mathf.RoundToInt(baseSkillDamage * statMultiplier); 
 
-        var bloomCost = 1;
-        var baseSkillDamage = 10;
+        if (ActiveBloomState >= BloomState.High)
+        {
+            var selfDamage = UnityEngine.Random.Range(5, 11);
+            playerHealth -= selfDamage;
+            UpdateHealthUI();
 
-        currentBloom += bloomCost;
-        UpdateBloomState();
-        //Debug.Log("Bloom increased by " + bloomCost + ". State is now: " + currentBloomState);
+            StartCoroutine(ShakeSprite(playerTransform, 0.4f, 0.25f));
+            Debug.Log("High Bloom Penalty! Player takes " + selfDamage + " damage to fuel the attack!");
 
-       StartCoroutine(PerformSkillAnimation(playerTransform, enemyTransform,
+            if (playerHealth <= 0)
+            {
+                Debug.Log("The host was consumed. Game Over.");
+                UnityEngine.SceneManagement.SceneManager.LoadScene(GameManager.Instance.playerData.floorName);
+                return;
+            }
+        }
+
+        // Modifying this now writes directly to PlayerData behind the scenes!
+        ActiveBloom += bloomCost;
+        UpdateHealthUI(); // Update UI to show new Bloom value
+        
+        StartCoroutine(PerformSkillAnimation(playerTransform, enemyTransform,
             onHit: () =>
             {
-                enemyHealth -= baseSkillDamage;
+                enemyHealth -= finalDamage;
                 UpdateHealthUI();
+                Debug.Log("Symbiote Swipes for " + finalDamage + " damage!");
+
+                StartCoroutine(ShakeSprite(enemyTransform, 0.3f, 0.3f));
             },
             onComplete: () =>
             {
@@ -165,6 +303,7 @@ public class CombatSystem : MonoBehaviour
     {
         OpenItemMenu();
     }
+
     public void UseHealItem()
     {
         if (hasUsedItemThisTurn)
@@ -173,16 +312,23 @@ public class CombatSystem : MonoBehaviour
             return;
         }
 
-        if (GameManager.healthPotions <= 0)
+        // Prevent errors in testing mode if GameManager is null
+        if (GameManager.Instance == null)
+        {
+            Debug.Log("Testing Mode: Pretending to use a potion.");
+        }
+        else if (GameManager.Instance.playerData.healthPotions <= 0)
         {
             Debug.Log("No potions left!");
             return;
         }
+        else 
+        {
+            GameManager.Instance.playerData.healthPotions--;
+        }
 
-        // --- DEDUCT THE ITEM FROM INVENTORY ---
-        GameManager.healthPotions--;
         isPlayerTurn = false; 
-        BackToMainMenu(); 
+        HideAllMenus(); 
 
         StartCoroutine(PerformItemAnimation(playerTransform, 
             onComplete: () => 
@@ -195,6 +341,7 @@ public class CombatSystem : MonoBehaviour
                 UpdateHealthUI();
                 
                 isPlayerTurn = true; 
+                BackToMainMenu(); 
             }));
     }
 
@@ -202,32 +349,35 @@ public class CombatSystem : MonoBehaviour
     {
         if (!isPlayerTurn) return;
 
-        // The player loses the ability to run from combat at low bloom.
-        if (currentBloomState >= BloomState.Low)
+        if (ActiveBloomState >= BloomState.Low)
         {
-            Debug.Log("You are in " + currentBloomState + " Bloom! The symbiote won't let you run!");
+            Debug.Log("You are in " + ActiveBloomState + " Bloom! The symbiote won't let you run!");
             return;
         }
 
+        HideAllMenus();
+
         var escapeChance = UnityEngine.Random.Range(0, 100);
-         if (escapeChance > 50) 
+        if (escapeChance > 50) 
         {
             Debug.Log("Escaped successfully!");
-            isPlayerTurn = false; // Lock controls
+            isPlayerTurn = false; 
             
-            // CALLING THE NEW RUN COROUTINE
             StartCoroutine(PerformRunAnimation(playerTransform, 
                 onComplete: () => 
                 {
-                    // Load the overworld AFTER the player has run offscreen
-                    SceneManager.LoadScene("firstFloor");
+                    PersistStatsToPlayerData();
+                    if (GameManager.Instance != null)
+                    {
+                        SceneManager.LoadScene(GameManager.Instance.playerData.floorName);
+                    }
                 }));
         }
         else
         {
             Debug.Log("Failed to escape!");
             isPlayerTurn = false;
-            EnemyTurn();
+            EnemyTurn(); 
         }
     }
 
@@ -237,14 +387,18 @@ public class CombatSystem : MonoBehaviour
         {
             Debug.Log("Enemy defeated!");
 
-            // Add the current enemy's ID to the graveyard list
-            if (!GameManager.defeatedEnemies.Contains(GameManager.currentEnemyID))
-            {
-                GameManager.defeatedEnemies.Add(GameManager.currentEnemyID);
-                Debug.Log(GameManager.currentEnemyID + " added to the graveyard.");
-            }
+            PersistStatsToPlayerData();
 
-            SceneManager.LoadScene("firstFloor");
+            if (GameManager.Instance != null)
+            {
+                if (!GameManager.Instance.playerData.defeatedEnemies.Contains(GameManager.currentEnemyID))
+                {
+                    GameManager.Instance.playerData.defeatedEnemies.Add(GameManager.currentEnemyID);
+                    Debug.Log(GameManager.currentEnemyID + " added to the graveyard.");
+                }
+
+                SceneManager.LoadScene(GameManager.Instance.playerData.floorName);
+            }
         }
         else
         {
@@ -252,38 +406,70 @@ public class CombatSystem : MonoBehaviour
         }
     }
 
+    private void PersistStatsToPlayerData()
+    {
+        if (GameManager.Instance != null && GameManager.Instance.playerData != null)
+        {
+            GameManager.Instance.playerData.currentHP = playerHealth;
+            // Bloom no longer needs to be saved here, because ActiveBloom handles it live!
+        }
+    }
+
+    public float GetBloomStatMultiplier()
+    {
+        if (ActiveBloomState >= BloomState.High)
+        {
+            return 1.10f; // 10% Increase
+        }
+        return 1.0f; // Normal stats
+    }
+
     private void EnemyTurn()
     {
         Debug.Log(currentEnemy.enemyName + "'s turn!");
-
+        
         var skill = PickSkill();
 
         StartCoroutine(PerformMeleeAttack(enemyTransform, playerTransform,
             onHit: () =>
             {
                 if (skill != null)
+                {
                     skill.Execute(this, currentEnemy);
+                    StartCoroutine(ShakeSprite(playerTransform, 0.3f, 0.2f));
+                }
                 else
                 {
-                    // Fallback basic attack if no skills assigned
-                    var actualDamage = Mathf.Max(1, currentEnemy.strength - playerDefense);
+                    float statMultiplier = GetBloomStatMultiplier();
+                    int effectiveDefense = Mathf.RoundToInt(playerDefense * statMultiplier);
+
+                    var actualDamage = Mathf.Max(1, currentEnemy.strength - effectiveDefense);
                     playerHealth -= actualDamage;
                     UpdateHealthUI();
-                    Debug.Log("Player takes " + actualDamage + " damage.");
+                    
+                    Debug.Log("Player takes " + actualDamage + " damage. (Effective Defense: " + effectiveDefense + ")");
+                    StartCoroutine(ShakeSprite(playerTransform, 0.3f, 0.2f));
                 }
             },
             onComplete: () =>
             {
-                if (playerHealth <= 0)
-                {
-                    Debug.Log("Player died. Game Over.");
-                    SceneManager.LoadScene("MainMenu");
-                }
-                else
-                {
-                    PlayerStartTurn();
-                }
+                StartCoroutine(WaitAndPassTurn(1.0f));
             }));
+    }
+
+    private IEnumerator WaitAndPassTurn(float delayTime)
+    {
+        yield return new WaitForSeconds(delayTime);
+
+        if (playerHealth <= 0)
+        {
+            Debug.Log("Player died. Game Over.");
+            UnityEngine.SceneManagement.SceneManager.LoadScene(GameManager.Instance.playerData.floorName);
+        }
+        else
+        {
+            PlayerStartTurn();
+        }
     }
 
     private SkillBase PickSkill()
@@ -305,7 +491,6 @@ public class CombatSystem : MonoBehaviour
         return currentEnemy.skills[0];
     }
 
-    // Called by skills
     public void DealDamageToPlayer(int amount, bool ignoreDefense)
     {
         var actualDamage = ignoreDefense ? amount : Mathf.Max(1, amount - playerDefense);
@@ -319,7 +504,7 @@ public class CombatSystem : MonoBehaviour
     {
         playerHP.text = "Player HP: " + playerHealth + " / " + playerMaxHealth;
         enemyHP.text = "Enemy HP: " + enemyHealth + " / " + currentEnemy.maxHP;
-        bloomText.text = "Bloom: " + currentBloom;
+        bloomText.text = "Bloom: " + ActiveBloom;
     }
 
     private IEnumerator PerformMeleeAttack(Transform attacker, Transform target, Action onHit, Action onComplete)
@@ -346,24 +531,19 @@ public class CombatSystem : MonoBehaviour
         onComplete?.Invoke();
     }
 
-     // --- NEW ANIMATIONS ---
-
     private IEnumerator PerformItemAnimation(Transform actor, Action onComplete)
     {
         var startPos = actor.position;
-        var peakPos = startPos + Vector3.up * 1.5f; // Move up 1.5 units
+        var peakPos = startPos + Vector3.up * 1.5f; 
 
-        // 1. Move straight up
         while (Vector3.Distance(actor.position, peakPos) > 0.05f)
         {
             actor.position = Vector3.MoveTowards(actor.position, peakPos, moveSpeed * Time.deltaTime);
             yield return null;
         }
 
-        // Pause for a tiny fraction of a second at the top
         yield return new WaitForSeconds(0.1f);
 
-        // 2. Move straight down back to start
         while (Vector3.Distance(actor.position, startPos) > 0.05f)
         {
             actor.position = Vector3.MoveTowards(actor.position, startPos, moveSpeed * Time.deltaTime);
@@ -377,31 +557,26 @@ public class CombatSystem : MonoBehaviour
     private IEnumerator PerformSkillAnimation(Transform attacker, Transform target, Action onHit, Action onComplete)
     {
         var startPos = attacker.position;
-        var targetPos = Vector3.Lerp(startPos, target.position, 0.6f); // Target point slightly in front of enemy
+        var targetPos = Vector3.Lerp(startPos, target.position, 0.6f); 
         
-        // Calculate the peak of the jump (halfway forward, and 2 units up)
         var midPoint = Vector3.Lerp(startPos, targetPos, 0.5f);
         var peakPos = midPoint + Vector3.up * 2f; 
 
-        // 1. Leap diagonally up to the peak
         while (Vector3.Distance(attacker.position, peakPos) > 0.05f)
         {
             attacker.position = Vector3.MoveTowards(attacker.position, peakPos, moveSpeed * Time.deltaTime);
             yield return null;
         }
 
-        // 2. Dive diagonally down to the enemy
         while (Vector3.Distance(attacker.position, targetPos) > 0.05f)
         {
-            attacker.position = Vector3.MoveTowards(attacker.position, targetPos, moveSpeed * 1.5f * Time.deltaTime); // Dive slightly faster
+            attacker.position = Vector3.MoveTowards(attacker.position, targetPos, moveSpeed * 1.5f * Time.deltaTime); 
             yield return null;
         }
 
-        // We hit the enemy! Apply damage.
         onHit?.Invoke();
         yield return new WaitForSeconds(0.1f);
 
-        // 3. Return to the start position
         while (Vector3.Distance(attacker.position, startPos) > 0.05f)
         {
             attacker.position = Vector3.MoveTowards(attacker.position, startPos, moveSpeed * Time.deltaTime);
@@ -415,20 +590,35 @@ public class CombatSystem : MonoBehaviour
     private IEnumerator PerformRunAnimation(Transform actor, Action onComplete)
     {
         var startPos = actor.position;
-        var offscreenPos = startPos + (Vector3.left * 10f); // Move 10 units to the left
+        var offscreenPos = startPos + (Vector3.left * 10f); 
 
-        // 1. Sprint offscreen
         while (Vector3.Distance(actor.position, offscreenPos) > 0.05f)
         {
-            // Multiplying speed by 1.5 so running away feels urgent
             actor.position = Vector3.MoveTowards(actor.position, offscreenPos, moveSpeed * 1.5f * Time.deltaTime);
             yield return null;
         }
 
-        // 2. Transition scene
         onComplete?.Invoke();
     }
 
+    private IEnumerator ShakeSprite(Transform targetTransform, float duration, float magnitude)
+    {
+        Vector3 originalPos = targetTransform.localPosition;
+        float elapsed = 0.0f;
+
+        while (elapsed < duration)
+        {
+            float x = originalPos.x + UnityEngine.Random.Range(-1f, 1f) * magnitude;
+            float y = originalPos.y + UnityEngine.Random.Range(-1f, 1f) * magnitude;
+
+            targetTransform.localPosition = new Vector3(x, y, originalPos.z);
+
+            elapsed += Time.deltaTime;
+            yield return null; 
+        }
+
+        targetTransform.localPosition = originalPos;
+    }
 
     // --- MENU NAVIGATION ---
 
@@ -437,36 +627,86 @@ public class CombatSystem : MonoBehaviour
         if (!isPlayerTurn) return;
         mainMenuPanel.SetActive(false);
         skillMenuPanel.SetActive(true);
+
+        StartCoroutine(HighlightButtonSafe(skillDefaultButton));
     }
 
     public void OpenItemMenu()
     {
         if (!isPlayerTurn) return;
-        UpdateItemUI(); // Refresh the numbers before showing the menu
+        UpdateItemUI(); 
+        
         mainMenuPanel.SetActive(false);
         itemMenuPanel.SetActive(true);
-    }
-    private void UpdateItemUI()
-    {
-        // Check our global inventory
-        if (GameManager.healthPotions > 0)
-        {
-            healItemText.text = "Heal +20 (x" + GameManager.healthPotions + ")";
-            healItemButton.interactable = true; // Button is clickable
-        }
-        else
-        {
-            healItemText.text = "Out of Potions!";
-            healItemButton.interactable = false; // Grays out the button
-        }
-    }
-    
 
+        StartCoroutine(HighlightButtonSafe(itemDefaultButton));
+    }
 
     public void BackToMainMenu()
     {
+        if (cachedEventSystem != null)
+        {
+            cachedEventSystem.enabled = true; 
+        }
+
         skillMenuPanel.SetActive(false);
         itemMenuPanel.SetActive(false);
         mainMenuPanel.SetActive(true);
+
+        StartCoroutine(HighlightButtonSafe(mainDefaultButton));
+    }
+
+    private void HideAllMenus()
+    {
+        if (cachedEventSystem != null)
+        {
+            cachedEventSystem.enabled = false;
+        }
+
+        if (mainMenuPanel != null) mainMenuPanel.SetActive(false);
+        if (skillMenuPanel != null) skillMenuPanel.SetActive(false);
+        if (itemMenuPanel != null) itemMenuPanel.SetActive(false);
+    }
+
+    private IEnumerator HighlightButtonSafe(GameObject buttonToHighlight)
+    {
+        EventSystem.current.SetSelectedGameObject(null); 
+        yield return null; 
+        EventSystem.current.SetSelectedGameObject(buttonToHighlight); 
+    }
+
+    private void UpdateItemUI()
+    {
+        if (GameManager.Instance != null && GameManager.Instance.playerData != null)
+        {
+            var potions = GameManager.Instance.playerData.healthPotions;
+            if (potions > 0)
+            {
+                healItemText.text = "Heal +20 (x" + potions + ")";
+                healItemButton.interactable = true;
+            }
+            else
+            {
+                healItemText.text = "Out of Potions!";
+                healItemButton.interactable = false;
+            }
+        }
+        else
+        {
+            healItemText.text = "Heal +20 (Testing)";
+            healItemButton.interactable = true;
+        }
+    }
+    
+    private void Update()
+    {
+        if (Time.timeScale <= 0) return;
+        if (isPlayerTurn && (Input.GetKeyDown(KeyCode.P)) || (Input.GetKeyDown(KeyCode.X)))
+        {
+            if (skillMenuPanel.activeSelf || itemMenuPanel.activeSelf)
+            {
+                BackToMainMenu();
+            }
+        }
     }
 }
