@@ -21,6 +21,8 @@ public class PlayerController : MonoBehaviour
 
     private bool isRunning = false;
 
+    private bool alreadyTinted = false; // To prevent multiple tints
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -46,10 +48,11 @@ public class PlayerController : MonoBehaviour
     // Logic to check if the player should look like an alien
     public void UpdateAppearance()
     {
-        if (GameManager.Instance != null && GameManager.Instance.playerData.hasAlien)
+        if (GameManager.Instance != null && GameManager.Instance.playerData.hasAlien && !alreadyTinted)
         {
             if (spriteRenderer != null)
             {
+                alreadyTinted = true; // Set this to true to prevent future tints
                 spriteRenderer.color = alienTint;
             }
         }
