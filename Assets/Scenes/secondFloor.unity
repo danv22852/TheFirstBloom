@@ -923,7 +923,7 @@ Transform:
   m_GameObject: {fileID: 347369765}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -34.49, y: -4.33, z: -5.7243466}
+  m_LocalPosition: {x: -30.9, y: -4.29, z: -5.7243466}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -977,7 +977,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 813bd039a4ffb694696d61575d1cfcff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uniqueEnemyID: Hornet_06
+  uniqueEnemyID: stag_01
 --- !u!61 &347369770
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1016,7 +1016,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 2.9, y: 1.71}
+    oldSize: {x: 2.38, y: 1.18}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -1095,7 +1095,7 @@ SpriteRenderer:
   m_SortingLayerID: -341100307
   m_SortingLayer: 2
   m_SortingOrder: 9
-  m_Sprite: {fileID: -5609690867295641496, guid: dd973c9771d6add4c9c582d91900310a, type: 3}
+  m_Sprite: {fileID: 5649430280383667943, guid: f0919632d584a924fac5b3c404595725, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1127,7 +1127,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &366760888
 Transform:
   m_ObjectHideFlags: 0
@@ -1341,7 +1341,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &375516337
 Transform:
   m_ObjectHideFlags: 0
@@ -1405,7 +1405,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 813bd039a4ffb694696d61575d1cfcff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uniqueEnemyID: Hornet_08
+  uniqueEnemyID: Hornet_1
 --- !u!61 &375516341
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1581,6 +1581,9 @@ MonoBehaviour:
   playerData: {fileID: 11400000, guid: bd7a55abcffdb6543b43fb6753c17475, type: 2}
   enemyRoster:
   - {fileID: 11400000, guid: a639f5bd9007bff4bbfac4ea51ba1f39, type: 2}
+  - {fileID: 11400000, guid: cc1a33ab7a68744a3adbc1201287054b, type: 2}
+  - {fileID: 11400000, guid: 6d35684ff73a842798920c04a4779cc5, type: 2}
+  - {fileID: 11400000, guid: 92d20c9f2802e6a4a99196250dff6460, type: 2}
 --- !u!1 &431351227
 GameObject:
   m_ObjectHideFlags: 0
@@ -1832,7 +1835,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 813bd039a4ffb694696d61575d1cfcff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uniqueEnemyID: Hornet_1
+  uniqueEnemyID: Hornet_2
 --- !u!61 &459682660
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2317,7 +2320,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &522925955
 Transform:
   m_ObjectHideFlags: 0
@@ -3448,7 +3451,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 813bd039a4ffb694696d61575d1cfcff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uniqueEnemyID: Hornet_1
+  uniqueEnemyID: Oog_1
 --- !u!61 &673267744
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3487,7 +3490,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 2.9, y: 1.71}
+    oldSize: {x: 1.47, y: 2.09}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -3566,7 +3569,7 @@ SpriteRenderer:
   m_SortingLayerID: -341100307
   m_SortingLayer: 2
   m_SortingOrder: 9
-  m_Sprite: {fileID: -5609690867295641496, guid: dd973c9771d6add4c9c582d91900310a, type: 3}
+  m_Sprite: {fileID: -5655882041658986137, guid: c6e35130e36ebf542883a5485cbb0416, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -59110,6 +59113,26 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6561221849165880265, guid: 1e695e76047d3440d89b14ff400f7f5b, type: 3}
+      propertyPath: BASE_SPEED
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6561221849165880265, guid: 1e695e76047d3440d89b14ff400f7f5b, type: 3}
+      propertyPath: alienTint.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6561221849165880265, guid: 1e695e76047d3440d89b14ff400f7f5b, type: 3}
+      propertyPath: alienTint.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6561221849165880265, guid: 1e695e76047d3440d89b14ff400f7f5b, type: 3}
+      propertyPath: alienTint.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6561221849165880265, guid: 1e695e76047d3440d89b14ff400f7f5b, type: 3}
+      propertyPath: alienTint.r
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7556611422782344113, guid: 1e695e76047d3440d89b14ff400f7f5b, type: 3}
       propertyPath: m_Name
       value: Player
@@ -59527,7 +59550,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 813bd039a4ffb694696d61575d1cfcff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uniqueEnemyID: Hornet_1
+  uniqueEnemyID: Batty_1
 --- !u!61 &1755156690
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -59566,7 +59589,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 2.9, y: 1.71}
+    oldSize: {x: 3.38, y: 1.45}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -59645,7 +59668,7 @@ SpriteRenderer:
   m_SortingLayerID: -341100307
   m_SortingLayer: 2
   m_SortingOrder: 9
-  m_Sprite: {fileID: -5609690867295641496, guid: dd973c9771d6add4c9c582d91900310a, type: 3}
+  m_Sprite: {fileID: -8715215385782707171, guid: 36475dfa56599ea428f2c1401be05a78, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -60495,7 +60518,7 @@ SpriteRenderer:
   m_SortingLayerID: -341100307
   m_SortingLayer: 2
   m_SortingOrder: 9
-  m_Sprite: {fileID: -5609690867295641496, guid: dd973c9771d6add4c9c582d91900310a, type: 3}
+  m_Sprite: {fileID: -7652963060212556650, guid: 0fe2f32543a89a3418010892496ca858, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
