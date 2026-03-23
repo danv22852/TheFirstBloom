@@ -1566,6 +1566,7 @@ MonoBehaviour:
   enemyRoster:
   - {fileID: 11400000, guid: 09416be33c6bc6d46a04e245c8521d2c, type: 2}
   - {fileID: 11400000, guid: 92d20c9f2802e6a4a99196250dff6460, type: 2}
+  - {fileID: 11400000, guid: a639f5bd9007bff4bbfac4ea51ba1f39, type: 2}
 --- !u!1 &377030850
 GameObject:
   m_ObjectHideFlags: 0
@@ -5786,7 +5787,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tilemap: {fileID: 1580289023}
-  breakableTile: {fileID: 11400000, guid: 4d0e2c22df2d94bfbb1b82488884ec01, type: 2}
+  breakableTile: {fileID: 11400000, guid: 3a44b28d33ff046018dc7f29986c0cf3, type: 2}
   breakParticlePrefab: {fileID: 1792375068222206246, guid: 3465de5a04b7e4a3f8623ccd7807ded4, type: 3}
 --- !u!483693784 &1580289022
 TilemapRenderer:
