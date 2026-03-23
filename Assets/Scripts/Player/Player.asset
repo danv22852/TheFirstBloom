@@ -18,10 +18,10 @@ MonoBehaviour:
   speed: 10
   defense: 5
   luck: 0
-  floorName: secondFloor
+  floorName: firstFloor
   healthPotions: 3
-  hasAlien: 1
-  currentBloom: 3
+  hasAlien: 0
+  currentBloom: 0
   currentBloomState: 0
   coreSlots:
   - {fileID: 0}
@@ -30,6 +30,5 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   knownCoreIDs: []
-  finishedTutorial: 1
-  defeatedEnemies:
-  - tutorial_boss
+  finishedTutorial: 0
+  defeatedEnemies: []

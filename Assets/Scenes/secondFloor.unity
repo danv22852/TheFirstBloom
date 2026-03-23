@@ -1783,7 +1783,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 813bd039a4ffb694696d61575d1cfcff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uniqueEnemyID: Hornet_07
+  uniqueEnemyID: Hornet_1
 --- !u!61 &366760892
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2580,7 +2580,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 813bd039a4ffb694696d61575d1cfcff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uniqueEnemyID: Hornet_05
+  uniqueEnemyID: Hornet_1
 --- !u!61 &459682660
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3129,7 +3129,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 813bd039a4ffb694696d61575d1cfcff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uniqueEnemyID: Hornet_03
+  uniqueEnemyID: Hornet_1
 --- !u!61 &522925959
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4196,7 +4196,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 813bd039a4ffb694696d61575d1cfcff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uniqueEnemyID: Hornet_02
+  uniqueEnemyID: Hornet_1
 --- !u!61 &673267744
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -60789,7 +60789,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 813bd039a4ffb694696d61575d1cfcff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uniqueEnemyID: Hornet_04
+  uniqueEnemyID: Hornet_1
 --- !u!61 &1755156690
 BoxCollider2D:
   m_ObjectHideFlags: 0
