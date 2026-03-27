@@ -138,26 +138,33 @@ public class CombatSystem : MonoBehaviour
         UpdateTestBloomState(); 
     }
 
-        var sr = enemyTransform.GetComponent<SpriteRenderer>();
-        if (currentEnemy.enemySprite != null && sr != null)
+    if (GameManager.pendingEnemyData != null)
         {
-            sr.sprite = currentEnemy.enemySprite;
-
-            enemyTransform.localScale = new Vector3(currentEnemy.combatScale, currentEnemy.combatScale, 1f);
+            Debug.Log("<color=green>Direct Hand-off Successful! Loading: </color>" + GameManager.pendingEnemyData.enemyName);
+            
+            // Overwrite our fallback with the real Overworld enemy!
+            currentEnemy = GameManager.pendingEnemyData; 
+            
+            // Optional: Clear the GameManager's hands so it doesn't accidentally load the Hornet next time!
+            GameManager.pendingEnemyData = null; 
         }
 
-    if (currentEnemy == null)
-    {
-        Debug.LogError("CRASH AVOIDED: No Enemy Data! Drag an Enemy ScriptableObject into the Inspector!");
-        yield break; // Stop the coroutine if there's no enemy
-    }
-
-    // Set Enemy Visuals
-    var sr = enemyTransform.GetComponent<SpriteRenderer>();
-    if (currentEnemy.enemySprite != null && sr != null)
-    {
-        sr.sprite = currentEnemy.enemySprite;
-    }
+    // --- 5. SET ENEMY VISUALS AND STATS ---
+        if (enemyTransform == null)
+        {
+            Debug.LogError("ERROR: The 'Enemy Transform' slot in your CombatManager Inspector is empty!");
+        }
+        else
+        {
+            var sr = enemyTransform.GetComponent<SpriteRenderer>();
+            if (currentEnemy.enemySprite != null && sr != null)
+            {
+                sr.sprite = currentEnemy.enemySprite; 
+                enemyTransform.localScale = new Vector3(currentEnemy.combatScale, currentEnemy.combatScale, 1f);
+                sr.flipX = currentEnemy.flipSprite;
+                Debug.Log("<color=cyan>3. Sprite assigned successfully!</color>");
+            }
+        }
 
     enemyHealth = currentEnemy.maxHP;
     enemySpeed = currentEnemy.speed;
@@ -246,7 +253,16 @@ public class CombatSystem : MonoBehaviour
             },
             onComplete: () =>
             {
-                CheckWinConditionOrContinue();
+                // --- NEW: Check for victory AFTER the animation finishes! ---
+                if (enemyHealth <= 0)
+                {
+                    HandleEnemyDefeat(); // Send to the graveyard and load the Overworld!
+                }
+                else
+                {
+                    // If the enemy survived, continue the normal turn flow
+                    CheckWinConditionOrContinue();
+                }
             }));
     }
 
@@ -285,7 +301,7 @@ public class CombatSystem : MonoBehaviour
 
         // Modifying this now writes directly to PlayerData behind the scenes!
         ActiveBloom += bloomCost;
-        UpdateHealthUI(); // Update UI to show new Bloom value
+        UpdateHealthUI(); 
         
         StartCoroutine(PerformSkillAnimation(playerTransform, enemyTransform,
             onHit: () =>
@@ -298,7 +314,16 @@ public class CombatSystem : MonoBehaviour
             },
             onComplete: () =>
             {
-                CheckWinConditionOrContinue();
+                // --- NEW: Check for victory AFTER the animation finishes! ---
+                if (enemyHealth <= 0)
+                {
+                    HandleEnemyDefeat(); // Send to the graveyard and load the Overworld!
+                }
+                else
+                {
+                    // If the enemy survived, continue the normal turn flow
+                    CheckWinConditionOrContinue();
+                }
             }));
     }
 
@@ -381,6 +406,35 @@ public class CombatSystem : MonoBehaviour
             Debug.Log("Failed to escape!");
             isPlayerTurn = false;
             EnemyTurn(); 
+        }
+    }
+
+    private void HandleEnemyDefeat()
+    {
+        Debug.Log("<color=green>VICTORY! The enemy is defeated.</color>");
+
+        // 1. Save all player stats using your custom helper function!
+        PersistStatsToPlayerData(); 
+
+        // 2. THE GRAVEYARD LOGIC 
+        if (GameManager.Instance != null && !string.IsNullOrEmpty(GameManager.encounteredInstanceID))
+        {
+            if (!GameManager.Instance.playerData.defeatedEnemies.Contains(GameManager.encounteredInstanceID))
+            {
+                GameManager.Instance.playerData.defeatedEnemies.Add(GameManager.encounteredInstanceID);
+            }
+            GameManager.encounteredInstanceID = ""; 
+        }
+
+        // 3. RETURN TO OVERWORLD (Using your dynamic floorName!)
+        if (GameManager.Instance != null && !string.IsNullOrEmpty(GameManager.Instance.playerData.floorName))
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene(GameManager.Instance.playerData.floorName);
+        }
+        else
+        {
+            // Fallback just in case
+            UnityEngine.SceneManagement.SceneManager.LoadScene("SecondFloor"); 
         }
     }
 

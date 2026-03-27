@@ -15,6 +15,9 @@ public class GameManager : MonoBehaviour
     public static string currentMapBoundaryName;
 
     public static string currentEnemyID = "";
+    public static string encounteredInstanceID = "";
+    // This will hold the EXACT data file passed from the Overworld!
+    public static EnemyData pendingEnemyData;
 
     [Header("Enemy Roster")]
     public EnemyData[] enemyRoster;
@@ -46,5 +49,31 @@ public class GameManager : MonoBehaviour
         }
         Debug.LogWarning("No enemy found with ID: " + id);
         return null;
+    }
+
+    public void ResetSaveData()
+    {
+        if (playerData != null)
+        {
+            // 1. Empty the graveyard completely!
+            playerData.defeatedEnemies.Clear();
+
+            // 2. Heal the player back to their maximum health
+            playerData.currentHP = playerData.maxHP;
+
+            // 3. Reset any other stats (like Bloom, money, etc.)
+            // playerData.currentBloom = 0; 
+
+            Debug.Log("<color=cyan>SAVE DATA RESET! The graveyard is empty and player is healed.</color>");
+        }
+    }
+
+    private void Update()
+    {
+        // If you press the F12 key on your keyboard while playing...
+        if (Input.GetKeyDown(KeyCode.F12))
+        {
+            ResetSaveData();
+        }
     }
 }

@@ -14,10 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyID: Hornet_1
   enemyName: Hornet
-  enemySprite: {fileID: 0}
+  enemySprite: {fileID: 4286265989511706523, guid: 792a70b7b30780c42b3f0f1b503d9205, type: 3}
   maxHP: 160
   strength: 10
   speed: 6
   defense: 2
   combatScale: 1
+  flipSprite: 1
   skills: []

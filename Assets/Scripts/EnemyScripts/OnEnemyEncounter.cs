@@ -1,16 +1,20 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class EnemyEncounter : MonoBehaviour // (Or whatever you named this script)
+public class EnemyEncounter : MonoBehaviour 
 {
-    [Header("Enemy Identity")]
-    // You MUST type a unique name for every single enemy in the Unity Inspector!
-    public string uniqueEnemyID = "Slime_01";
+    [Header("1. Map Identity (For Graveyard)")]
+    [Tooltip("MUST be unique for every single enemy on the map! e.g., Slime_Room1_A")]
+    public string uniqueEnemyID;
+
+    [Header("2. Combat Data (For Sprite/Stats)")]
+    [Tooltip("Drag the ScriptableObject for this enemy type here!")]
+    public EnemyData enemyType;
 
     private void Start()
     {
-        // When the Overworld loads, check if this enemy's ID is in the graveyard
-        if (GameManager.Instance.playerData.defeatedEnemies.Contains(uniqueEnemyID))
+        // When the Overworld loads, check if this unique map ID is in the graveyard
+        if (GameManager.Instance != null && GameManager.Instance.playerData.defeatedEnemies.Contains(uniqueEnemyID))
         {
             // If it is, destroy this object immediately before the player even sees it
             Destroy(gameObject);
@@ -27,13 +31,25 @@ public class EnemyEncounter : MonoBehaviour // (Or whatever you named this scrip
             GameManager.lastPlayerPosition = other.transform.position + (pushDirection * safeDistance);
             GameManager.isReturningFromCombat = true;
 
-            // --- NEW: Tell the GameManager exactly who we are fighting ---
-            GameManager.currentEnemyID = this.uniqueEnemyID;
-            if (!GameManager.Instance.playerData.finishedTutorial){
-                Debug.Log("Starting tutorial battle...");
+            // --- THE NEW DIRECT HAND-OFF ---
+            if (enemyType != null)
+            {
+                // We physically hand the ScriptableObject to the GameManager!
+                GameManager.pendingEnemyData = this.enemyType; 
+            }
+            
+            // We still pass the map ID so the graveyard works later
+            GameManager.encounteredInstanceID = this.uniqueEnemyID; 
+
+            // Load the correct scene
+            if (!GameManager.Instance.playerData.finishedTutorial)
+            {
                 SceneManager.LoadScene("TutorialBattle");
             }
-            else SceneManager.LoadScene("CombatUI");
+            else 
+            {
+                SceneManager.LoadScene("CombatUI");
+            }
         }
     }
 }
