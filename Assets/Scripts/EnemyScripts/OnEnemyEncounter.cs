@@ -4,44 +4,59 @@ using UnityEngine.SceneManagement;
 public class EnemyEncounter : MonoBehaviour 
 {
     [Header("1. Map Identity (For Graveyard)")]
-    [Tooltip("MUST be unique for every single enemy on the map! e.g., Slime_Room1_A")]
     public string uniqueEnemyID;
 
     [Header("2. Combat Data (For Sprite/Stats)")]
-    [Tooltip("Drag the ScriptableObject for this enemy type here!")]
     public EnemyData enemyType;
 
     private void Start()
     {
-        // When the Overworld loads, check if this unique map ID is in the graveyard
+        // 1. Graveyard Check
         if (GameManager.Instance != null && GameManager.Instance.playerData.defeatedEnemies.Contains(uniqueEnemyID))
         {
-            // If it is, destroy this object immediately before the player even sees it
             Destroy(gameObject);
+            return; // Stop running this script if the enemy is dead!
         }
+
+        // 2. THE GRACE PERIOD FIX
+        // If we just came back from a battle (like fleeing), disable this enemy's 
+        // trigger collider for 1.5 seconds so the player has time to walk away!
+        if (GameManager.isReturningFromCombat)
+        {
+            Collider2D col = GetComponent<Collider2D>();
+            if (col != null) col.enabled = false;
+            
+            Invoke(nameof(EnableCollider), 1.5f);
+        }
+    }
+
+    private void EnableCollider()
+    {
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null) col.enabled = true;
+        
+        // Reset the global flag so enemies act normal again
+        GameManager.isReturningFromCombat = false; 
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
-            // Calculate safe spawn zone
-            Vector3 pushDirection = (other.transform.position - transform.position).normalized;
-            float safeDistance = 1.5f;
-            GameManager.lastPlayerPosition = other.transform.position + (pushDirection * safeDistance);
+            // --- THE WALL FIX ---
+            // No more pushback math! Just save the player's exact, physical location.
+            // Since they weren't in a wall when they touched the enemy, this spot is guaranteed safe.
+            GameManager.lastPlayerPosition = other.transform.position;
             GameManager.isReturningFromCombat = true;
 
-            // --- THE NEW DIRECT HAND-OFF ---
+            // Direct Hand-Off
             if (enemyType != null)
             {
-                // We physically hand the ScriptableObject to the GameManager!
                 GameManager.pendingEnemyData = this.enemyType; 
             }
-            
-            // We still pass the map ID so the graveyard works later
             GameManager.encounteredInstanceID = this.uniqueEnemyID; 
 
-            // Load the correct scene
+            // Load Scene
             if (!GameManager.Instance.playerData.finishedTutorial)
             {
                 SceneManager.LoadScene("TutorialBattle");

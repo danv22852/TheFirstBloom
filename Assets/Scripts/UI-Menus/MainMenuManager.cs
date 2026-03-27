@@ -43,6 +43,14 @@ public class MainMenuManager : MonoBehaviour
         SceneManager.LoadScene("firstFloor"); 
     }
 
+    public void OnNewGameButton()
+    {
+        // Wipe the old save data before loading the Overworld!
+        GameManager.Instance.ResetSaveData(); 
+        
+        UnityEngine.SceneManagement.SceneManager.LoadScene("firstFloor");
+    }
+
     public void QuitGame()
     {
         Debug.Log("Quitting Game...");

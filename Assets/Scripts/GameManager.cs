@@ -51,6 +51,8 @@ public class GameManager : MonoBehaviour
         return null;
     }
 
+    // This magic tag creates a custom button in your Unity Editor!
+    [ContextMenu("Reset Save Data")]
     public void ResetSaveData()
     {
         if (playerData != null)
@@ -60,9 +62,6 @@ public class GameManager : MonoBehaviour
 
             // 2. Heal the player back to their maximum health
             playerData.currentHP = playerData.maxHP;
-
-            // 3. Reset any other stats (like Bloom, money, etc.)
-            // playerData.currentBloom = 0; 
 
             Debug.Log("<color=cyan>SAVE DATA RESET! The graveyard is empty and player is healed.</color>");
         }
