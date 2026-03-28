@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 using System;
@@ -35,6 +36,17 @@ public class CombatSystem : MonoBehaviour
     public TextMeshProUGUI playerHP;
     public TextMeshProUGUI enemyHP;
     public TextMeshProUGUI bloomText;
+
+    [Header("Visual Bars")]
+    public Slider playerHpSlider;
+    public Slider enemyHpSlider;
+    public Slider bloomSlider;
+    public Image bloomFillImage; // We need this specific piece to change the color!
+
+    [Header("Bloom Colors")]
+    public Color lowBloomColor = new Color(0.4f, 0f, 0.6f); // Dark Purple
+    public Color mediumBloomColor = new Color(1f, 0f, 0.8f); // Hot Pink
+    public Color highBloomColor = new Color(1f, 0f, 0f); // Blood Red
 
     [Header("Keyboard Navigation Defaults")]
     public GameObject mainDefaultButton;  
@@ -101,55 +113,55 @@ public class CombatSystem : MonoBehaviour
     }
 
     private IEnumerator Start() // Changed from 'void' to 'IEnumerator'
-{
-    // --- 1. THE TUTORIAL PAUSE UI CHECK ---
-    // If the tutorial script has set timeScale to 0, we sit in this loop.
-    // We use WaitForSecondsRealtime because regular Time is frozen!
-    while (Time.timeScale <= 0)
     {
-        yield return new WaitForSecondsRealtime(0.1f);
-    }
-
-    // Brief 0.1s buffer to ensure the Tutorial object is fully destroyed 
-    // and the EventSystem is ready for new selections.
-    yield return new WaitForSecondsRealtime(0.1f);
-
-    // --- 2. INITIALIZE SYSTEM ---
-    cachedEventSystem = UnityEngine.EventSystems.EventSystem.current;
-
-    // --- 3. LOAD PLAYER DATA ---
-    if (GameManager.Instance != null && GameManager.Instance.playerData != null)
-    {
-        var pd = GameManager.Instance.playerData;
-        playerHealth = pd.currentHP;
-        playerMaxHealth = pd.maxHP;
-        playerStrength = pd.strength;
-        playerSpeed = pd.speed;
-        playerDefense = pd.defense;
-    }
-    else
-    {
-        Debug.Log("<color=cyan>TESTING MODE:</color> No GameManager found. Using Inspector Fallback Stats!");
-        playerMaxHealth = testPlayerMaxHealth;
-        playerHealth = testPlayerMaxHealth; 
-        playerStrength = testPlayerStrength;
-        playerSpeed = testPlayerSpeed;
-        playerDefense = testPlayerDefense;
-        UpdateTestBloomState(); 
-    }
-
-    if (GameManager.pendingEnemyData != null)
+        // --- 1. THE TUTORIAL PAUSE UI CHECK ---
+        // If the tutorial script has set timeScale to 0, we sit in this loop.
+        // We use WaitForSecondsRealtime because regular Time is frozen!
+        while (Time.timeScale <= 0)
         {
-            Debug.Log("<color=green>Direct Hand-off Successful! Loading: </color>" + GameManager.pendingEnemyData.enemyName);
-            
-            // Overwrite our fallback with the real Overworld enemy!
-            currentEnemy = GameManager.pendingEnemyData; 
-            
-            // Optional: Clear the GameManager's hands so it doesn't accidentally load the Hornet next time!
-            GameManager.pendingEnemyData = null; 
+            yield return new WaitForSecondsRealtime(0.1f);
         }
 
-    // --- 5. SET ENEMY VISUALS AND STATS ---
+        // Brief 0.1s buffer to ensure the Tutorial object is fully destroyed 
+        // and the EventSystem is ready for new selections.
+        yield return new WaitForSecondsRealtime(0.1f);
+
+        // --- 2. INITIALIZE SYSTEM ---
+        cachedEventSystem = UnityEngine.EventSystems.EventSystem.current;
+
+        // --- 3. LOAD PLAYER DATA ---
+        if (GameManager.Instance != null && GameManager.Instance.playerData != null)
+        {
+            var pd = GameManager.Instance.playerData;
+            playerHealth = pd.currentHP;
+            playerMaxHealth = pd.maxHP;
+            playerStrength = pd.strength;
+            playerSpeed = pd.speed;
+            playerDefense = pd.defense;
+        }
+        else
+        {
+            Debug.Log("<color=cyan>TESTING MODE:</color> No GameManager found. Using Inspector Fallback Stats!");
+            playerMaxHealth = testPlayerMaxHealth;
+            playerHealth = testPlayerMaxHealth;
+            playerStrength = testPlayerStrength;
+            playerSpeed = testPlayerSpeed;
+            playerDefense = testPlayerDefense;
+            UpdateTestBloomState();
+        }
+
+        if (GameManager.pendingEnemyData != null)
+        {
+            Debug.Log("<color=green>Direct Hand-off Successful! Loading: </color>" + GameManager.pendingEnemyData.enemyName);
+
+            // Overwrite our fallback with the real Overworld enemy!
+            currentEnemy = GameManager.pendingEnemyData;
+
+            // Optional: Clear the GameManager's hands so it doesn't accidentally load the Hornet next time!
+            GameManager.pendingEnemyData = null;
+        }
+
+        // --- 5. SET ENEMY VISUALS AND STATS ---
         if (enemyTransform == null)
         {
             Debug.LogError("ERROR: The 'Enemy Transform' slot in your CombatManager Inspector is empty!");
@@ -159,24 +171,29 @@ public class CombatSystem : MonoBehaviour
             var sr = enemyTransform.GetComponent<SpriteRenderer>();
             if (currentEnemy.enemySprite != null && sr != null)
             {
-                sr.sprite = currentEnemy.enemySprite; 
+                sr.sprite = currentEnemy.enemySprite;
                 enemyTransform.localScale = new Vector3(currentEnemy.combatScale, currentEnemy.combatScale, 1f);
                 sr.flipX = currentEnemy.flipSprite;
                 Debug.Log("<color=cyan>3. Sprite assigned successfully!</color>");
             }
         }
 
-    enemyHealth = currentEnemy.maxHP;
-    enemySpeed = currentEnemy.speed;
-    
-    // --- 5. START THE ROUND ---
-    UpdateHealthUI();
-    DetermineFirstTurn();
+        enemyHealth = currentEnemy.maxHP;
+        enemySpeed = currentEnemy.speed;
 
-    // DetermineFirstTurn handles calling PlayerStartTurn() or EnemyTurn()
-    // so we don't need to call PlayerStartTurn() again here.
-}
-    
+        // Set the maximums for our sliders!
+        if (playerHpSlider != null) playerHpSlider.maxValue = playerMaxHealth;
+        if (enemyHpSlider != null) enemyHpSlider.maxValue = currentEnemy.maxHP;
+        if (bloomSlider != null) bloomSlider.maxValue = 100;
+
+        // --- 5. START THE ROUND ---
+        UpdateHealthUI();
+        DetermineFirstTurn();
+
+        // DetermineFirstTurn handles calling PlayerStartTurn() or EnemyTurn()
+        // so we don't need to call PlayerStartTurn() again here.
+    }
+
 
     private void DetermineFirstTurn()
     {
@@ -299,8 +316,14 @@ public class CombatSystem : MonoBehaviour
             }
         }
 
-        // Modifying this now writes directly to PlayerData behind the scenes!
-        ActiveBloom += bloomCost;
+        // Grab the max bloom from your data file (fallback to 100 just in case)
+        int currentMaxBloom = (GameManager.Instance != null && GameManager.Instance.playerData != null) 
+            ? GameManager.Instance.playerData.maxBloom 
+            : 100;
+
+        // Mathf.Min picks the smaller of the two numbers. 
+        // If ActiveBloom + cost equals 115, it will force it back down to 100!
+        ActiveBloom = Mathf.Min(ActiveBloom + bloomCost, currentMaxBloom);
         UpdateHealthUI(); 
         
         StartCoroutine(PerformSkillAnimation(playerTransform, enemyTransform,
@@ -559,9 +582,48 @@ public class CombatSystem : MonoBehaviour
 
     private void UpdateHealthUI()
     {
-        playerHP.text = "Player HP: " + playerHealth + " / " + playerMaxHealth;
-        enemyHP.text = "Enemy HP: " + enemyHealth + " / " + currentEnemy.maxHP;
-        bloomText.text = "Bloom: " + ActiveBloom;
+        // 1. Text Updates
+        if (playerHP != null) 
+        {
+            playerHP.text = "HP: " + playerHealth + " / " + playerMaxHealth;
+        }
+
+        // --- THE FIX: Use the dynamic enemy name! ---
+        if (enemyHP != null && currentEnemy != null) 
+        {
+            // This will now print "Hornet HP: 130 / 130"
+            enemyHP.text = currentEnemy.enemyName + " HP: " + enemyHealth + " / " + currentEnemy.maxHP;
+        }
+
+        int currentMaxBloom = (GameManager.Instance != null && GameManager.Instance.playerData != null) 
+            ? GameManager.Instance.playerData.maxBloom 
+            : 100;
+
+        // 2. Update the Text
+        if (bloomText != null) 
+        {
+            bloomText.text = "Bloom: " + ActiveBloom + " / " + currentMaxBloom;
+        }
+
+        if (playerHpSlider != null) playerHpSlider.maxValue = playerMaxHealth;
+        if (enemyHpSlider != null) enemyHpSlider.maxValue = currentEnemy.maxHP;
+        if (bloomSlider != null) bloomSlider.maxValue = 100;
+
+        // 3. APPLY CURRENT VALUES
+        if (playerHpSlider != null) playerHpSlider.value = playerHealth;
+        if (enemyHpSlider != null) enemyHpSlider.value = enemyHealth;
+        if (bloomSlider != null) bloomSlider.value = ActiveBloom;
+
+        // 4. COLOR SHIFT
+        if (bloomFillImage != null)
+        {
+            if (ActiveBloomState == BloomState.Low) bloomFillImage.color = lowBloomColor;
+            else if (ActiveBloomState == BloomState.Medium) bloomFillImage.color = mediumBloomColor;
+            else if (ActiveBloomState == BloomState.High) bloomFillImage.color = highBloomColor;
+        }
+        
+        // DEBUG: If it's still breaking, this will tell us why!
+        Debug.Log($"UI UPDATED: PlayerSlider({playerHpSlider.value}/{playerHpSlider.maxValue}), EnemySlider({enemyHpSlider.value}/{enemyHpSlider.maxValue}), BloomSlider({bloomSlider.value}/{bloomSlider.maxValue})");
     }
 
     private IEnumerator PerformMeleeAttack(Transform attacker, Transform target, Action onHit, Action onComplete)

@@ -35,6 +35,7 @@ public class PlayerData : ScriptableObject
 
     [Header("Symbiote / Bloom")]
     public int currentBloom = 0;
+    public int maxBloom = 100;
     public BloomState currentBloomState = BloomState.Stable;
 
     [Header("Cores")]
