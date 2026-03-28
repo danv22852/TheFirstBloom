@@ -44,9 +44,18 @@ public class CombatSystem : MonoBehaviour
     public Image bloomFillImage; // We need this specific piece to change the color!
 
     [Header("Bloom Colors")]
+    public Color stableBloomColor = new Color(0.8f, 0.6f, 1f); // Light Lilac / Soft Purple
     public Color lowBloomColor = new Color(0.4f, 0f, 0.6f); // Dark Purple
     public Color mediumBloomColor = new Color(1f, 0f, 0.8f); // Hot Pink
     public Color highBloomColor = new Color(1f, 0f, 0f); // Blood Red
+
+    [Header("Vignette Screen Effect")]
+    public Image vignetteOverlay; // The full-screen image we just made
+    public float vignetteFlashDuration = 0.5f; // How long the flash lasts
+    public float vignetteMaxAlpha = 0.35f; // How dark the flash gets (0 to 1)
+
+    [Header("Bloom Preview")]
+    public Slider bloomPreviewSlider;
 
     [Header("Keyboard Navigation Defaults")]
     public GameObject mainDefaultButton;  
@@ -74,6 +83,18 @@ public class CombatSystem : MonoBehaviour
     public int testPlayerDefense = 5;
     public int testPlayerBloom = 0;
     private BloomState testBloomState = BloomState.Stable;
+    private BloomState lastKnownBloomState;
+
+    [Header("UI Animation Trackers")]
+    private Coroutine playerHpAnim;
+    private Coroutine enemyHpAnim;
+    private Coroutine bloomAnim;
+
+    [Header("Tooltip UI")]
+    public GameObject tooltipPanel;
+    public TMPro.TextMeshProUGUI tooltipText; // Use standard Text if you aren't using TextMeshPro
+
+    private Coroutine battleTextCoroutine;
 
     // --- SMART PROPERTIES FOR BLOOM ---
     // These automatically check if PlayerData exists. If it does, they read/write directly to it.
@@ -186,8 +207,10 @@ public class CombatSystem : MonoBehaviour
         if (enemyHpSlider != null) enemyHpSlider.maxValue = currentEnemy.maxHP;
         if (bloomSlider != null) bloomSlider.maxValue = 100;
 
+        lastKnownBloomState = ActiveBloomState;
+
         // --- 5. START THE ROUND ---
-        UpdateHealthUI();
+        UpdateHealthUI(true);
         DetermineFirstTurn();
 
         // DetermineFirstTurn handles calling PlayerStartTurn() or EnemyTurn()
@@ -211,18 +234,16 @@ public class CombatSystem : MonoBehaviour
 
     public void PlayerStartTurn()
     {
-         
         isPlayerTurn = true;
         hasUsedItemThisTurn = false;
-        Debug.Log("It is now the Player's turn.");
-
+        
         isAttackHijacked = false;
         attackButtonText.text = "Attack"; 
         attackButtonText.color = Color.black; 
 
+        // 1. Process Hijack Mechanics silently first
         if (ActiveBloomState >= BloomState.High)
         {
-            Debug.Log("High Bloom! The Symbiote completely takes over your basic attacks.");
             isAttackHijacked = true;
             attackButtonText.text = "Symbiote Swipe"; 
             attackButtonText.color = Color.red; 
@@ -238,8 +259,44 @@ public class CombatSystem : MonoBehaviour
             }
         }
 
+        // 2. Determine what text to show!
+        BloomState currentState = ActiveBloomState;
+
+        // Did we cross a new threshold since our LAST turn?
+        if (currentState != lastKnownBloomState) 
+        {
+            if (currentState > lastKnownBloomState)
+            {
+                if (currentState == BloomState.Low) ShowBattleText("The symbiote awakens. You can no longer run.", 3f);
+                else if (currentState == BloomState.Medium) ShowBattleText("The symbiote is restless. It begins hijacking some of your attacks!", 3f);
+                else if (currentState >= BloomState.High) ShowBattleText("The symbiote takes over! Attacks will now drain your HP!", 3.5f);
+            }
+            else
+            {
+                if (currentState == BloomState.Stable) ShowBattleText("You have regained full control.", 2.5f);
+                else if (currentState == BloomState.Low) ShowBattleText("The symbiote's grip weakens.", 2.5f);
+            }
+
+            // Update the tracker so it doesn't spam the message next turn!
+            lastKnownBloomState = currentState; 
+        }
+        else // If no threshold was crossed, show normal turn start text
+        {
+            if (isAttackHijacked && currentState >= BloomState.High)
+            {
+                ShowBattleText("The Symbiote hijacks your attacks!", 2f);
+            }
+            else if (isAttackHijacked)
+            {
+                ShowBattleText("The Symbiote surges and hijacks your attack!", 2f);
+            }
+            else
+            {
+                ShowBattleText("Your turn.", 1f);
+            }
+        }
+
         BackToMainMenu();
-        
     }
 
     public void OnAttackButton()
@@ -248,7 +305,6 @@ public class CombatSystem : MonoBehaviour
 
         if (isAttackHijacked)
         {
-            Debug.Log("The Symbiote hijacked your attack!");
             UseSymbioteSwipe(); 
             return; 
         }
@@ -256,7 +312,8 @@ public class CombatSystem : MonoBehaviour
         HideAllMenus();
         isPlayerTurn = false;
 
-        Debug.Log("Player uses Basic Attack!");
+        // Text before the animation starts
+        ShowBattleText("You attack!", 1.5f);
 
         StartCoroutine(PerformMeleeAttack(playerTransform, enemyTransform,
             onHit: () =>
@@ -264,22 +321,16 @@ public class CombatSystem : MonoBehaviour
                 var actualDamage = Mathf.Max(1, playerStrength - currentEnemy.defense);
                 enemyHealth -= actualDamage;
                 UpdateHealthUI();
-                Debug.Log("Dealt " + actualDamage + " damage to the enemy.");
+                
+                // Text the exact moment the hit connects!
+                ShowBattleText("Dealt " + actualDamage + " damage to the enemy.", 2f);
 
                 StartCoroutine(ShakeSprite(enemyTransform, 0.2f, 0.15f));
             },
             onComplete: () =>
             {
-                // --- NEW: Check for victory AFTER the animation finishes! ---
-                if (enemyHealth <= 0)
-                {
-                    HandleEnemyDefeat(); // Send to the graveyard and load the Overworld!
-                }
-                else
-                {
-                    // If the enemy survived, continue the normal turn flow
-                    CheckWinConditionOrContinue();
-                }
+                if (enemyHealth <= 0) HandleEnemyDefeat(); 
+                else CheckWinConditionOrContinue();
             }));
     }
 
@@ -306,48 +357,69 @@ public class CombatSystem : MonoBehaviour
             UpdateHealthUI();
 
             StartCoroutine(ShakeSprite(playerTransform, 0.4f, 0.25f));
-            Debug.Log("High Bloom Penalty! Player takes " + selfDamage + " damage to fuel the attack!");
+            
+            // --- NEW: UI Battle Text instead of Debug.Log! ---
+            ShowBattleText("High Bloom Penalty! You take " + selfDamage + " damage to fuel the attack!", 2.5f);
 
             if (playerHealth <= 0)
             {
-                Debug.Log("The host was consumed. Game Over.");
-                UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
+                // Give them 3 seconds to read the game over text before kicking them to the menu!
+                ShowBattleText("The host was consumed. Game Over.", 3f);
+                
+                // We use a tiny delay here so the text actually shows before the scene swaps
+                Invoke(nameof(LoadMainMenu), 3f); 
                 return;
             }
         }
+        else
+        {
+             // Optional: If they didn't take damage, show a generic attack message right away
+             ShowBattleText("You unleash a Symbiote Swipe!", 1.5f);
+        }
 
-        // Grab the max bloom from your data file (fallback to 100 just in case)
         int currentMaxBloom = (GameManager.Instance != null && GameManager.Instance.playerData != null) 
             ? GameManager.Instance.playerData.maxBloom 
             : 100;
 
-        // Mathf.Min picks the smaller of the two numbers. 
-        // If ActiveBloom + cost equals 115, it will force it back down to 100!
         ActiveBloom = Mathf.Min(ActiveBloom + bloomCost, currentMaxBloom);
-        UpdateHealthUI(); 
+        UpdateHealthUI();
         
         StartCoroutine(PerformSkillAnimation(playerTransform, enemyTransform,
             onHit: () =>
             {
                 enemyHealth -= finalDamage;
                 UpdateHealthUI();
-                Debug.Log("Symbiote Swipes for " + finalDamage + " damage!");
+
+                // --- NEW: UI Battle Text instead of Debug.Log! ---
+                ShowBattleText("Symbiote Swipe deals " + finalDamage + " damage!", 2f);
 
                 StartCoroutine(ShakeSprite(enemyTransform, 0.3f, 0.3f));
+
+                // Figure out which color to flash based on the NEW bloom state
+                Color currentFlashColor = lowBloomColor;
+                if (ActiveBloomState == BloomState.Medium) currentFlashColor = mediumBloomColor;
+                else if (ActiveBloomState >= BloomState.High) currentFlashColor = highBloomColor;
+
+                // Trigger the visual effect!
+                StartCoroutine(FlashVignetteRoutine(currentFlashColor)); 
             },
             onComplete: () =>
             {
-                // --- NEW: Check for victory AFTER the animation finishes! ---
                 if (enemyHealth <= 0)
                 {
-                    HandleEnemyDefeat(); // Send to the graveyard and load the Overworld!
+                    HandleEnemyDefeat(); 
                 }
                 else
                 {
-                    // If the enemy survived, continue the normal turn flow
                     CheckWinConditionOrContinue();
                 }
             }));
+    }
+    
+    // Quick helper function for the game over delay
+    private void LoadMainMenu()
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
     }
 
     public void OnItemButton()
@@ -359,37 +431,34 @@ public class CombatSystem : MonoBehaviour
     {
         if (hasUsedItemThisTurn)
         {
-            Debug.Log("You have already used an item this turn!");
+            ShowBattleText("You already used an item this turn.", 1.5f);
             return;
         }
 
-        // Prevent errors in testing mode if GameManager is null
-        if (GameManager.Instance == null)
+        if (GameManager.Instance != null && GameManager.Instance.playerData.healthPotions <= 0)
         {
-            Debug.Log("Testing Mode: Pretending to use a potion.");
-        }
-        else if (GameManager.Instance.playerData.healthPotions <= 0)
-        {
-            Debug.Log("No potions left!");
+            ShowBattleText("No potions left.", 1.5f);
             return;
         }
-        else 
+        else if (GameManager.Instance != null)
         {
             GameManager.Instance.playerData.healthPotions--;
         }
 
         isPlayerTurn = false; 
         HideAllMenus(); 
+        
+        ShowBattleText("You drink a Health Potion...", 1.5f);
 
         StartCoroutine(PerformItemAnimation(playerTransform, 
             onComplete: () => 
             {
-                Debug.Log("Player uses a Healing Item!");
                 var healAmount = 20; 
                 playerHealth = Mathf.Min(playerHealth + healAmount, playerMaxHealth);
-                
                 hasUsedItemThisTurn = true;
                 UpdateHealthUI();
+                
+                ShowBattleText("Recovered " + healAmount + " HP!", 2f);
                 
                 isPlayerTurn = true; 
                 BackToMainMenu(); 
@@ -400,46 +469,59 @@ public class CombatSystem : MonoBehaviour
     {
         if (!isPlayerTurn) return;
 
+        // The Symbiote blocking the player from running
         if (ActiveBloomState >= BloomState.Low)
         {
-            Debug.Log("You are in " + ActiveBloomState + " Bloom! The symbiote won't let you run!");
+            ShowBattleText("The Symbiote craves violence! You cannot flee!", 2f);
             return;
         }
 
         HideAllMenus();
+        isPlayerTurn = false; // Lock the turn immediately so they can't spam buttons
+        
+        // Start the timed sequence!
+        StartCoroutine(AttemptRunRoutine());
+    }
 
+    private System.Collections.IEnumerator AttemptRunRoutine()
+    {
+        // 1. Announce the attempt and WAIT
+        ShowBattleText("You try to run away...", 1.5f);
+        yield return new WaitForSeconds(1.5f);
+
+        // 2. Roll the dice
         var escapeChance = UnityEngine.Random.Range(0, 100);
         if (escapeChance > 50) 
         {
-            Debug.Log("Escaped successfully!");
-            isPlayerTurn = false; 
-            
+            // SUCCESS! Run off screen.
             StartCoroutine(PerformRunAnimation(playerTransform, 
                 onComplete: () => 
                 {
+                    ShowBattleText("Got away safely!", 1.5f);
                     PersistStatsToPlayerData();
-                    if (GameManager.Instance != null)
-                    {
-                        SceneManager.LoadScene(GameManager.Instance.playerData.floorName);
-                    }
+                    
+                    // Call our custom return function after a short delay so they can read the text!
+                    Invoke(nameof(ReturnToOverworld), 1.5f); 
                 }));
         }
         else
         {
-            Debug.Log("Failed to escape!");
-            isPlayerTurn = false;
+            // FAILURE! 
+            ShowBattleText("Failed to escape!", 1.5f); 
+            
+            // Wait for the player to read the failure text before the enemy hits them!
+            yield return new WaitForSeconds(1.5f); 
+            
             EnemyTurn(); 
         }
     }
 
     private void HandleEnemyDefeat()
     {
-        Debug.Log("<color=green>VICTORY! The enemy is defeated.</color>");
+        ShowBattleText("Victory! " + currentEnemy.enemyName + " was defeated.", 2.5f);
 
-        // 1. Save all player stats using your custom helper function!
         PersistStatsToPlayerData(); 
 
-        // 2. THE GRAVEYARD LOGIC 
         if (GameManager.Instance != null && !string.IsNullOrEmpty(GameManager.encounteredInstanceID))
         {
             if (!GameManager.Instance.playerData.defeatedEnemies.Contains(GameManager.encounteredInstanceID))
@@ -449,15 +531,32 @@ public class CombatSystem : MonoBehaviour
             GameManager.encounteredInstanceID = ""; 
         }
 
-        // 3. RETURN TO OVERWORLD (Using your dynamic floorName!)
-        if (GameManager.Instance != null && !string.IsNullOrEmpty(GameManager.Instance.playerData.floorName))
+        // We use an Invoke here so the scene doesn't instantly snap away before the Victory text can be read!
+        Invoke(nameof(ReturnToOverworld), 2.5f);
+    }
+
+    private void ReturnToOverworld()
+    {
+        if (GameManager.Instance != null)
         {
-            UnityEngine.SceneManagement.SceneManager.LoadScene(GameManager.Instance.playerData.floorName);
+            // --- THE FLAG ---
+            // Tell the next scene that we didn't just boot up the game; we are coming back from a fight!
+            GameManager.isReturningFromCombat = true;
+
+            // Load the correct floor
+            if (!string.IsNullOrEmpty(GameManager.Instance.playerData.floorName))
+            {
+                UnityEngine.SceneManagement.SceneManager.LoadScene(GameManager.Instance.playerData.floorName);
+            }
+            else
+            {
+                UnityEngine.SceneManagement.SceneManager.LoadScene("firstFloor"); // Fallback
+            }
         }
         else
         {
-            // Fallback just in case
-            UnityEngine.SceneManagement.SceneManager.LoadScene("SecondFloor"); 
+            // Ultimate fallback for testing
+            UnityEngine.SceneManagement.SceneManager.LoadScene("firstFloor"); 
         }
     }
 
@@ -506,15 +605,16 @@ public class CombatSystem : MonoBehaviour
 
     private void EnemyTurn()
     {
-        Debug.Log(currentEnemy.enemyName + "'s turn!");
-        
         var skill = PickSkill();
+        
+        ShowBattleText(currentEnemy.enemyName + " lunges at you!", 1.5f);
 
         StartCoroutine(PerformMeleeAttack(enemyTransform, playerTransform,
             onHit: () =>
             {
                 if (skill != null)
                 {
+                    ShowBattleText(currentEnemy.enemyName + " uses a special attack!", 2f);
                     skill.Execute(this, currentEnemy);
                     StartCoroutine(ShakeSprite(playerTransform, 0.3f, 0.2f));
                 }
@@ -522,12 +622,12 @@ public class CombatSystem : MonoBehaviour
                 {
                     float statMultiplier = GetBloomStatMultiplier();
                     int effectiveDefense = Mathf.RoundToInt(playerDefense * statMultiplier);
-
                     var actualDamage = Mathf.Max(1, currentEnemy.strength - effectiveDefense);
+                    
                     playerHealth -= actualDamage;
                     UpdateHealthUI();
                     
-                    Debug.Log("Player takes " + actualDamage + " damage. (Effective Defense: " + effectiveDefense + ")");
+                    ShowBattleText(currentEnemy.enemyName + " hits you for " + actualDamage + " damage!", 2f);
                     StartCoroutine(ShakeSprite(playerTransform, 0.3f, 0.2f));
                 }
             },
@@ -543,7 +643,8 @@ public class CombatSystem : MonoBehaviour
 
         if (playerHealth <= 0)
         {
-            Debug.Log("Player died. Game Over.");
+            ShowBattleText("The host has fallen... Game Over.", 3f);
+            yield return new WaitForSeconds(3f); // Give them time to read it!
             UnityEngine.SceneManagement.SceneManager.LoadScene("MainMenu");
         }
         else
@@ -580,7 +681,8 @@ public class CombatSystem : MonoBehaviour
 
     public void EndEnemyTurn() { }
 
-    private void UpdateHealthUI()
+    // We add the "snapInstantly" toggle to the parenthesis!
+    private void UpdateHealthUI(bool snapInstantly = false)
     {
         // 1. Text Updates
         if (playerHP != null) 
@@ -591,7 +693,6 @@ public class CombatSystem : MonoBehaviour
         // --- THE FIX: Use the dynamic enemy name! ---
         if (enemyHP != null && currentEnemy != null) 
         {
-            // This will now print "Hornet HP: 130 / 130"
             enemyHP.text = currentEnemy.enemyName + " HP: " + enemyHealth + " / " + currentEnemy.maxHP;
         }
 
@@ -605,25 +706,55 @@ public class CombatSystem : MonoBehaviour
             bloomText.text = "Bloom: " + ActiveBloom + " / " + currentMaxBloom;
         }
 
+        // --- FORCE MAXIMUMS ---
         if (playerHpSlider != null) playerHpSlider.maxValue = playerMaxHealth;
         if (enemyHpSlider != null) enemyHpSlider.maxValue = currentEnemy.maxHP;
-        if (bloomSlider != null) bloomSlider.maxValue = 100;
+        
+        // Changed this from 100 to currentMaxBloom to keep it fully dynamic!
+        if (bloomSlider != null) bloomSlider.maxValue = currentMaxBloom;
+        if (bloomPreviewSlider != null) bloomPreviewSlider.maxValue = currentMaxBloom; 
 
-        // 3. APPLY CURRENT VALUES
-        if (playerHpSlider != null) playerHpSlider.value = playerHealth;
-        if (enemyHpSlider != null) enemyHpSlider.value = enemyHealth;
-        if (bloomSlider != null) bloomSlider.value = ActiveBloom;
+        // 3. APPLY CURRENT VALUES (Snap or Smooth)
+        if (snapInstantly)
+        {
+            if (playerHpSlider != null) playerHpSlider.value = playerHealth;
+            if (enemyHpSlider != null) enemyHpSlider.value = enemyHealth;
+            if (bloomSlider != null) bloomSlider.value = ActiveBloom;
+        }
+        else
+        {
+            // Smoothly animate the sliders using the Coroutines!
+            if (playerHpSlider != null) 
+            { 
+                if (playerHpAnim != null) StopCoroutine(playerHpAnim); 
+                playerHpAnim = StartCoroutine(SmoothSliderFill(playerHpSlider, playerHealth)); 
+            }
+            if (enemyHpSlider != null) 
+            { 
+                if (enemyHpAnim != null) StopCoroutine(enemyHpAnim); 
+                enemyHpAnim = StartCoroutine(SmoothSliderFill(enemyHpSlider, enemyHealth)); 
+            }
+            if (bloomSlider != null) 
+            { 
+                if (bloomAnim != null) StopCoroutine(bloomAnim); 
+                bloomAnim = StartCoroutine(SmoothSliderFill(bloomSlider, ActiveBloom)); 
+            }
+        }
+
+        // The preview slider MUST always snap instantly, even during an animation, so it stays accurate!
+        if (bloomPreviewSlider != null) bloomPreviewSlider.value = ActiveBloom;
 
         // 4. COLOR SHIFT
         if (bloomFillImage != null)
         {
-            if (ActiveBloomState == BloomState.Low) bloomFillImage.color = lowBloomColor;
+            if (ActiveBloomState == BloomState.Stable) bloomFillImage.color = stableBloomColor;
+            else if (ActiveBloomState == BloomState.Low) bloomFillImage.color = lowBloomColor;
             else if (ActiveBloomState == BloomState.Medium) bloomFillImage.color = mediumBloomColor;
-            else if (ActiveBloomState == BloomState.High) bloomFillImage.color = highBloomColor;
+            else if (ActiveBloomState >= BloomState.High) bloomFillImage.color = highBloomColor; // Catches High and Total!
         }
         
-        // DEBUG: If it's still breaking, this will tell us why!
-        Debug.Log($"UI UPDATED: PlayerSlider({playerHpSlider.value}/{playerHpSlider.maxValue}), EnemySlider({enemyHpSlider.value}/{enemyHpSlider.maxValue}), BloomSlider({bloomSlider.value}/{bloomSlider.maxValue})");
+        // DEBUG: Updated to show target variables instead of slider values so the log is accurate mid-animation!
+        Debug.Log($"UI UPDATED: Player({playerHealth}/{playerMaxHealth}), Enemy({enemyHealth}/{currentEnemy.maxHP}), Bloom({ActiveBloom}/{currentMaxBloom})");
     }
 
     private IEnumerator PerformMeleeAttack(Transform attacker, Transform target, Action onHit, Action onComplete)
@@ -739,6 +870,25 @@ public class CombatSystem : MonoBehaviour
         targetTransform.localPosition = originalPos;
     }
 
+    private System.Collections.IEnumerator SmoothSliderFill(Slider slider, float targetValue, float duration = 0.3f)
+    {
+        if (slider == null) yield break;
+
+        float startValue = slider.value;
+        float timeElapsed = 0f;
+
+        while (timeElapsed < duration)
+        {
+            // Smoothly transition from the current fill to the new target
+            slider.value = Mathf.Lerp(startValue, targetValue, timeElapsed / duration);
+            timeElapsed += Time.deltaTime;
+            yield return null; // Wait for the next frame
+        }
+
+        // Snap exactly to the target at the very end to prevent weird decimals
+        slider.value = targetValue;
+    }
+
     // --- MENU NAVIGATION ---
 
     public void OpenSkillMenu()
@@ -801,7 +951,7 @@ public class CombatSystem : MonoBehaviour
             var potions = GameManager.Instance.playerData.healthPotions;
             if (potions > 0)
             {
-                healItemText.text = "Heal +20 (x" + potions + ")";
+                healItemText.text = "Health Potion (x" + potions + ")";
                 healItemButton.interactable = true;
             }
             else
@@ -812,7 +962,7 @@ public class CombatSystem : MonoBehaviour
         }
         else
         {
-            healItemText.text = "Heal +20 (Testing)";
+            healItemText.text = "Health Potion";
             healItemButton.interactable = true;
         }
     }
@@ -827,5 +977,112 @@ public class CombatSystem : MonoBehaviour
                 BackToMainMenu();
             }
         }
+    }
+
+    // Call this when the mouse hovers OVER the button
+    public void PreviewBloomCost(int cost)
+    {
+        if (bloomPreviewSlider != null)
+        {
+            int currentMaxBloom = (GameManager.Instance != null && GameManager.Instance.playerData != null) 
+                ? GameManager.Instance.playerData.maxBloom 
+                : 100;
+
+            // Calculate the projected total, clamped to the max
+            int projectedBloom = Mathf.Min(ActiveBloom + cost, currentMaxBloom);
+            
+            // Push the yellow ghost bar forward!
+            bloomPreviewSlider.value = projectedBloom; 
+        }
+    }
+
+    // Call this when the mouse leaves the button
+    public void ClearBloomPreview()
+    {
+        if (bloomPreviewSlider != null)
+        {
+            // Snap the yellow bar back to hide perfectly behind the current bloom
+            bloomPreviewSlider.value = ActiveBloom; 
+        }
+    }
+
+    // Turns the box on and sets the text
+    public void ShowTooltip(string text)
+    {
+        // If battle text is playing, ignore the mouse!
+        if (battleTextCoroutine != null) return; 
+
+        if (tooltipPanel != null) tooltipPanel.SetActive(true);
+        if (tooltipText != null) tooltipText.text = text;
+    }
+
+    // Hides the box
+    public void HideTooltip()
+    {
+        // If battle text is playing, don't let the mouse accidentally turn it off!
+        if (battleTextCoroutine != null) return;
+
+        if (tooltipPanel != null) tooltipPanel.SetActive(false);
+    }
+
+    // Calculates the dynamic math for the Attack Button!
+    public string GetBasicAttackTooltip()
+    {
+        // Calculate the exact damage they will do right now
+        int expectedDamage = Mathf.Max(1, playerStrength - currentEnemy.defense);
+        return $"Basic Attack\nDeals physical damage to the enemy.\nExpected Damage: {expectedDamage}";
+    }
+
+    // Call this exactly like a Debug.Log! 
+    // Example: ShowBattleText("The Stag attacks for 15 damage!", 2f);
+    public void ShowBattleText(string message, float displayTime = 1.5f)
+    {
+        if (battleTextCoroutine != null) StopCoroutine(battleTextCoroutine);
+        battleTextCoroutine = StartCoroutine(BattleTextRoutine(message, displayTime));
+    }
+
+    private System.Collections.IEnumerator BattleTextRoutine(string message, float displayTime)
+    {
+        if (tooltipPanel != null) tooltipPanel.SetActive(true);
+        if (tooltipText != null) tooltipText.text = message;
+
+        yield return new WaitForSeconds(displayTime);
+
+        if (tooltipPanel != null) tooltipPanel.SetActive(false);
+        
+        // --- THE CRITICAL FIX ---
+        // Tell the game the battle text is officially done so mouse hovers work again!
+        battleTextCoroutine = null; 
+    }
+
+    private IEnumerator FlashVignetteRoutine(Color flashColor)
+    {
+        if (vignetteOverlay == null) yield break;
+
+        // 1. THE IMPACT (Instant Snap)
+        // Bam! Instantly set it to maximum opacity on the exact frame the hit connects.
+        flashColor.a = vignetteMaxAlpha; 
+        vignetteOverlay.color = flashColor;
+
+        // Hold the pure flash for a tiny fraction of a second (The literal "Impact Frame")
+        yield return new WaitForSeconds(0.05f);
+
+        float elapsed = 0f;
+
+        // 2. THE SHARP FADE OUT
+        // We now use the entire duration purely for the fade-out so it tails off nicely.
+        while (elapsed < vignetteFlashDuration)
+        {
+            elapsed += Time.deltaTime;
+            
+            // Lerp from max opacity down to 0
+            flashColor.a = Mathf.Lerp(vignetteMaxAlpha, 0f, elapsed / vignetteFlashDuration);
+            vignetteOverlay.color = flashColor;
+            yield return null;
+        }
+
+        // 3. Ensure it is completely invisible when done
+        flashColor.a = 0f;
+        vignetteOverlay.color = flashColor;
     }
 }
