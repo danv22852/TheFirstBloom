@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 643f6fa934a3e6444af7093168124ef8, type: 3}
   m_Name: Player
   m_EditorClassIdentifier: 
-  currentHP: 56
+  currentHP: 100
   maxHP: 100
   strength: 10
   speed: 10
@@ -20,8 +20,9 @@ MonoBehaviour:
   luck: 0
   floorName: firstFloor
   healthPotions: 3
-  hasAlien: 0
-  currentBloom: 24
+  hasAlien: 1
+  currentBloom: 0
+  maxBloom: 100
   currentBloomState: 0
   coreSlots:
   - {fileID: 0}
@@ -30,6 +31,5 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   knownCoreIDs: []
-  finishedTutorial: 0
-  defeatedEnemies:
-  - Hornet_1
+  finishedTutorial: 1
+  defeatedEnemies: []

@@ -79,11 +79,7 @@ public class CutsceneEnemy : MonoBehaviour
             // Start dialogue and pass StartChasing to run when it finishes
             DialogueManager.instance.StartDialogue(encounterDialogue, StartChasing);
         }
-        else
-        {
-            // Failsafe: If no dialogue is set in the Inspector, just chase immediately
-            StartChasing();
-        }
+        
     }
 
     public void StartChasing()

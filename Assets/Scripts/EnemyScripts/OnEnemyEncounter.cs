@@ -15,7 +15,7 @@ public class EnemyEncounter : MonoBehaviour
         if (GameManager.Instance != null && GameManager.Instance.playerData.defeatedEnemies.Contains(uniqueEnemyID))
         {
             Destroy(gameObject);
-            return; // Stop running this script if the enemy is dead!
+             // Stop running this script if the enemy is dead!
         }
 
         // 2. THE GRACE PERIOD FIX

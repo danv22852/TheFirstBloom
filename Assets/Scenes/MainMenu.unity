@@ -204,7 +204,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1113747919}
         m_TargetAssemblyTypeName: MainMenuManager, Assembly-CSharp
-        m_MethodName: PlayGame
+        m_MethodName: OnNewGameButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -948,9 +948,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cc108b70eb014b418eb07d3eff21b3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainPanel: {fileID: 0}
-  saveSelectPanel: {fileID: 0}
-  optionsPanel: {fileID: 0}
+  mainPanel: {fileID: 291496668}
+  saveSelectPanel: {fileID: 902821631}
+  optionsPanel: {fileID: 1456508837}
 --- !u!1 &1456508837
 GameObject:
   m_ObjectHideFlags: 0
