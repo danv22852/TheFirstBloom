@@ -1,24 +1,59 @@
 using UnityEngine;
-using UnityEngine.SceneManagement; // Required for scene management
+using UnityEngine.SceneManagement;
 
 public class MainMenuManager : MonoBehaviour
 {
-    public void PlayGame()
+    [Header("Menu Panels")]
+    public GameObject mainPanel;
+    public GameObject saveSelectPanel;
+    public GameObject optionsPanel;
+
+    private void Start()
     {
-        // Loads the next scene in the build settings (your game scene)
-        SceneManager.LoadScene("firstFloor");
+        // Ensure we start on the main screen
+        ShowMainPanel();
+    }
+
+    // --- BUTTON FUNCTIONS ---
+
+    public void ShowMainPanel()
+    {
+        mainPanel.SetActive(true);
+        saveSelectPanel.SetActive(false);
+        optionsPanel.SetActive(false);
+    }
+
+    public void ShowSaveSelect()
+    {
+        mainPanel.SetActive(false);
+        saveSelectPanel.SetActive(true);
+    }
+
+    public void ShowOptions()
+    {
+        mainPanel.SetActive(false);
+        optionsPanel.SetActive(true);
+    }
+
+    // You will link this to your actual Save Slot buttons later!
+    public void LoadSaveSlot(int slotNumber)
+    {
+        Debug.Log("Loading Save Slot: " + slotNumber);
+        // We will add the JSON save loading logic here later
+        SceneManager.LoadScene("firstFloor"); 
+    }
+
+    public void OnNewGameButton()
+    {
+        // Wipe the old save data before loading the Overworld!
+        GameManager.Instance.ResetSaveData(); 
+        
+        UnityEngine.SceneManagement.SceneManager.LoadScene("firstFloor");
     }
 
     public void QuitGame()
     {
-        // Quits the game (only works in a built application, not the Unity editor)
+        Debug.Log("Quitting Game...");
         Application.Quit();
-        Debug.Log("Game Quit"); // Optional: for testing in the editor
-    }
-
-    // Add other functions for Options, etc.
-    public void OpenOptionsPanel(GameObject optionsPanel)
-    {
-        optionsPanel.SetActive(true);
     }
 }

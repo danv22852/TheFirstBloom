@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0566ed46712c3a4ca4ddde06a429795, type: 3}
   m_Name: Hornet 1
   m_EditorClassIdentifier: 
-  enemyID: Hornet_2
+  enemyID: Hornet_1
   enemyName: Hornet
   enemySprite: {fileID: 4286265989511706523, guid: 792a70b7b30780c42b3f0f1b503d9205, type: 3}
-  maxHP: 110
-  strength: 15
-  speed: 9
+  maxHP: 160
+  strength: 10
+  speed: 6
   defense: 2
   combatScale: 1
+  flipSprite: 1
   skills: []
