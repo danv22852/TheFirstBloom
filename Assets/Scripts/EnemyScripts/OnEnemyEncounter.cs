@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class EnemyEncounter : MonoBehaviour 
+public class EnemyEncounter : MonoBehaviour
 {
     [Header("1. Map Identity (For Graveyard)")]
     public string uniqueEnemyID;
@@ -9,24 +9,28 @@ public class EnemyEncounter : MonoBehaviour
     [Header("2. Combat Data (For Sprite/Stats)")]
     public EnemyData enemyType;
 
+    [Header("Auto-Engage")]
+    public float gracePeriodSeconds = 1.5f;
+
+    private bool engaged = false;
+
     private void Start()
     {
-        // 1. Graveyard Check
-        if (GameManager.Instance != null && GameManager.Instance.playerData.defeatedEnemies.Contains(uniqueEnemyID))
+        // 1) Graveyard Check
+        if (GameManager.Instance != null &&
+            GameManager.Instance.playerData.defeatedEnemies.Contains(uniqueEnemyID))
         {
             Destroy(gameObject);
-             // Stop running this script if the enemy is dead!
+            return;
         }
 
-        // 2. THE GRACE PERIOD FIX
-        // If we just came back from a battle (like fleeing), disable this enemy's 
-        // trigger collider for 1.5 seconds so the player has time to walk away!
+        // 2) Grace period after returning from combat (prevents instant re-trigger)
         if (GameManager.isReturningFromCombat)
         {
             Collider2D col = GetComponent<Collider2D>();
             if (col != null) col.enabled = false;
-            
-            Invoke(nameof(EnableCollider), 1.5f);
+
+            Invoke(nameof(EnableCollider), gracePeriodSeconds);
         }
     }
 
@@ -34,37 +38,51 @@ public class EnemyEncounter : MonoBehaviour
     {
         Collider2D col = GetComponent<Collider2D>();
         if (col != null) col.enabled = true;
-        
-        // Reset the global flag so enemies act normal again
-        GameManager.isReturningFromCombat = false; 
+
+        GameManager.isReturningFromCombat = false;
+    }
+
+    /// <summary>
+    /// Call this from chase logic when the enemy "catches" the player.
+    /// </summary>
+    public void Engage(Transform player)
+    {
+        if (engaged) return;
+        if (player == null) return;
+
+        // If we are still in grace period, don't engage
+        Collider2D col = GetComponent<Collider2D>();
+        if (col != null && !col.enabled) return;
+
+        engaged = true;
+
+        // Save the player's exact safe position (your "wall fix")
+        GameManager.lastPlayerPosition = player.position;
+        GameManager.isReturningFromCombat = true;
+
+        // Direct hand-off
+        if (enemyType != null)
+            GameManager.pendingEnemyData = enemyType;
+
+        GameManager.encounteredInstanceID = uniqueEnemyID;
+
+        // Load scene
+        if (!GameManager.Instance.playerData.finishedTutorial)
+            SceneManager.LoadScene("TutorialBattle");
+        else
+            SceneManager.LoadScene("CombatUI");
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
-        {
-            // --- THE WALL FIX ---
-            // No more pushback math! Just save the player's exact, physical location.
-            // Since they weren't in a wall when they touched the enemy, this spot is guaranteed safe.
-            GameManager.lastPlayerPosition = other.transform.position;
-            GameManager.isReturningFromCombat = true;
+            Engage(other.transform);
+    }
 
-            // Direct Hand-Off
-            if (enemyType != null)
-            {
-                GameManager.pendingEnemyData = this.enemyType; 
-            }
-            GameManager.encounteredInstanceID = this.uniqueEnemyID; 
-
-            // Load Scene
-            if (!GameManager.Instance.playerData.finishedTutorial)
-            {
-                SceneManager.LoadScene("TutorialBattle");
-            }
-            else 
-            {
-                SceneManager.LoadScene("CombatUI");
-            }
-        }
+    // Optional: makes it even more reliable (fast movement / already overlapping)
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+            Engage(other.transform);
     }
 }
