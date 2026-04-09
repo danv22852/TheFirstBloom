@@ -87,4 +87,39 @@ public class BloomPreviewTrigger : MonoBehaviour, IPointerEnterHandler, IPointer
         }
     }
     
+    public void Setup(CoreTemplate core, CombatSystem system)
+    {
+        combatSystem = system;
+        bloomCost = core.bloomCost;
+        actionDescription = core.coreDescription;
+
+        var label = GetComponentInChildren<TMPro.TextMeshProUGUI>();
+        if (label != null) label.text = core.coreName;
+
+        var button = GetComponent<Button>();
+        button.onClick.RemoveAllListeners();
+        button.onClick.AddListener(() => system.UseCore(core));
+    }
+
+    public void SetupEmpty()
+    {
+        var label = GetComponentInChildren<TMPro.TextMeshProUGUI>();
+        if (label != null) label.text = "Empty";
+
+        var button = GetComponent<UnityEngine.UI.Button>();
+        
+        // Keep button active for navigation but block clicking
+        button.onClick.RemoveAllListeners();
+        
+        // Grey out visually
+        var colors = button.colors;
+        colors.normalColor = new Color(0.4f, 0.4f, 0.4f, 0.5f);
+        colors.highlightedColor = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+        colors.selectedColor = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+        button.colors = colors;
+
+        // Block tooltip and bloom preview
+        bloomCost = 0;
+        actionDescription = "";
+    }
 }

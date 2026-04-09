@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ee3d6d2445fd1a43a149584be1aa182, type: 3}
+  m_Name: Symbiote Swipe
+  m_EditorClassIdentifier: 
+  coreID: swipe01
+  coreName: TEST SWIPE
+  coreDescription: TESTING
+  rarity: 0
+  coreSprite: {fileID: 0}
+  bloomCost: 10
+  isKnown: 1
+  minDamage: 50
+  maxDamage: 50
