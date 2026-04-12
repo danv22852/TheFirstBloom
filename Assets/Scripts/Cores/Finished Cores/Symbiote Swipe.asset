@@ -9,14 +9,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 853b695bcf07b954aa5a5afa6330414a, type: 3}
-  m_Name: StabCore
+  m_Script: {fileID: 11500000, guid: 7ee3d6d2445fd1a43a149584be1aa182, type: 3}
+  m_Name: Symbiote Swipe
   m_EditorClassIdentifier: 
-  coreID: 
-  coreName: 
-  coreDescription: 
+  coreID: swipe01
+  coreName: TEST SWIPE
+  coreDescription: TESTING
   rarity: 0
   coreSprite: {fileID: 0}
-  bloomCost: 0
-  isKnown: 0
-  scaling: 1.5
+  bloomCost: 10
+  isKnown: 1
+  minDamage: 50
+  maxDamage: 50

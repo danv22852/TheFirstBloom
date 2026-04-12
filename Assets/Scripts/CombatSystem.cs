@@ -5,6 +5,9 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 using System;
+using System.Collections.Generic;
+
+public enum VignetteType { Low, Medium, High }
 
 public class CombatSystem : MonoBehaviour
 {
@@ -82,6 +85,7 @@ public class CombatSystem : MonoBehaviour
     public int testPlayerSpeed = 10;
     public int testPlayerDefense = 5;
     public int testPlayerBloom = 0;
+    public List<CoreTemplate> testCores = new List<CoreTemplate>();
     private BloomState testBloomState = BloomState.Stable;
     private BloomState lastKnownBloomState;
 
@@ -215,6 +219,8 @@ public class CombatSystem : MonoBehaviour
 
         // DetermineFirstTurn handles calling PlayerStartTurn() or EnemyTurn()
         // so we don't need to call PlayerStartTurn() again here.
+
+        PopulateSkillMenu();
     }
 
 
@@ -305,8 +311,9 @@ public class CombatSystem : MonoBehaviour
 
         if (isAttackHijacked)
         {
-            UseSymbioteSwipe(); 
-            return; 
+            var swipe = GetEquippedCores().Find(c => c.coreID == "swipe01");
+            if (swipe != null) UseCore(swipe);
+            return;
         }
 
         HideAllMenus();
@@ -339,81 +346,12 @@ public class CombatSystem : MonoBehaviour
         OpenSkillMenu();
     }
 
-    public void UseSymbioteSwipe()
+    public void UseCore(CoreTemplate core)
     {
-        if (!isPlayerTurn) return; 
-        isPlayerTurn = false; 
-        HideAllMenus();     
-
-        var bloomCost = 3; 
-        float statMultiplier = GetBloomStatMultiplier();
-        var baseSkillDamage = UnityEngine.Random.Range(28, 33);
-        int finalDamage = Mathf.RoundToInt(baseSkillDamage * statMultiplier); 
-
-        if (ActiveBloomState >= BloomState.High)
-        {
-            var selfDamage = UnityEngine.Random.Range(5, 11);
-            playerHealth -= selfDamage;
-            UpdateHealthUI();
-
-            StartCoroutine(ShakeSprite(playerTransform, 0.4f, 0.25f));
-            
-            // --- NEW: UI Battle Text instead of Debug.Log! ---
-            ShowBattleText("High Bloom Penalty! You take " + selfDamage + " damage to fuel the attack!", 2.5f);
-
-            if (playerHealth <= 0)
-            {
-                // Give them 3 seconds to read the game over text before kicking them to the menu!
-                ShowBattleText("The host was consumed. Game Over.", 3f);
-                
-                // We use a tiny delay here so the text actually shows before the scene swaps
-                Invoke(nameof(LoadMainMenu), 3f); 
-                return;
-            }
-        }
-        else
-        {
-             // Optional: If they didn't take damage, show a generic attack message right away
-             ShowBattleText("You unleash a Symbiote Swipe!", 1.5f);
-        }
-
-        int currentMaxBloom = (GameManager.Instance != null && GameManager.Instance.playerData != null) 
-            ? GameManager.Instance.playerData.maxBloom 
-            : 100;
-
-        ActiveBloom = Mathf.Min(ActiveBloom + bloomCost, currentMaxBloom);
-        UpdateHealthUI();
-        
-        StartCoroutine(PerformSkillAnimation(playerTransform, enemyTransform,
-            onHit: () =>
-            {
-                enemyHealth -= finalDamage;
-                UpdateHealthUI();
-
-                // --- NEW: UI Battle Text instead of Debug.Log! ---
-                ShowBattleText("Symbiote Swipe deals " + finalDamage + " damage!", 2f);
-
-                StartCoroutine(ShakeSprite(enemyTransform, 0.3f, 0.3f));
-
-                // Figure out which color to flash based on the NEW bloom state
-                Color currentFlashColor = lowBloomColor;
-                if (ActiveBloomState == BloomState.Medium) currentFlashColor = mediumBloomColor;
-                else if (ActiveBloomState >= BloomState.High) currentFlashColor = highBloomColor;
-
-                // Trigger the visual effect!
-                StartCoroutine(FlashVignetteRoutine(currentFlashColor)); 
-            },
-            onComplete: () =>
-            {
-                if (enemyHealth <= 0)
-                {
-                    HandleEnemyDefeat(); 
-                }
-                else
-                {
-                    CheckWinConditionOrContinue();
-                }
-            }));
+        if (!isPlayerTurn) return;
+        isPlayerTurn = false;
+        HideAllMenus();
+        core.Execute(this);
     }
     
     // Quick helper function for the game over delay
@@ -672,13 +610,6 @@ public class CombatSystem : MonoBehaviour
         return currentEnemy.skills[0];
     }
 
-    public void DealDamageToPlayer(int amount, bool ignoreDefense)
-    {
-        var actualDamage = ignoreDefense ? amount : Mathf.Max(1, amount - playerDefense);
-        playerHealth -= actualDamage;
-        UpdateHealthUI();
-    }
-
     public void EndEnemyTurn() { }
 
     // We add the "snapInstantly" toggle to the parenthesis!
@@ -897,7 +828,9 @@ public class CombatSystem : MonoBehaviour
         mainMenuPanel.SetActive(false);
         skillMenuPanel.SetActive(true);
 
-        StartCoroutine(HighlightButtonSafe(skillDefaultButton));
+        var cores = GameManager.Instance != null ? GetEquippedCores() : testCores;
+        var firstButton = cores.Count > 0 ? skillButtonContainer.GetChild(0).gameObject : skillDefaultButton;
+        StartCoroutine(HighlightButtonSafe(firstButton));
     }
 
     public void OpenItemMenu()
@@ -1084,5 +1017,109 @@ public class CombatSystem : MonoBehaviour
         // 3. Ensure it is completely invisible when done
         flashColor.a = 0f;
         vignetteOverlay.color = flashColor;
+    }
+
+    // CORE API
+    // Methods called by cores/skills
+    private List<CoreTemplate> GetEquippedCores()
+    {
+        if (GameManager.Instance != null && GameManager.Instance.playerData != null)
+            return GameManager.Instance.playerData.equippedCores;
+        return new List<CoreTemplate>();
+    }
+
+    public void RunCoroutine(IEnumerator routine)
+    {
+        StartCoroutine(routine);
+    }
+
+    public void DealDamageToPlayer(int amount, bool ignoreDefense)
+    {
+        var actualDamage = ignoreDefense ? amount : Mathf.Max(1, amount - playerDefense);
+        playerHealth -= actualDamage;
+        UpdateHealthUI();
+    }
+
+    public void DealDamageToEnemy(int amount)
+    {
+        enemyHealth -= amount;
+        UpdateHealthUI();
+    }
+
+    public void AddBloom(int amount)
+    {
+        int currentMaxBloom = (GameManager.Instance != null && GameManager.Instance.playerData != null)
+            ? GameManager.Instance.playerData.maxBloom : 100;
+        ActiveBloom = Mathf.Min(ActiveBloom + amount, currentMaxBloom);
+        UpdateHealthUI();
+    }
+
+    public void TriggerSkillAnimation(Action onHit, Action onComplete)
+    {
+        StartCoroutine(PerformSkillAnimation(playerTransform, enemyTransform, onHit, onComplete));
+    }
+
+    public void TriggerShake(bool shakeEnemy, float duration, float magnitude)
+    {
+        StartCoroutine(ShakeSprite(shakeEnemy ? enemyTransform : playerTransform, duration, magnitude));
+    }
+
+    public void TriggerVignette(VignetteType type)
+    {
+        Color c = type == VignetteType.Low ? lowBloomColor
+                : type == VignetteType.Medium ? mediumBloomColor
+                : highBloomColor;
+        StartCoroutine(FlashVignetteRoutine(c));
+    }
+
+    public void OnCoreComplete()
+    {
+        if (enemyHealth <= 0) HandleEnemyDefeat();
+        else CheckWinConditionOrContinue();
+    }
+
+    public void TriggerGameOver()
+    {
+        Invoke(nameof(LoadMainMenu), 3f);
+    }
+
+    public bool IsPlayerDefeated() => playerHealth <= 0;
+    public bool IsEnemyDefeated() => enemyHealth <= 0;
+    public BloomState GetBloomState() => ActiveBloomState;
+    public float GetBloomMultiplier() => GetBloomStatMultiplier();
+    public int GetPlayerStrength() => playerStrength;
+
+    [Header("Skill Menu")]
+    public GameObject skillButtonPrefab;
+    public Transform skillButtonContainer;
+
+    private void PopulateSkillMenu()
+    {
+        foreach (Transform child in skillButtonContainer)
+        {
+            if (child.gameObject != skillDefaultButton)
+                Destroy(child.gameObject);
+        }
+
+        var cores = GameManager.Instance != null ? GetEquippedCores() : testCores;
+
+        for (int i = 0; i < 5; i++)
+        {
+            var obj = Instantiate(skillButtonPrefab, skillButtonContainer);
+            var trigger = obj.GetComponent<BloomPreviewTrigger>();
+            var button = obj.GetComponent<UnityEngine.UI.Button>();
+
+            if (i < cores.Count && cores[i] != null)
+            {
+                trigger.Setup(cores[i], this);
+            }
+            else
+            {
+                var emptyTrigger = obj.GetComponent<BloomPreviewTrigger>();
+                emptyTrigger.SetupEmpty();
+            }
+        }
+
+        skillDefaultButton.transform.SetAsLastSibling();
     }
 }

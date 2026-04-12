@@ -39,7 +39,8 @@ public class PlayerData : ScriptableObject
     public BloomState currentBloomState = BloomState.Stable;
 
     [Header("Cores")]
-    public CoreTemplate[] coreSlots = new CoreTemplate[5];
+    public List<CoreTemplate> equippedCores = new List<CoreTemplate>();
+    public int maxCoreSlots = 5;
     public List<string> knownCoreIDs = new List<string>();
 
     public bool finishedTutorial = false;
@@ -82,7 +83,7 @@ public class PlayerData : ScriptableObject
         Debug.Log("Resetting Player Data for New Run");
         currentHP = maxHP;
         healthPotions = 3;
-        coreSlots = new CoreTemplate[5];
+        equippedCores = new List<CoreTemplate>();
         knownCoreIDs = new List<string>();
         defeatedEnemies = new List<string>();
         hasAlien = false;

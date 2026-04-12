@@ -5,28 +5,40 @@ public class Stab : CoreTemplate
 {
     public float scaling = 1.5f;
 
-    // public override void Execute(CombatSystem system)
-    // {
-    //     OnFirstCast(); // reveals bloom cost in UI if not already known
+    public override void Execute(CombatSystem system)
+    {
+        OnFirstCast();
+        system.AddBloom(bloomCost);
 
-    //     system.currentBloom += bloomCost;
-    //     system.UpdateBloomState();
+        int damage = Mathf.Max(1, Mathf.RoundToInt(system.GetPlayerStrength() * scaling));
 
-    //     Debug.Log("Player uses " + coreName + "!\nBloom cost: " + bloomCost);
+        system.TriggerSkillAnimation(
+            onHit: () =>
+            {
+                system.DealDamageToEnemy(damage);
+                system.ShowBattleText(coreName + " deals " + damage + " damage!", 2f);
+                system.TriggerShake(true, 0.2f, 0.15f);
+            },
+            onComplete: () =>
+            {
+                system.OnCoreComplete();
+            });
+    }
 
-    //     system.StartCoroutine(system.PerformMeleeAttack(
-    //         system.playerTransform,
-    //         system.enemyTransform,
-    //         onHit: () =>
-    //         {
-    //             var actualDamage = Mathf.Max(1, (Mathf.RoundToInt(system.playerStrength * scaling)));
-    //             system.enemyHealth -= actualDamage;
-    //             system.UpdateHealthUI();
-    //             Debug.Log(coreName + " deals " + actualDamage + " damage!");
-    //         },
-    //         onComplete: () =>
-    //         {
-    //             system.CheckWinConditionOrContinue();
-    //         }));
-    // }
+    private System.Collections.IEnumerator ExecuteRoutine(CombatSystem system, int damage)
+    {
+        system.TriggerSkillAnimation(
+            onHit: () =>
+            {
+                system.DealDamageToEnemy(damage);
+                system.ShowBattleText(coreName + " deals " + damage + " damage!", 2f);
+                system.TriggerShake(true, 0.2f, 0.15f);
+            },
+            onComplete: () =>
+            {
+                system.OnCoreComplete();
+            });
+
+        yield break;
+    }
 }
