@@ -100,6 +100,9 @@ public class CombatSystem : MonoBehaviour
 
     private Coroutine battleTextCoroutine;
 
+    [Header("Symbiote Mechanics")]
+    public CoreTemplate innateSymbioteSwipe;
+
     // --- SMART PROPERTIES FOR BLOOM ---
     // These automatically check if PlayerData exists. If it does, they read/write directly to it.
     // If not, they use the testing fallbacks so you can still test combat in isolation.
@@ -311,8 +314,15 @@ public class CombatSystem : MonoBehaviour
 
         if (isAttackHijacked)
         {
-            var swipe = GetEquippedCores().Find(c => c.coreID == "swipe01");
-            if (swipe != null) UseCore(swipe);
+            // The Symbiote doesn't care if it's equipped. It forces the attack!
+            if (innateSymbioteSwipe != null)
+            {
+                UseCore(innateSymbioteSwipe);
+            }
+            else
+            {
+                Debug.LogError("CRITICAL: innate Symbiote Swipe Core is missing from the Inspector!");
+            }
             return;
         }
 

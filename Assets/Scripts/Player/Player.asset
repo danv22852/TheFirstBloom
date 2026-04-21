@@ -21,10 +21,11 @@ MonoBehaviour:
   floorName: secondFloor
   healthPotions: 3
   hasAlien: 1
-  currentBloom: 0
+  currentBloom: 85
   maxBloom: 100
-  currentBloomState: 0
-  equippedCores: []
+  currentBloomState: 3
+  equippedCores:
+  - {fileID: 0}
   maxCoreSlots: 5
   knownCoreIDs: []
   finishedTutorial: 1
