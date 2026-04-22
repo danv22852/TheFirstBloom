@@ -20,5 +20,7 @@ MonoBehaviour:
   speed: 9
   defense: 2
   combatScale: 1
+  flipSprite: 0
+  expDrop: 25
   skills:
   - {fileID: 11400000, guid: a662d6c363e70ff469adf11fc0d5652c, type: 2}

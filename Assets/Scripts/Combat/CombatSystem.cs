@@ -103,6 +103,20 @@ public class CombatSystem : MonoBehaviour
     [Header("Symbiote Mechanics")]
     public CoreTemplate innateSymbioteSwipe;
 
+    [Header("Level Up UI")]
+    public GameObject levelUpPanel;
+    public TextMeshProUGUI levelUpPointsText;
+    
+    // Text to show "Strength: 10 -> 11 (+1)"
+    public TextMeshProUGUI hpReadoutText;
+    public TextMeshProUGUI strReadoutText;
+    public TextMeshProUGUI spdReadoutText;
+    public TextMeshProUGUI defReadoutText;
+    public TextMeshProUGUI luckReadoutText;
+
+    // Snapshot variables to remember what the stats used to be!
+    private int oldMaxHP, oldStr, oldSpd, oldDef, oldLuck;
+
     // --- SMART PROPERTIES FOR BLOOM ---
     // These automatically check if PlayerData exists. If it does, they read/write directly to it.
     // If not, they use the testing fallbacks so you can still test combat in isolation.
@@ -466,21 +480,115 @@ public class CombatSystem : MonoBehaviour
 
     private void HandleEnemyDefeat()
     {
-        ShowBattleText("Victory! " + currentEnemy.enemyName + " was defeated.", 2.5f);
+        int expGained = currentEnemy != null ? currentEnemy.expDrop : 0;
+        bool leveledUp = false;
+
+        if (GameManager.Instance != null && GameManager.Instance.playerData != null)
+        {
+            var pd = GameManager.Instance.playerData;
+            
+            // 1. TAKE THE SNAPSHOT BEFORE ADDING EXP!
+            oldMaxHP = pd.maxHP;
+            oldStr = pd.strength;
+            oldSpd = pd.speed;
+            oldDef = pd.defense;
+            oldLuck = pd.luck;
+
+            // 2. Add EXP and roll the random stats
+            leveledUp = pd.expSystem.AddEXP(expGained, pd);
+        }
+
+        if (leveledUp)
+        {
+            ShowBattleText($"Victory!\nGained {expGained} EXP. LEVEL UP!", 2.5f);
+            
+            // If we leveled up, stop the battle text and open the menu after a delay!
+            Invoke(nameof(OpenLevelUpMenu), 2.5f);
+        }
+        else
+        {
+            ShowBattleText($"Victory! {currentEnemy.enemyName} defeated.\nGained {expGained} EXP.", 2.5f);
+            
+            // If we didn't level up, just return to the map normally.
+            Invoke(nameof(ReturnToOverworld), 2.5f);
+        }
 
         PersistStatsToPlayerData(); 
 
         if (GameManager.Instance != null && !string.IsNullOrEmpty(GameManager.encounteredInstanceID))
         {
             if (!GameManager.Instance.playerData.defeatedEnemies.Contains(GameManager.encounteredInstanceID))
-            {
                 GameManager.Instance.playerData.defeatedEnemies.Add(GameManager.encounteredInstanceID);
-            }
             GameManager.encounteredInstanceID = ""; 
         }
+    }
 
-        // We use an Invoke here so the scene doesn't instantly snap away before the Victory text can be read!
-        Invoke(nameof(ReturnToOverworld), 2.5f);
+    // --- LEVEL UP MENU LOGIC ---
+
+    private void OpenLevelUpMenu()
+    {
+        // Hide normal combat UI and show the level up screen
+        HideAllMenus();
+        if (tooltipPanel != null) tooltipPanel.SetActive(false); 
+        
+        levelUpPanel.SetActive(true);
+        UpdateLevelUpUI();
+    }
+
+    private void UpdateLevelUpUI()
+    {
+        if (GameManager.Instance == null || GameManager.Instance.playerData == null) return;
+        var pd = GameManager.Instance.playerData;
+
+        // Update the points available text
+        levelUpPointsText.text = "Skill Points Available: " + pd.expSystem.availableSkillPoints;
+
+        // Calculate the difference and draw the text!
+        hpReadoutText.text = $"Max HP: {oldMaxHP} -> {pd.maxHP} (+{pd.maxHP - oldMaxHP})";
+        strReadoutText.text = $"Strength: {oldStr} -> {pd.strength} (+{pd.strength - oldStr})";
+        spdReadoutText.text = $"Speed: {oldSpd} -> {pd.speed} (+{pd.speed - oldSpd})";
+        defReadoutText.text = $"Defense: {oldDef} -> {pd.defense} (+{pd.defense - oldDef})";
+        luckReadoutText.text = $"Luck: {oldLuck} -> {pd.luck} (+{pd.luck - oldLuck})";
+    }
+
+    // Connect these to the [+] buttons on your UI!
+    public void AllocatePoint_HP() { SpendSkillPoint(0); }
+    public void AllocatePoint_Str() { SpendSkillPoint(1); }
+    public void AllocatePoint_Spd() { SpendSkillPoint(2); }
+    public void AllocatePoint_Def() { SpendSkillPoint(3); }
+    public void AllocatePoint_Luck() { SpendSkillPoint(4); }
+
+    private void SpendSkillPoint(int statIndex)
+    {
+        if (GameManager.Instance == null || GameManager.Instance.playerData.expSystem.availableSkillPoints <= 0) return;
+
+        var pd = GameManager.Instance.playerData;
+        pd.expSystem.availableSkillPoints--;
+
+        // Add to the chosen stat!
+        if (statIndex == 0) pd.maxHP += 5; // HP gets 5 per point to keep it balanced
+        else if (statIndex == 1) pd.strength += 1;
+        else if (statIndex == 2) pd.speed += 1;
+        else if (statIndex == 3) pd.defense += 1;
+        else if (statIndex == 4) pd.luck += 1;
+
+        // Update the screen so they see the number go up!
+        UpdateLevelUpUI();
+    }
+
+    // Connect this to the "Continue" button!
+    public void FinishLevelUp()
+    {
+        // Force the player to spend their points before leaving!
+        if (GameManager.Instance != null && GameManager.Instance.playerData.expSystem.availableSkillPoints > 0)
+        {
+            Debug.Log("Spend your points first!");
+            return;
+        }
+
+        levelUpPanel.SetActive(false);
+        PersistStatsToPlayerData();
+        ReturnToOverworld();
     }
 
     private void ReturnToOverworld()

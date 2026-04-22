@@ -21,4 +21,5 @@ MonoBehaviour:
   defense: 2
   combatScale: 1
   flipSprite: 0
+  expDrop: 25
   skills: []

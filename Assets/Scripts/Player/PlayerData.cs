@@ -2,6 +2,8 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 
+
+
 // Moved the enum here so it is globally accessible across the project
 public enum BloomState
 {
@@ -11,6 +13,8 @@ public enum BloomState
     High,   // 75-99
     Total   // 100
 }
+
+
 
 [CreateAssetMenu(fileName = "PlayerData", menuName = "Player/Player Data")]
 public class PlayerData : ScriptableObject
@@ -45,6 +49,10 @@ public class PlayerData : ScriptableObject
 
     public bool finishedTutorial = false;
     public List<string> defeatedEnemies = new List<string>();
+
+    [Header("Progression")]
+    // This creates an instance of your new script directly inside PlayerData!
+    public ExperienceSystem expSystem = new ExperienceSystem();
 
     // Call this whenever Bloom is modified outside of combat
     public void UpdateBloomState()

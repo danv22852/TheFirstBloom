@@ -13,6 +13,7 @@ public class EnemyData : ScriptableObject
     public int speed;
     public int defense;
     public float combatScale = 1.0f;
-    public bool flipSprite; 
+    public bool flipSprite;
+    public int expDrop; 
     public List<SkillBase> skills;
 }
