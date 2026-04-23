@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: Symbiote Swipe
   m_EditorClassIdentifier: 
   coreID: swipe01
-  coreName: TEST SWIPE
-  coreDescription: TESTING
+  coreName: Symbiote Swipe
+  coreDescription: Swipe forward with the Symbiote to deal damage based on your STR
+    and BLOOM
   rarity: 0
-  coreSprite: {fileID: 0}
+  coreSprite: {fileID: 7678816605655809102, guid: e9583105d1325421ab7b2aff3cb8f019, type: 3}
   bloomCost: 10
   isKnown: 1
   minDamage: 50
