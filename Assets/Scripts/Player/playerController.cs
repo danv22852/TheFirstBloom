@@ -86,7 +86,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (Time.timeScale == 0)
+        if (Time.timeScale == 0 && canMove)
     {
         Debug.LogWarning("Time.timeScale was 0! Forcing it to 1.");
         Time.timeScale = 1f;

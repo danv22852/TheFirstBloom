@@ -20,13 +20,14 @@ MonoBehaviour:
   luck: 15
   floorName: secondFloor
   healthPotions: 3
-  coins: 0
+  coins: 1
   defeatedEnemies: []
-  collectedItems: []
+  collectedItems:
+  - (-49.80, -23.30, 0.00)
   hasAlien: 1
-  currentBloom: 100
-  maxBloom: 100
-  currentBloomState: 4
+  currentBloom: 0
+  maxBloom: 0
+  currentBloomState: 0
   equippedCores:
   - {fileID: 11400000, guid: dafe25a74e7e5d54790d7f65dc3b391e, type: 2}
   maxCoreSlots: 5
