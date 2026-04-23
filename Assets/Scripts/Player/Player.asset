@@ -12,27 +12,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 643f6fa934a3e6444af7093168124ef8, type: 3}
   m_Name: Player
   m_EditorClassIdentifier: 
-  currentHP: 76
-  maxHP: 100
-  strength: 11
-  speed: 10
-  defense: 5
-  luck: 0
+  currentHP: 133
+  maxHP: 180
+  strength: 43
+  speed: 25
+  defense: 19
+  luck: 13
   floorName: secondFloor
-  healthPotions: 2
+  healthPotions: 3
+  coins: 0
+  defeatedEnemies: []
+  collectedItems: []
   hasAlien: 1
   currentBloom: 100
   maxBloom: 100
   currentBloomState: 4
   equippedCores:
-  - {fileID: 0}
+  - {fileID: 11400000, guid: dafe25a74e7e5d54790d7f65dc3b391e, type: 2}
   maxCoreSlots: 5
   knownCoreIDs: []
   finishedTutorial: 1
-  defeatedEnemies:
-  - Hornet_1
   expSystem:
-    level: 3
-    currentEXP: 20
-    expToNextLevel: 225
-    availableSkillPoints: 2
+    level: 1
+    currentEXP: 75
+    expToNextLevel: 100
+    availableSkillPoints: 0

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;  
 
 public class GameManager : MonoBehaviour
 {
@@ -57,14 +58,35 @@ public class GameManager : MonoBehaviour
     {
         if (playerData != null)
         {
-            // 1. Empty the graveyard completely!
-            playerData.defeatedEnemies.Clear();
+            // 1. Empty the Enemy Graveyard
+            if (playerData.defeatedEnemies != null)
+            {
+                playerData.defeatedEnemies.Clear();
+            }
 
-            // 2. Heal the player back to their maximum health
-            playerData.currentHP = playerData.maxHP;
+            // 2. --- NEW: Empty the Collected Items list ---
+            if (playerData.collectedItems != null)
+            {
+                playerData.collectedItems.Clear();
+            }
 
-            Debug.Log("<color=cyan>SAVE DATA RESET! The graveyard is empty and player is healed.</color>");
+            // (Optional) 3. Reset the player's actual inventory and stats back to default!
+            playerData.coins = 0;
+            playerData.healthPotions = 3;
+            playerData.expSystem.level = 1; 
+            playerData.expSystem.currentEXP = 0;
+
+            Debug.Log("Save Data completely reset! All enemies and items will respawn.");
         }
+        else
+        {
+            Debug.LogWarning("Could not reset data: PlayerData is missing.");
+            return;
+        }
+
+        // 4. Reload the scene to physically spawn everything back in!
+        UnityEngine.SceneManagement.Scene currentScene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+        UnityEngine.SceneManagement.SceneManager.LoadScene(currentScene.buildIndex);
     }
 
     private void Update()

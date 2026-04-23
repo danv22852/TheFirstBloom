@@ -32,7 +32,13 @@ public class PlayerData : ScriptableObject
     public string floorName = "firstFloor";
 
     [Header("Inventory")]
-    public int healthPotions = 1;
+    public int healthPotions = 3;
+    public int coins = 0; // <-- NEW: Track the player's money
+
+    [Header("World State")]
+    public List<string> defeatedEnemies = new List<string>();
+    // --- NEW: Track which items have been picked up so they stay gone! ---
+    public List<string> collectedItems = new List<string>();
 
     [Header("Equipment")]
     public bool hasAlien = false;
@@ -48,7 +54,6 @@ public class PlayerData : ScriptableObject
     public List<string> knownCoreIDs = new List<string>();
 
     public bool finishedTutorial = false;
-    public List<string> defeatedEnemies = new List<string>();
 
     [Header("Progression")]
     // This creates an instance of your new script directly inside PlayerData!

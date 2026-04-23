@@ -106,6 +106,8 @@ public class CombatSystem : MonoBehaviour
     [Header("Level Up UI")]
     public GameObject levelUpPanel;
     public TextMeshProUGUI levelUpPointsText;
+    public TextMeshProUGUI levelReadoutText;
+    public TextMeshProUGUI warningText;
     
     // Text to show "Strength: 10 -> 11 (+1)"
     public TextMeshProUGUI hpReadoutText;
@@ -246,11 +248,13 @@ public class CombatSystem : MonoBehaviour
         if (playerSpeed >= enemySpeed)
         {
             Debug.Log("Player goes first.");
+            ShowBattleText("Speed Advantage! You strike first!", 2f);
             PlayerStartTurn();
         }
         else
         {
             Debug.Log("Enemy goes first.");
+            ShowBattleText(currentEnemy.enemyName + " is faster! They attack first!", 2f);
             EnemyTurn();
         }
     }
@@ -322,6 +326,48 @@ public class CombatSystem : MonoBehaviour
         BackToMainMenu();
     }
 
+    private System.Collections.IEnumerator CombatIntroSequence()
+    {
+        // 1. Lock the UI so the player can't click "Attack" while the intro is playing
+        if (cachedEventSystem != null) cachedEventSystem.enabled = false;
+
+        // 2. Grab the speed stats (Change 'currentEnemy.speed' if your variable is named differently!)
+        int playerSpeed = GameManager.Instance.playerData.speed;
+        int enemySpeed = currentEnemy.speed; 
+
+        // 3. Determine who is faster and announce it
+        if (playerSpeed >= enemySpeed)
+        {
+            // Player is faster (or it's a tie)
+            isPlayerTurn = true; 
+            ShowBattleText("Speed Advantage! You strike first!", 2f);
+        }
+        else
+        {
+            // Enemy is faster
+            isPlayerTurn = false;
+            ShowBattleText(currentEnemy.enemyName + " is faster! They attack first!", 2f);
+        }
+
+        // 4. Wait for the player to read the text (2 seconds matches the text display time)
+        yield return new WaitForSeconds(2f);
+
+        // 5. Unlock the UI
+        if (cachedEventSystem != null) cachedEventSystem.enabled = true;
+
+        // 6. Officially start the correct turn
+        if (isPlayerTurn)
+        {
+            // Call whatever function normally starts your player's turn 
+            // (e.g., PlayerTurnSetup(), EnablePlayerUI(), etc.)
+        }
+        else
+        {
+            // Call your Enemy's attack
+            EnemyTurn();
+        }
+    }
+
     public void OnAttackButton()
     {
         if (!isPlayerTurn) return;
@@ -351,6 +397,9 @@ public class CombatSystem : MonoBehaviour
             {
                 var actualDamage = Mathf.Max(1, playerStrength - currentEnemy.defense);
                 enemyHealth -= actualDamage;
+
+                enemyHealth = Mathf.Max(0, enemyHealth);
+
                 UpdateHealthUI();
                 
                 // Text the exact moment the hit connects!
@@ -529,10 +578,37 @@ public class CombatSystem : MonoBehaviour
     {
         // Hide normal combat UI and show the level up screen
         HideAllMenus();
-        if (tooltipPanel != null) tooltipPanel.SetActive(false); 
+
+        if (cachedEventSystem != null) cachedEventSystem.enabled = true;
+
+        if (tooltipPanel != null) tooltipPanel.SetActive(false);
+
+        if (warningText != null) warningText.gameObject.SetActive(false); 
         
         levelUpPanel.SetActive(true);
         UpdateLevelUpUI();
+    }
+
+    private System.Collections.IEnumerator AutoCloseLevelUp()
+    {
+        // 1. Turn off the UI clicker so they can't keep spending points while the timer ticks down
+        if (cachedEventSystem != null) cachedEventSystem.enabled = false;
+
+        // 2. Repurpose the warning text to show a success message!
+        if (warningText != null)
+        {
+            warningText.text = "Level Up Complete!";
+            warningText.color = Color.green;
+            warningText.gameObject.SetActive(true);
+        }
+
+        // 3. Wait for exactly 1 second
+        yield return new WaitForSeconds(1.0f);
+
+        // 4. Close the panel, save the stats, and head back to the Overworld
+        levelUpPanel.SetActive(false);
+        PersistStatsToPlayerData();
+        ReturnToOverworld();
     }
 
     private void UpdateLevelUpUI()
@@ -540,15 +616,37 @@ public class CombatSystem : MonoBehaviour
         if (GameManager.Instance == null || GameManager.Instance.playerData == null) return;
         var pd = GameManager.Instance.playerData;
 
-        // Update the points available text
         levelUpPointsText.text = "Skill Points Available: " + pd.expSystem.availableSkillPoints;
+        if (levelReadoutText != null) levelReadoutText.text = "Level: " + pd.expSystem.level;
 
-        // Calculate the difference and draw the text!
-        hpReadoutText.text = $"Max HP: {oldMaxHP} -> {pd.maxHP} (+{pd.maxHP - oldMaxHP})";
-        strReadoutText.text = $"Strength: {oldStr} -> {pd.strength} (+{pd.strength - oldStr})";
-        spdReadoutText.text = $"Speed: {oldSpd} -> {pd.speed} (+{pd.speed - oldSpd})";
-        defReadoutText.text = $"Defense: {oldDef} -> {pd.defense} (+{pd.defense - oldDef})";
-        luckReadoutText.text = $"Luck: {oldLuck} -> {pd.luck} (+{pd.luck - oldLuck})";
+        hpReadoutText.text = FormatStatText("Max HP", oldMaxHP, pd.maxHP);
+        strReadoutText.text = FormatStatText("Strength", oldStr, pd.strength);
+        spdReadoutText.text = FormatStatText("Speed", oldSpd, pd.speed);
+        defReadoutText.text = FormatStatText("Defense", oldDef, pd.defense);
+        luckReadoutText.text = FormatStatText("Luck", oldLuck, pd.luck);
+
+        // --- NEW: Check if they just spent their last point! ---
+        if (pd.expSystem.availableSkillPoints <= 0)
+        {
+            StartCoroutine(AutoCloseLevelUp());
+        }
+    }
+
+    // --- HELPER TO COLORIZE STAT INCREASES ---
+    private string FormatStatText(string statName, int oldValue, int newValue)
+    {
+        int difference = newValue - oldValue;
+
+        if (difference > 0)
+        {
+            // If the stat went up, wrap the difference in a GREEN Rich Text tag!
+            return $"{statName}: {oldValue} -> {newValue} <color=#00FF00>(+{difference})</color>";
+        }
+        else
+        {
+            // If it didn't go up, make the (+0) a dull gray so the green really pops.
+            return $"{statName}: {oldValue} -> {newValue} <color=#888888>(+0)</color>";
+        }
     }
 
     // Connect these to the [+] buttons on your UI!
@@ -572,24 +670,12 @@ public class CombatSystem : MonoBehaviour
         else if (statIndex == 3) pd.defense += 1;
         else if (statIndex == 4) pd.luck += 1;
 
+        if (warningText != null) warningText.gameObject.SetActive(false);
+
         // Update the screen so they see the number go up!
         UpdateLevelUpUI();
     }
 
-    // Connect this to the "Continue" button!
-    public void FinishLevelUp()
-    {
-        // Force the player to spend their points before leaving!
-        if (GameManager.Instance != null && GameManager.Instance.playerData.expSystem.availableSkillPoints > 0)
-        {
-            Debug.Log("Spend your points first!");
-            return;
-        }
-
-        levelUpPanel.SetActive(false);
-        PersistStatsToPlayerData();
-        ReturnToOverworld();
-    }
 
     private void ReturnToOverworld()
     {
@@ -938,6 +1024,8 @@ public class CombatSystem : MonoBehaviour
         slider.value = targetValue;
     }
 
+    
+
     // --- MENU NAVIGATION ---
 
     public void OpenSkillMenu()
@@ -1161,6 +1249,7 @@ public class CombatSystem : MonoBehaviour
     public void DealDamageToEnemy(int amount)
     {
         enemyHealth -= amount;
+        enemyHealth = Mathf.Max(0, enemyHealth);
         UpdateHealthUI();
     }
 
