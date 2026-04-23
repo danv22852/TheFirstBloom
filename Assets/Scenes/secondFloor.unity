@@ -59482,8 +59482,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69aae7ded93a347eb81b66ff3aecd54b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popupPanel: {fileID: 182607681}
-  messageText: {fileID: 0}
+  popupPanel: {fileID: 489015007}
+  messageText: {fileID: 1169758007}
 --- !u!114 &1479364330
 MonoBehaviour:
   m_ObjectHideFlags: 0
