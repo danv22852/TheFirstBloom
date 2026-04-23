@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 643f6fa934a3e6444af7093168124ef8, type: 3}
   m_Name: Player
   m_EditorClassIdentifier: 
-  currentHP: 133
-  maxHP: 180
-  strength: 43
-  speed: 25
-  defense: 19
-  luck: 13
+  currentHP: 127
+  maxHP: 185
+  strength: 48
+  speed: 27
+  defense: 21
+  luck: 15
   floorName: secondFloor
   healthPotions: 3
   coins: 0
@@ -34,6 +34,6 @@ MonoBehaviour:
   finishedTutorial: 1
   expSystem:
     level: 1
-    currentEXP: 75
-    expToNextLevel: 100
+    currentEXP: 0
+    expToNextLevel: 338
     availableSkillPoints: 0

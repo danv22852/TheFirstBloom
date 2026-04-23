@@ -1042,7 +1042,7 @@ GameObject:
   - component: {fileID: 347369767}
   m_Layer: 0
   m_Name: Hornet_6
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1272,7 +1272,7 @@ GameObject:
   - component: {fileID: 366760889}
   m_Layer: 0
   m_Name: Hornet_7
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1502,7 +1502,7 @@ GameObject:
   - component: {fileID: 375516338}
   m_Layer: 0
   m_Name: Hornet_8
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1949,7 +1949,7 @@ GameObject:
   - component: {fileID: 459682657}
   m_Layer: 0
   m_Name: Hornet_5
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2619,7 +2619,7 @@ GameObject:
   - component: {fileID: 522925956}
   m_Layer: 0
   m_Name: Hornet_3
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3891,7 +3891,7 @@ GameObject:
   - component: {fileID: 673267742}
   m_Layer: 0
   m_Name: Hornet_2
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -59326,7 +59326,7 @@ GameObject:
   - component: {fileID: 1448301666}
   m_Layer: 0
   m_Name: Hornet_9
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -60199,6 +60199,7 @@ GameObject:
   - component: {fileID: 1691072955}
   - component: {fileID: 1691072957}
   - component: {fileID: 1691072958}
+  - component: {fileID: 1691072959}
   m_Layer: 3
   m_Name: Melee
   m_TagString: Untagged
@@ -60333,7 +60334,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1691072953}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0eb899546b01d4603a3f2add74788066, type: 3}
   m_Name: 
@@ -60367,6 +60368,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &1691072959
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1691072953}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b9ba051a812537489954cada942cc34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1755156685
 GameObject:
   m_ObjectHideFlags: 0
@@ -60384,7 +60397,7 @@ GameObject:
   - component: {fileID: 1755156687}
   m_Layer: 0
   m_Name: Hornet_4
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -61445,7 +61458,7 @@ GameObject:
   - component: {fileID: 2088863500}
   m_Layer: 0
   m_Name: Hornet_1
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
