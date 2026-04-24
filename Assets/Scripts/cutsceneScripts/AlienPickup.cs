@@ -41,8 +41,11 @@ public class AlienPickup : MonoBehaviour
     {
         GameManager.Instance.playerData.hasAlien = true;
         
-
+        Debug.Log("alienPickup: " + playerController.canMove);
+    
         playerController.canMove = true;
+        Time.timeScale = 1f; 
+        Debug.Log("alienPickup: " + playerController.canMove); // Debug statement to check movement state
 
         GameManager.Instance.playerData.currentHP = GameManager.Instance.playerData.maxHP; // Heal the player to full health
 
@@ -53,8 +56,6 @@ public class AlienPickup : MonoBehaviour
       
         if (playerScript != null)
         {
-            
-            Debug.Log("enabling movement " + playerController.canMove);
             
 
             playerScript.UpdateAppearance();

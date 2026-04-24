@@ -60,6 +60,7 @@ public class TutorialBattle : MonoBehaviour
 
     private void Start()
     {
+        GameManager.Instance.playerData.finishedTutorial = true;
         cachedEventSystem = UnityEngine.EventSystems.EventSystem.current;
 
         var pd = GameManager.Instance.playerData;

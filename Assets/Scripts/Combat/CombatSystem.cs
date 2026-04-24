@@ -33,6 +33,9 @@ public class CombatSystem : MonoBehaviour
     // --- COMBAT STATE ---
     private bool isPlayerTurn = false;
     private bool hasUsedItemThisTurn = false;
+    private float guardDamageReduction = 0f;
+    private int guardTurnsRemaining = 0;
+    private bool enemyIsStunned = false;
 
     // --- UI ELEMENTS ---
     [Header("UI Elements")]
@@ -321,6 +324,13 @@ public class CombatSystem : MonoBehaviour
             {
                 ShowBattleText("Your turn.", 1f);
             }
+        }
+
+        if (guardTurnsRemaining > 0)
+        {
+            guardTurnsRemaining--;
+            if (guardTurnsRemaining == 0)
+                ShowBattleText("Guard has worn off.", 2f);
         }
 
         BackToMainMenu();
@@ -747,6 +757,14 @@ public class CombatSystem : MonoBehaviour
 
     private void EnemyTurn()
     {
+        if (enemyIsStunned)
+        {
+            enemyIsStunned = false;
+            ShowBattleText(currentEnemy.enemyName + " is stunned and can't move!", 2f);
+            StartCoroutine(WaitAndPassTurn(2f));
+            return;
+        }
+
         var skill = PickSkill();
         
         ShowBattleText(currentEnemy.enemyName + " lunges at you!", 1.5f);
@@ -1241,8 +1259,10 @@ public class CombatSystem : MonoBehaviour
 
     public void DealDamageToPlayer(int amount, bool ignoreDefense)
     {
-        var actualDamage = ignoreDefense ? amount : Mathf.Max(1, amount - playerDefense);
-        playerHealth -= actualDamage;
+        int actual = ignoreDefense ? amount : Mathf.Max(1, amount - playerDefense);
+        if (guardTurnsRemaining > 0)
+            actual = Mathf.RoundToInt(actual * (1f - guardDamageReduction));
+        playerHealth -= actual;
         UpdateHealthUI();
     }
 
@@ -1266,6 +1286,23 @@ public class CombatSystem : MonoBehaviour
         StartCoroutine(PerformSkillAnimation(playerTransform, enemyTransform, onHit, onComplete));
     }
 
+    public void ApplyGuard(float reduction, int turns)
+    {
+        guardDamageReduction = reduction;
+        guardTurnsRemaining = turns;
+    }
+
+    public void ApplyStun()
+    {
+        enemyIsStunned = true;
+        ShowBattleText("The enemy is stunned and will skip their turn!", 2.5f);
+    }
+
+    public void TriggerItemAnimation(Action onComplete)
+    {
+        StartCoroutine(PerformItemAnimation(playerTransform, onComplete));
+    }
+
     public void TriggerShake(bool shakeEnemy, float duration, float magnitude)
     {
         StartCoroutine(ShakeSprite(shakeEnemy ? enemyTransform : playerTransform, duration, magnitude));
@@ -1283,6 +1320,11 @@ public class CombatSystem : MonoBehaviour
     {
         if (enemyHealth <= 0) HandleEnemyDefeat();
         else CheckWinConditionOrContinue();
+    }
+
+    public void GivePlayerAnotherTurn()
+    {
+        PlayerStartTurn();
     }
 
     public void TriggerGameOver()

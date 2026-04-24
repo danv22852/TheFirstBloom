@@ -8,6 +8,9 @@ public class CombatTutorial : MonoBehaviour
     public GameObject tutorialPanel;
     public Button closeButton; 
 
+    public GameObject tooltipPanel;
+
+
     private bool isTutorialActive = false;
 
     private void Start()
@@ -16,6 +19,7 @@ public class CombatTutorial : MonoBehaviour
         if (GameManager.Instance.playerData.floorName == "firstFloor")
         {
             Debug.Log("checked floor: " + GameManager.Instance.playerData.floorName);
+            tooltipPanel.SetActive(false); // Hide the tooltip if it's active
             ShowTutorial();
         }
         else
@@ -23,6 +27,8 @@ public class CombatTutorial : MonoBehaviour
             // If it's not the first floor or they've seen it, delete this logic
             Destroy(gameObject);
         }
+
+
     }
 
     private void Update()

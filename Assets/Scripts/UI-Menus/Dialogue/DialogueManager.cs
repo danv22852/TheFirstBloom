@@ -23,6 +23,8 @@ public class DialogueManager : MonoBehaviour
     public TextMeshProUGUI dialogueText;
     public TextMeshProUGUI nameText;
     public Image portraitImage;
+
+    public PlayerController playerController;
     
     [Header("Settings")]
     public float typingSpeed = 0.04f;
@@ -67,6 +69,7 @@ public class DialogueManager : MonoBehaviour
         onDialogueComplete = onComplete; // Save the action for later
         
         Time.timeScale = 0f; 
+        playerController.canMove = false; // Disable player movement during dialogue
         dialogueBox.SetActive(true);
         linesQueue.Clear();
 
@@ -117,16 +120,21 @@ public class DialogueManager : MonoBehaviour
     }
 
     void EndDialogue()
+{
+    Debug.Log("Dialogue ended. Running callback if it exists.");
+    dialogueBox.SetActive(false);
+    Time.timeScale = 1f; 
+
+    // --- ADD THIS: Re-enable movement ---
+    if (playerController != null && !GameManager.Instance.playerData.hasAlien)
     {
-        Debug.Log("Dialogue ended. Running callback if it exists.");
-        dialogueBox.SetActive(false);
-        Time.timeScale = 1f; 
-
-
-
-        // --- NEW: Run the callback if one was provided ---
-        onDialogueComplete?.Invoke();
-        onDialogueComplete = null; // Clear it out so it doesn't accidentally fire again later
-        Debug.Log(Time.timeScale);
+        playerController.canMove = true;
     }
+
+    // Run the callback if one was provided
+    onDialogueComplete?.Invoke();
+    onDialogueComplete = null; 
+    
+    Debug.Log("TimeScale is now: " + Time.timeScale);
+}
 }
