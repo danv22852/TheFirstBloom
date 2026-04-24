@@ -150,6 +150,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tutorialPanel: {fileID: 1795174119}
   closeButton: {fileID: 1847683140}
+  tooltipPanel: {fileID: 941399558}
 --- !u!4 &6215968
 Transform:
   m_ObjectHideFlags: 0

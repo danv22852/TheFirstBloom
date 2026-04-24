@@ -91,7 +91,7 @@ public class PlayerController : MonoBehaviour
         Debug.LogWarning("Time.timeScale was 0! Forcing it to 1.");
         Time.timeScale = 1f;
     }
-        Debug.Log("Player canMove: " + canMove); // Debug statement to check movement state
+         
        
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");

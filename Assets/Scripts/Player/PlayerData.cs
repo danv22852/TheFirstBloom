@@ -54,6 +54,7 @@ public class PlayerData : ScriptableObject
     public List<string> knownCoreIDs = new List<string>();
 
     public bool finishedTutorial = false;
+    
 
     [Header("Progression")]
     // This creates an instance of your new script directly inside PlayerData!

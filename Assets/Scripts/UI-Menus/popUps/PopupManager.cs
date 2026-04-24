@@ -6,7 +6,8 @@ public class PopupManager : MonoBehaviour
 {
     public GameObject popupPanel; // Reference to the PopupPanel GameObject
     public TextMeshProUGUI messageText; // Reference to the message Text component (if using TextMeshPro)
-    // Add references to buttons if needed
+
+    public PlayerController pc;// Add references to buttons if needed
 
     // Call this method to show the popup
     public void ShowPopup(string message)
@@ -16,6 +17,7 @@ public class PopupManager : MonoBehaviour
         messageText.text = message;
         popupPanel.SetActive(true); 
         Time.timeScale = 0f; // This is why your character stops!
+        pc.canMove = false; // Disable player movement when popup is active
     }
 }
 
@@ -27,6 +29,7 @@ public class PopupManager : MonoBehaviour
             popupPanel.SetActive(false); // Disable the panel to hide it
             // You can also resume the game here: Time.timeScale = 1f;
             Time.timeScale = 1f;
+            pc.canMove = true; // Re-enable player movement when popup is closed
         }
     }
 }

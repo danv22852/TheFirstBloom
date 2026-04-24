@@ -1,6 +1,7 @@
-using UnityEngine;
+    using UnityEngine;
 using System.Collections;
 using Unity.Cinemachine;
+using NUnit.Framework.Constraints;
 
 
 
@@ -16,21 +17,24 @@ public class FirstEncounter : MonoBehaviour
 
     private CinemachineConfiner2D confiner;
 
+
     
     private void Awake() { 
         confiner = FindFirstObjectByType<CinemachineConfiner2D>();
         if (GameManager.Instance.playerData.finishedTutorial)
         {
+            
             Destroy(gameObject); // No need for this cutscene if the tutorial is already done
         }
     }
         
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && !GameManager.Instance.playerData.finishedTutorial)
         {
             PlayerController pc = other.GetComponent<PlayerController>();
             pc.canMove = false;
+            Debug.Log("1stEncounyer: " +   pc.canMove); // Debug statement to check movement state
 
              if (pc != null)
             {
@@ -38,6 +42,18 @@ public class FirstEncounter : MonoBehaviour
             }
          
         }
+    }
+
+
+    private void playTime()
+    {
+        Time.timeScale = 0f;
+         Time.timeScale = 1f; 
+         PlayerController pc = FindFirstObjectByType<PlayerController>();
+            
+         pc.canMove = true;
+            
+            Debug.Log("turning on the time" + Time.timeScale + pc.canMove);
     }
 
     private void UpdateCameraBoundary(PolygonCollider2D newBoundary) {

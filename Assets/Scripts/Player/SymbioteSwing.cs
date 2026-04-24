@@ -28,7 +28,7 @@ public class SymbioteSwing : MonoBehaviour
             {
                 lastDirection = moveInput;
                 
-                Debug.Log("Last direction updated: " + lastDirection);
+               // Debug.Log("Last direction updated: " + lastDirection);
             }
 
             // Attack input

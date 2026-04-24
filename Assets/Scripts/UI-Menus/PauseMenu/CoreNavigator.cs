@@ -1,35 +1,26 @@
 using UnityEngine;
+using UnityEngine.UI; // Needed for the Image component
 using TMPro;
-using System.Collections.Generic;
 
 public class CoreUIManager : MonoBehaviour
 {
     [Header("Data Source")]
     public PlayerData playerAsset; 
 
-    [Header("UI Text References")]
+    [Header("UI Text")]
     public TextMeshProUGUI coreNameText;   
     public TextMeshProUGUI coreInfoText;   
 
     [Header("Visual Feedback")]
-    // Element 0 MUST be the highlight for Slot 1
-    // Element 1 MUST be the highlight for Slot 2, etc.
-    public GameObject[] selectionIndicators; 
+    public GameObject[] selectionIndicators; // The hex glows (Slot 1-5)
+    
+    [Header("Core Sprites")]
+    // Drag the Image components that sit on your hexes here (Slot 1-5)
+    public Image[] slotIcons; 
 
     private int currentIndex = 0;
 
-    void Start()
-    {
-        InitializeMenu();
-    }
-
     void OnEnable()
-    {
-        InitializeMenu();
-    }
-
-    // Forces the menu to Slot 1 and refreshes text immediately
-    private void InitializeMenu()
     {
         currentIndex = 0;
         UpdateDisplay();
@@ -38,22 +29,16 @@ public class CoreUIManager : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetKeyDown(KeyCode.D))
-        {
             Navigate(1);
-        }
         else if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetKeyDown(KeyCode.A))
-        {
             Navigate(-1);
-        }
     }
 
     public void Navigate(int direction)
     {
         if (playerAsset == null) return;
-
         currentIndex += direction;
 
-        // Loop logic using your maxCoreSlots variable
         if (currentIndex >= playerAsset.maxCoreSlots) currentIndex = 0;
         else if (currentIndex < 0) currentIndex = playerAsset.maxCoreSlots - 1;
 
@@ -64,33 +49,42 @@ public class CoreUIManager : MonoBehaviour
     {
         if (playerAsset == null || coreNameText == null || coreInfoText == null) return;
 
-        // 1. Update the Text based on the PlayerData List
-        bool hasCoreInSlot = currentIndex < playerAsset.equippedCores.Count;
-
-        if (hasCoreInSlot)
+        // 1. Handle Core Icons (Turn on/off images for all 5 slots)
+        for (int i = 0; i < slotIcons.Length; i++)
         {
-            CoreTemplate currentCore = playerAsset.equippedCores[currentIndex];
-            if (currentCore != null)
+            if (slotIcons[i] == null) continue;
+
+            // Check if there is actually a core in this specific list index
+            if (i < playerAsset.equippedCores.Count && playerAsset.equippedCores[i] != null)
             {
-                coreNameText.text = currentCore.coreName;
-                coreInfoText.text = currentCore.coreDescription;
+                slotIcons[i].enabled = true;
+                slotIcons[i].sprite = playerAsset.equippedCores[i].coreSprite;
             }
+            else
+            {
+                // No core in this slot, hide the image
+                slotIcons[i].enabled = false;
+            }
+        }
+
+        // 2. Update Info Text for the currently selected slot
+        bool hasCore = currentIndex < playerAsset.equippedCores.Count;
+        if (hasCore && playerAsset.equippedCores[currentIndex] != null)
+        {
+            coreNameText.text = playerAsset.equippedCores[currentIndex].coreName;
+            coreInfoText.text = playerAsset.equippedCores[currentIndex].coreDescription;
         }
         else
         {
-            // This overrides the "Bloom: 0 - Stable" text immediately
             coreNameText.text = $"Slot {currentIndex + 1}";
             coreInfoText.text = "Empty Slot";
         }
 
-        // 2. Update the Highlight (The Selection Indicators)
+        // 3. Update the Selection Glow
         for (int i = 0; i < selectionIndicators.Length; i++)
         {
             if (selectionIndicators[i] != null)
-            {
-                // Set true ONLY if the array index matches our current slot
                 selectionIndicators[i].SetActive(i == currentIndex);
-            }
         }
     }
 }
