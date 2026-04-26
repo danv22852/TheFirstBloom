@@ -22,7 +22,26 @@ public class GameManager : MonoBehaviour
 
     [Header("Enemy Roster")]
     public EnemyData[] enemyRoster;
+    
+    private void OnEnable()
+{
+    SceneManager.sceneLoaded += OnSceneLoaded;
+}
 
+private void OnDisable()
+{
+    SceneManager.sceneLoaded -= OnSceneLoaded;
+}
+
+private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+{
+    PlayerController pc = FindFirstObjectByType<PlayerController>();
+    if (pc != null)
+    {
+        pc.canMove = true;
+        pc.EnableMovement();
+    }
+}
     private void Awake()
     {
         if (Instance == null)

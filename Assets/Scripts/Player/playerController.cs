@@ -24,26 +24,23 @@ public class PlayerController : MonoBehaviour
     private bool alreadyTinted = false; // To prevent multiple tints
 
     void Start()
+{
+    rb = GetComponent<Rigidbody2D>();
+    animator = GetComponent<Animator>();
+    spriteRenderer = GetComponent<SpriteRenderer>();
+    currentSpeed = BASE_SPEED;
+
+    UpdateAppearance();
+
+    if (GameManager.isReturningFromCombat)
     {
-        rb = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
-        spriteRenderer = GetComponent<SpriteRenderer>(); // Initialize reference
-        currentSpeed = BASE_SPEED;
-
-        // --- Persistent State Checks ---
-        UpdateAppearance(); 
-
-        if (GameManager.isReturningFromCombat)
-        {
-            // 1. Teleport Player
-            transform.position = GameManager.lastPlayerPosition;
-
-            // 2. Restore Camera Boundary
-            RestoreCameraBoundary();
-
-            GameManager.isReturningFromCombat = false;
-        }
+        transform.position = GameManager.lastPlayerPosition;
+        RestoreCameraBoundary();
+        GameManager.isReturningFromCombat = false;
     }
+
+    ForceResetMovement();
+}
 
     // Logic to check if the player should look like an alien
     public void UpdateAppearance()
@@ -84,6 +81,17 @@ public class PlayerController : MonoBehaviour
         currentSpeed = BASE_SPEED;
     }
 
+    void FixedUpdate()
+{
+    if (!canMove)
+    {
+        rb.linearVelocity = Vector2.zero;
+        return;
+    }
+
+    rb.linearVelocity = movementInput * currentSpeed;
+}
+
     void Update()
     {
         if (Time.timeScale == 0 && canMove)
@@ -116,24 +124,29 @@ public class PlayerController : MonoBehaviour
          
     }
 
-    void FixedUpdate()
-{
-    if(canMove)
-    {
-        // 1. Ensure constraints are ONLY freezing rotation
-        if (rb.constraints != RigidbodyConstraints2D.FreezeRotation)
-        {
-            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
-        }
 
-        // 2. Apply movement
-        rb.linearVelocity = movementInput * currentSpeed;
-    }
-    else
-    {
-        // 3. When NOT moving, we freeze everything to prevent sliding
-        rb.linearVelocity = Vector2.zero;
-        rb.constraints = RigidbodyConstraints2D.FreezeAll;
-    }
+public void ForceResetMovement()
+{
+    if (rb == null)
+        rb = GetComponent<Rigidbody2D>();
+
+    canMove = true;
+    currentSpeed = BASE_SPEED;
+
+    rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+    rb.linearVelocity = Vector2.zero;
+
+    Debug.Log("Player movement HARD reset");
+}
+public void EnableMovement()
+{
+    if (rb == null)
+        rb = GetComponent<Rigidbody2D>();
+
+    canMove = true;
+    currentSpeed = BASE_SPEED;
+
+    rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+    rb.linearVelocity = Vector2.zero;
 }
 }

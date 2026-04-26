@@ -23,5 +23,14 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/secondFloor.unity
     guid: c01d5a17d8ed94f518ddc042a8908285
+  - enabled: 1
+    path: Assets/Scenes/thirdFloor.unity
+    guid: 2ff7e60ef52e94b709d4bb0b08bf1b78
+  - enabled: 1
+    path: Assets/Scenes/fourthFloor.unity
+    guid: 1cf3f890fbc9d43e9b6eda51b30fd45e
+  - enabled: 1
+    path: Assets/Scenes/fifthFloor.unity
+    guid: 6bae1d1f19fdb4e8da4b502721c9520c
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

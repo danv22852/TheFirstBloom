@@ -93,7 +93,7 @@ public class FirstEncounter : MonoBehaviour
         
 
         // 5. Give control back to player
-        
+        pc.EnableMovement();
     
 
 
