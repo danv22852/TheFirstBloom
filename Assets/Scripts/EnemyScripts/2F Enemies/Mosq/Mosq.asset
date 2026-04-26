@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0566ed46712c3a4ca4ddde06a429795, type: 3}
+  m_Name: Mosq
+  m_EditorClassIdentifier: 
+  enemyID: Mosq_1
+  enemyName: Mosquito
+  enemySprite: {fileID: 6753816371527252566, guid: 4a692500f5857b54e89c747ecac55266, type: 3}
+  maxHP: 130
+  strength: 10
+  speed: 6
+  defense: 2
+  combatScale: 1
+  flipSprite: 1
+  expDrop: 25
+  skills: []
