@@ -15,11 +15,12 @@ MonoBehaviour:
   enemyID: Hornet_2
   enemyName: Hornet 2
   enemySprite: {fileID: 4286265989511706523, guid: 792a70b7b30780c42b3f0f1b503d9205, type: 3}
-  maxHP: 110
-  strength: 15
+  maxHP: 95
+  strength: 17
   speed: 9
   defense: 2
   combatScale: 1
   flipSprite: 0
-  expDrop: 25
-  skills: []
+  expDrop: 35
+  skills:
+  - {fileID: 11400000, guid: b82d5658507633a498bec0905665d400, type: 2}

@@ -16,10 +16,11 @@ MonoBehaviour:
   enemyName: Fly
   enemySprite: {fileID: -8318744207672894160, guid: 745f540d35317114290a235da6bf6678, type: 3}
   maxHP: 120
-  strength: 10
+  strength: 15
   speed: 6
-  defense: 2
+  defense: 1
   combatScale: 1
   flipSprite: 1
-  expDrop: 25
-  skills: []
+  expDrop: 35
+  skills:
+  - {fileID: 11400000, guid: a662d6c363e70ff469adf11fc0d5652c, type: 2}

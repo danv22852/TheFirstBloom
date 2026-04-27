@@ -21,6 +21,8 @@ public class FirstEncounter : MonoBehaviour
     
     private void Awake() { 
         confiner = FindFirstObjectByType<CinemachineConfiner2D>();
+
+        if (GameManager.Instance == null) return;
         if (GameManager.Instance.playerData.finishedTutorial)
         {
             
@@ -33,7 +35,10 @@ public class FirstEncounter : MonoBehaviour
         if (other.CompareTag("Player") && !GameManager.Instance.playerData.finishedTutorial)
         {
             PlayerController pc = other.GetComponent<PlayerController>();
-            pc.canMove = false;
+
+                if (pc == null) return;
+
+                pc.canMove = false;
             Debug.Log("1stEncounyer: " +   pc.canMove); // Debug statement to check movement state
 
              if (pc != null)

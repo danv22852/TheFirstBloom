@@ -35,6 +35,7 @@ public class EnemyEncounter : MonoBehaviour
     /// </summary>
     public void Engage(Transform player)
     {
+        Debug.Log("ENEMY ENGAGED: " + uniqueEnemyID);
         if (engaged || player == null) return;
 
         engaged = true;

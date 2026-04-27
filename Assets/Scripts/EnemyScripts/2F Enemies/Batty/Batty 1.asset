@@ -15,12 +15,12 @@ MonoBehaviour:
   enemyID: Batty_1
   enemyName: Batty
   enemySprite: {fileID: -854814284746086398, guid: 09182d07e257b3b4cab44942b5263746, type: 3}
-  maxHP: 30
+  maxHP: 60
   strength: 15
   speed: 9
   defense: 4
   combatScale: 3
-  flipSprite: 0
-  expDrop: 25
+  flipSprite: 1
+  expDrop: 35
   skills:
   - {fileID: 11400000, guid: a662d6c363e70ff469adf11fc0d5652c, type: 2}

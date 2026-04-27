@@ -6,7 +6,7 @@ public class EnemyPatrol : MonoBehaviour
     [Header("Movement")]
     public float wanderSpeed = 2.0f;
     public float chaseSpeed = 2.8f;
-    public float stopDistance = 0.9f;
+    public float stopDistance = 0.85f;
 
     [Header("Aggro")]
     public string playerTag = "Player";
@@ -14,7 +14,7 @@ public class EnemyPatrol : MonoBehaviour
     public float deaggroRadius = 6.0f;
 
     [Header("AUTO-ENGAGE (Combat Trigger Distance)")]
-    public float catchDistance = 0.85f;
+    public float catchDistance = 0.9f;
 
     [Header("Wander Timing")]
     public float minChangeTime = 0.6f;
@@ -101,10 +101,11 @@ public class EnemyPatrol : MonoBehaviour
 
     void ChaseStep(float distance)
     {
+        Debug.Log("Distance: " + distance + " | Encounter: " + encounter);
         Vector2 toPlayer = (Vector2)player.position - rb.position;
 
         // 🟥 COMBAT TRIGGER (ONLY PLACE COMBAT STARTS)
-        if (distance <= catchDistance)
+        if (distance * distance <= catchDistance * catchDistance)
         {
             rb.linearVelocity = Vector2.zero;
 

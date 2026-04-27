@@ -1074,11 +1074,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wanderSpeed: 2
-  chaseSpeed: 2.8
+  chaseSpeed: 4.3
   stopDistance: 0.9
   playerTag: Player
-  aggroRadius: 4
-  deaggroRadius: 6
+  aggroRadius: 6
+  deaggroRadius: 7
   catchDistance: 0.85
   minChangeTime: 0.6
   maxChangeTime: 1.6
@@ -1362,7 +1362,7 @@ Animator:
   m_GameObject: {fileID: 370061127}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 92437aa354339b048abb52ab84550c9a, type: 2}
+  m_Controller: {fileID: 9100000, guid: fa9aa6c37265c4ad08fa0962277a28b9, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1387,7 +1387,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wanderSpeed: 2
-  chaseSpeed: 2.8
+  chaseSpeed: 4.3
   stopDistance: 0.9
   playerTag: Player
   aggroRadius: 4
@@ -1415,7 +1415,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueEnemyID: Hornet_3
-  enemyType: {fileID: 11400000, guid: cc1a33ab7a68744a3adbc1201287054b, type: 2}
+  enemyType: {fileID: 11400000, guid: a94f6ff1d206b40ef9f72d5a5733755f, type: 2}
 --- !u!61 &370061132
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1875,7 +1875,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 1.3898935, y: -1.6955805}
+  m_Offset: {x: 1.3898935, y: 0.1853733}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -1885,7 +1885,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 17.501675, y: 12.425758}
+  m_Size: {x: 17.501675, y: 16.187668}
   m_EdgeRadius: 0
 --- !u!1 &540526075
 GameObject:
@@ -2329,7 +2329,7 @@ Animator:
   m_GameObject: {fileID: 563231871}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 92437aa354339b048abb52ab84550c9a, type: 2}
+  m_Controller: {fileID: 9100000, guid: fa9aa6c37265c4ad08fa0962277a28b9, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -2354,11 +2354,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wanderSpeed: 2
-  chaseSpeed: 2.8
+  chaseSpeed: 4.3
   stopDistance: 0.9
   playerTag: Player
-  aggroRadius: 4
-  deaggroRadius: 6
+  aggroRadius: 6
+  deaggroRadius: 7
   catchDistance: 0.85
   minChangeTime: 0.6
   maxChangeTime: 1.6
@@ -3258,7 +3258,7 @@ SpriteRenderer:
   m_SortingLayerID: -77290373
   m_SortingLayer: 3
   m_SortingOrder: 10
-  m_Sprite: {fileID: -653319074, guid: c483493eb3ec0f143b5d78ad823ac661, type: 3}
+  m_Sprite: {fileID: -620360788158790383, guid: 3ddf3dfddb1754bb8a7e6113adee177e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -3279,7 +3279,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -32.95, y: -2.73, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.3182, y: 1.3182, z: 1.3182}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1497343644}
@@ -3309,7 +3309,7 @@ Animator:
   m_GameObject: {fileID: 680971536}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 4c100d935cbc341e9aa829931fc5549c, type: 2}
+  m_Controller: {fileID: 9100000, guid: f14dc711bd8c34254aa11ff371c3041a, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -3350,7 +3350,7 @@ Transform:
   m_GameObject: {fileID: 748529513}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 11.62, y: 4.02, z: 0.065208375}
+  m_LocalPosition: {x: 9.78, y: 2.91, z: 0.065208375}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3794,7 +3794,7 @@ Animator:
   m_GameObject: {fileID: 970596427}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 92437aa354339b048abb52ab84550c9a, type: 2}
+  m_Controller: {fileID: 9100000, guid: 9ed1b9d2aebaa45608e97a3ec9c2de94, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -3819,10 +3819,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wanderSpeed: 2
-  chaseSpeed: 2.8
+  chaseSpeed: 4
   stopDistance: 0.9
   playerTag: Player
-  aggroRadius: 4
+  aggroRadius: 5
   deaggroRadius: 6
   catchDistance: 0.85
   minChangeTime: 0.6
@@ -51330,7 +51330,7 @@ MonoBehaviour:
   playerTag: Player
   aggroRadius: 5
   deaggroRadius: 6
-  catchDistance: 0.4
+  catchDistance: 0.85
   minChangeTime: 0.6
   maxChangeTime: 1.6
   obstacleMask:
@@ -51670,10 +51670,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wanderSpeed: 2
-  chaseSpeed: 2.8
+  chaseSpeed: 4.3
   stopDistance: 0.9
   playerTag: Player
-  aggroRadius: 4
+  aggroRadius: 5
   deaggroRadius: 6
   catchDistance: 0.85
   minChangeTime: 0.6
@@ -52219,6 +52219,18 @@ PrefabInstance:
     - target: {fileID: 7557527859645743570, guid: 1e695e76047d3440d89b14ff400f7f5b, type: 3}
       propertyPath: m_Interpolate
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7981551420797605319, guid: 1e695e76047d3440d89b14ff400f7f5b, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.3182
+      objectReference: {fileID: 0}
+    - target: {fileID: 7981551420797605319, guid: 1e695e76047d3440d89b14ff400f7f5b, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.3182
+      objectReference: {fileID: 0}
+    - target: {fileID: 7981551420797605319, guid: 1e695e76047d3440d89b14ff400f7f5b, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.3182
       objectReference: {fileID: 0}
     - target: {fileID: 7981551420797605319, guid: 1e695e76047d3440d89b14ff400f7f5b, type: 3}
       propertyPath: m_LocalPosition.x

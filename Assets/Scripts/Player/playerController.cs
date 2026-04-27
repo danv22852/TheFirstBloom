@@ -93,36 +93,28 @@ public class PlayerController : MonoBehaviour
 }
 
     void Update()
-    {
-        if (Time.timeScale == 0 && canMove)
+{
+    if (Time.timeScale == 0 && canMove)
     {
         Debug.LogWarning("Time.timeScale was 0! Forcing it to 1.");
         Time.timeScale = 1f;
     }
-         
-       
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        float vertical = Input.GetAxisRaw("Vertical");
 
-        movementInput = new Vector2(horizontal, vertical).normalized;
+    float horizontal = Input.GetAxisRaw("Horizontal");
+    float vertical = Input.GetAxisRaw("Vertical");
 
-        if(movementInput != Vector2.zero && canMove)
-        {
-              if (horizontal > 0)
-            spriteRenderer.flipX= false;
-        else if (horizontal < 0)
-            spriteRenderer.flipX = true;
-        isRunning = movementInput.magnitude > 0;
-        animator.SetBool("isRunning", isRunning);
-        }
-        else
-        {
-            animator.SetBool("isRunning", false);
-        }
-      
+    movementInput = new Vector2(horizontal, vertical).normalized;
 
-         
-    }
+    // Flip sprite left/right
+    if (horizontal > 0)
+        spriteRenderer.flipX = false;
+    else if (horizontal < 0)
+        spriteRenderer.flipX = true;
+
+    // Better animation detection
+    isRunning = horizontal != 0 || vertical != 0;
+    animator.SetBool("isRunning", isRunning);
+}
 
 
 public void ForceResetMovement()

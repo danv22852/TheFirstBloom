@@ -17,9 +17,10 @@ MonoBehaviour:
   enemySprite: {fileID: 4286265989511706523, guid: 4d4356cd4de7a464f96f8fb923dd4591, type: 3}
   maxHP: 170
   strength: 10
-  speed: 6
-  defense: 2
+  speed: 3
+  defense: 5
   combatScale: 1
   flipSprite: 1
-  expDrop: 25
-  skills: []
+  expDrop: 35
+  skills:
+  - {fileID: 11400000, guid: 30c7a6f2d58cf0a4e8a4c660b6c66fbb, type: 2}

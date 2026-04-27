@@ -12,38 +12,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 643f6fa934a3e6444af7093168124ef8, type: 3}
   m_Name: Player
   m_EditorClassIdentifier: 
-  currentHP: 224
-  maxHP: 225
-  strength: 52
-  speed: 4
-  defense: 6
-  luck: 2
-  floorName: firstFloor
-  healthPotions: 2
-  coins: 9
-  defeatedEnemies:
-  - tutorial_boss
-  collectedItems:
-  - (-54.66, 12.10, 0.00)
-  - (-49.74, 18.25, 0.00)
-  - (-12.58, 32.62, 0.00)
-  - (-27.30, 46.70, 0.00)
-  - (-49.62, 32.56, 0.00)
-  - (-52.20, 37.30, 0.00)
-  - (-28.59, 18.16, 0.00)
-  - (-40.40, 18.10, 0.00)
-  - (5.75, -0.54, 0.00)
+  currentHP: 250
+  maxHP: 250
+  strength: 57
+  speed: 8
+  defense: 8
+  luck: 6
+  floorName: thirdFloor
+  healthPotions: 3
+  coins: 17
+  defeatedEnemies: []
+  collectedItems: []
   hasAlien: 1
-  currentBloom: 0
+  currentBloom: 10
   maxBloom: 100
   currentBloomState: 0
-  equippedCores:
-  - {fileID: 11400000, guid: dafe25a74e7e5d54790d7f65dc3b391e, type: 2}
+  equippedCores: []
   maxCoreSlots: 5
   knownCoreIDs: []
   finishedTutorial: 1
   expSystem:
     level: 4
-    currentEXP: 63
-    expToNextLevel: 168
+    currentEXP: 130
+    expToNextLevel: 338
     availableSkillPoints: 0

@@ -16,11 +16,11 @@ MonoBehaviour:
   enemyName: Oog
   enemySprite: {fileID: -2780019765234666871, guid: dd0c7a3b1e6e02840afa27908e6051d8, type: 3}
   maxHP: 180
-  strength: 4
-  speed: 9
+  strength: 7
+  speed: 15
   defense: 2
   combatScale: 1
-  flipSprite: 0
-  expDrop: 25
+  flipSprite: 1
+  expDrop: 35
   skills:
   - {fileID: 11400000, guid: a662d6c363e70ff469adf11fc0d5652c, type: 2}
