@@ -1407,7 +1407,7 @@ MonoBehaviour:
   maxChangeTime: 1.6
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 192
   probeRadius: 0.15
   probeDistance: 0.35
   patrolArea: {fileID: 1773070614}
@@ -1636,7 +1636,7 @@ MonoBehaviour:
   maxChangeTime: 1.6
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 192
   probeRadius: 0.15
   probeDistance: 0.35
   patrolArea: {fileID: 1294276473}
@@ -2498,7 +2498,7 @@ MonoBehaviour:
   maxChangeTime: 1.6
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 192
   probeRadius: 0.15
   probeDistance: 0.35
   patrolArea: {fileID: 686718416}
@@ -3257,7 +3257,7 @@ MonoBehaviour:
   maxChangeTime: 1.6
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 192
   probeRadius: 0.15
   probeDistance: 0.35
   patrolArea: {fileID: 368640201}
@@ -4059,7 +4059,7 @@ MonoBehaviour:
   maxChangeTime: 1.6
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 192
   probeRadius: 0.15
   probeDistance: 0.35
   patrolArea: {fileID: 1621508135}
@@ -4596,7 +4596,7 @@ MonoBehaviour:
   maxChangeTime: 1.6
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 192
   probeRadius: 0.15
   probeDistance: 0.35
   patrolArea: {fileID: 668694578}
@@ -62404,7 +62404,7 @@ MonoBehaviour:
   maxChangeTime: 1.6
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 192
   probeRadius: 0.15
   probeDistance: 0.35
   patrolArea: {fileID: 941825047}
@@ -63362,7 +63362,7 @@ MonoBehaviour:
   maxChangeTime: 1.6
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 192
   probeRadius: 0.15
   probeDistance: 0.35
   patrolArea: {fileID: 498816878}
@@ -64465,7 +64465,7 @@ MonoBehaviour:
   maxChangeTime: 1.6
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 192
   probeRadius: 0.15
   probeDistance: 0.35
   patrolArea: {fileID: 1584147936}
