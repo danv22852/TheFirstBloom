@@ -1167,7 +1167,7 @@ MonoBehaviour:
   maxChangeTime: 1.6
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 192
   probeRadius: 0.15
   probeDistance: 0.35
   patrolArea: {fileID: 2024747393}
@@ -1481,7 +1481,7 @@ MonoBehaviour:
   maxChangeTime: 1.6
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 192
   probeRadius: 0.15
   probeDistance: 0.35
   patrolArea: {fileID: 37100725}
@@ -2449,7 +2449,7 @@ MonoBehaviour:
   maxChangeTime: 1.6
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 192
   probeRadius: 0.15
   probeDistance: 0.35
   patrolArea: {fileID: 1779579147}
@@ -3914,7 +3914,7 @@ MonoBehaviour:
   maxChangeTime: 1.6
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 192
   probeRadius: 0.15
   probeDistance: 0.35
   patrolArea: {fileID: 1515051220}
@@ -4073,7 +4073,7 @@ GameObject:
   - component: {fileID: 990168650}
   - component: {fileID: 990168649}
   - component: {fileID: 990168651}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Walls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -52146,7 +52146,7 @@ MonoBehaviour:
   maxChangeTime: 1.6
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 192
   probeRadius: 0.15
   probeDistance: 0.35
   patrolArea: {fileID: 540526077}
@@ -52491,7 +52491,7 @@ MonoBehaviour:
   maxChangeTime: 1.6
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 192
   probeRadius: 0.15
   probeDistance: 0.35
   patrolArea: {fileID: 1084705283}
@@ -53499,7 +53499,7 @@ MonoBehaviour:
   maxChangeTime: 1.6
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 192
   probeRadius: 0.15
   probeDistance: 0.35
   patrolArea: {fileID: 474786074}
@@ -54866,7 +54866,7 @@ MonoBehaviour:
   maxChangeTime: 1.6
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 192
   probeRadius: 0.15
   probeDistance: 0.35
   patrolArea: {fileID: 2049762383}
