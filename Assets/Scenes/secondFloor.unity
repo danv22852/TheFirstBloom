@@ -61109,7 +61109,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.5003736, y: -2.8084311}
+  m_Offset: {x: 0.50037384, y: -0.09187698}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -61118,8 +61118,8 @@ BoxCollider2D:
     adaptiveTilingThreshold: 0
     drawMode: 0
     adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 11.362194, y: 8.777199}
+  m_AutoTiling: 1
+  m_Size: {x: 11.362194, y: 3.3440895}
   m_EdgeRadius: 0
 --- !u!1 &1323658489
 GameObject:
@@ -61930,7 +61930,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   popupPanel: {fileID: 182607681}
-  messageText: {fileID: 0}
+  messageText: {fileID: 1169758007}
   pc: {fileID: 680971539}
 --- !u!114 &1479364330
 MonoBehaviour:
@@ -64460,7 +64460,7 @@ MonoBehaviour:
   playerTag: Player
   aggroRadius: 4
   deaggroRadius: 6
-  catchDistance: 0.85
+  catchDistance: 0
   minChangeTime: 0.6
   maxChangeTime: 1.6
   obstacleMask:
