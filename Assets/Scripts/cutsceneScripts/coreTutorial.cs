@@ -12,6 +12,7 @@ public class coreTutorial : MonoBehaviour
     { 
         if (GameManager.Instance.playerData.finishedTutorial && GameManager.Instance.playerData.hasAlien)
         {
+            
             PlayCutscene();
             Destroy(gameObject); // No need for this cutscene if the tutorial is already done
         }

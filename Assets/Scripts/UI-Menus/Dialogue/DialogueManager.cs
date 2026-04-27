@@ -124,6 +124,8 @@ public class DialogueManager : MonoBehaviour
     Debug.Log("Dialogue ended. Running callback if it exists.");
     dialogueBox.SetActive(false);
     Time.timeScale = 1f; 
+    playerController.canMove = true;
+    
 
     // --- ADD THIS: Re-enable movement ---
     if (playerController != null && !GameManager.Instance.playerData.hasAlien)
@@ -135,6 +137,6 @@ public class DialogueManager : MonoBehaviour
     onDialogueComplete?.Invoke();
     onDialogueComplete = null; 
     
-    Debug.Log("TimeScale is now: " + Time.timeScale);
+    Debug.Log("TimeScale is now: " + Time.timeScale + playerController.canMove);
 }
 }

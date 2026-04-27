@@ -11,6 +11,14 @@ public class EnemyEncounter : MonoBehaviour
 
     private bool engaged = false;
 
+    private void OnTriggerEnter2D(Collider2D collision)
+{
+    // Check if the thing hitting us is the Player
+    if (collision.CompareTag("Player"))
+    {
+        Engage(collision.transform);
+    }
+    }
     private void Start()
     {
         // Remove enemy if already defeated
@@ -38,7 +46,7 @@ public class EnemyEncounter : MonoBehaviour
         // Pass enemy data
         GameManager.pendingEnemyData = enemyType;
         GameManager.encounteredInstanceID = uniqueEnemyID;
-
+        Debug.Log("Encountered Enemy: " + uniqueEnemyID);
         // Load correct scene
         if (GameManager.Instance != null &&
             GameManager.Instance.playerData.finishedTutorial == false)
