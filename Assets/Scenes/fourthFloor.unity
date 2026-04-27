@@ -151,6 +151,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   popupPanel: {fileID: 83866033}
   messageText: {fileID: 0}
+  pc: {fileID: 0}
 --- !u!114 &5339425
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -945,7 +946,7 @@ MonoBehaviour:
   maxChangeTime: 1.6
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 192
   probeRadius: 0.15
   probeDistance: 0.35
   patrolArea: {fileID: 0}
@@ -964,7 +965,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uniqueEnemyID: Hornet_2
   enemyType: {fileID: 11400000, guid: cc1a33ab7a68744a3adbc1201287054b, type: 2}
-  gracePeriodSeconds: 1.5
 --- !u!61 &205357588
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2255,7 +2255,7 @@ MonoBehaviour:
   maxChangeTime: 1.6
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 192
   probeRadius: 0.15
   probeDistance: 0.35
   patrolArea: {fileID: 0}
@@ -2274,7 +2274,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uniqueEnemyID: Batty_1
   enemyType: {fileID: 11400000, guid: f9c054235cad0454d845e6a2bce1ace7, type: 2}
-  gracePeriodSeconds: 1.5
 --- !u!61 &651984761
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2798,7 +2797,7 @@ MonoBehaviour:
   maxChangeTime: 1.6
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 192
   probeRadius: 0.15
   probeDistance: 0.35
   patrolArea: {fileID: 0}
@@ -2817,7 +2816,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uniqueEnemyID: Oog_1
   enemyType: {fileID: 11400000, guid: 6d35684ff73a842798920c04a4779cc5, type: 2}
-  gracePeriodSeconds: 1.5
 --- !u!61 &688413453
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3255,7 +3253,7 @@ MonoBehaviour:
   maxChangeTime: 1.6
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 192
   probeRadius: 0.15
   probeDistance: 0.35
   patrolArea: {fileID: 0}
@@ -3274,7 +3272,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uniqueEnemyID: Batty_1
   enemyType: {fileID: 11400000, guid: f9c054235cad0454d845e6a2bce1ace7, type: 2}
-  gracePeriodSeconds: 1.5
 --- !u!61 &863060399
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -74543,7 +74540,7 @@ MonoBehaviour:
   maxChangeTime: 1.6
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 192
   probeRadius: 0.15
   probeDistance: 0.35
   patrolArea: {fileID: 0}
@@ -74562,7 +74559,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uniqueEnemyID: Oog_1
   enemyType: {fileID: 11400000, guid: 6d35684ff73a842798920c04a4779cc5, type: 2}
-  gracePeriodSeconds: 1.5
 --- !u!61 &1396473909
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -75794,7 +75790,7 @@ MonoBehaviour:
   maxChangeTime: 1.6
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 192
   probeRadius: 0.15
   probeDistance: 0.35
   patrolArea: {fileID: 0}
@@ -75813,7 +75809,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uniqueEnemyID: Hornet_1
   enemyType: {fileID: 11400000, guid: cc1a33ab7a68744a3adbc1201287054b, type: 2}
-  gracePeriodSeconds: 1.5
 --- !u!61 &1818932872
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -76161,7 +76156,7 @@ MonoBehaviour:
   maxChangeTime: 1.6
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 192
   probeRadius: 0.15
   probeDistance: 0.35
   patrolArea: {fileID: 0}
@@ -76180,7 +76175,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uniqueEnemyID: Batty_1
   enemyType: {fileID: 11400000, guid: f9c054235cad0454d845e6a2bce1ace7, type: 2}
-  gracePeriodSeconds: 1.5
 --- !u!61 &1930953521
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -76516,7 +76510,7 @@ MonoBehaviour:
   maxChangeTime: 1.6
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 192
   probeRadius: 0.15
   probeDistance: 0.35
   patrolArea: {fileID: 0}
@@ -76535,7 +76529,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uniqueEnemyID: stag_01
   enemyType: {fileID: 0}
-  gracePeriodSeconds: 1.5
 --- !u!61 &1961634460
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -77325,7 +77318,7 @@ MonoBehaviour:
   maxChangeTime: 1.6
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 192
   probeRadius: 0.15
   probeDistance: 0.35
   patrolArea: {fileID: 0}
@@ -77344,7 +77337,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uniqueEnemyID: Batty_1
   enemyType: {fileID: 11400000, guid: f9c054235cad0454d845e6a2bce1ace7, type: 2}
-  gracePeriodSeconds: 1.5
 --- !u!61 &2049970133
 BoxCollider2D:
   m_ObjectHideFlags: 0
