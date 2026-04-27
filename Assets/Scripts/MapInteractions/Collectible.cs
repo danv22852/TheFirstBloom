@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Collectible : MonoBehaviour
 {
-    public enum ItemType { Coin, HealthPotion }
+    public enum ItemType { Coin, HealthPotion, Key }
 
     [Header("Item Info")]
     public ItemType type;

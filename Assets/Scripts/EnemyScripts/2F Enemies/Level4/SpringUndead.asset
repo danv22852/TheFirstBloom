@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0566ed46712c3a4ca4ddde06a429795, type: 3}
+  m_Name: SpringUndead
+  m_EditorClassIdentifier: 
+  enemyID: SpringUndead
+  enemyName: Spring Gobs
+  enemySprite: {fileID: 772398646097569349, guid: bf617291499ea481aac7562c7bb68449, type: 3}
+  maxHP: 150
+  strength: 19
+  speed: 6
+  defense: 2
+  combatScale: 1
+  flipSprite: 0
+  expDrop: 35
+  skills:
+  - {fileID: 11400000, guid: 30c7a6f2d58cf0a4e8a4c660b6c66fbb, type: 2}
