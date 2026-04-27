@@ -16,6 +16,7 @@ MonoBehaviour:
   maxHP: 255
   strength: 58
   speed: 8
+<<<<<<< Updated upstream
   defense: 9
   luck: 7
   floorName: thirdFloor
@@ -23,16 +24,36 @@ MonoBehaviour:
   coins: 27
   defeatedEnemies: []
   collectedItems: []
+=======
+  defense: 8
+  luck: 6
+  floorName: firstFloor
+  healthPotions: 4
+  coins: 475
+  defeatedEnemies:
+  - 
+  - tutorial_boss
+  collectedItems:
+  - (5.75, -0.54, 0.00)
+>>>>>>> Stashed changes
   hasAlien: 1
   currentBloom: 10
   maxBloom: 100
   currentBloomState: 0
-  equippedCores: []
+  equippedCores:
+  - {fileID: 11400000, guid: d87afa192aaa68143a5996f7f459264a, type: 2}
   maxCoreSlots: 5
-  knownCoreIDs: []
+  knownCoreIDs:
+  - swipe01
   finishedTutorial: 1
   expSystem:
+<<<<<<< Updated upstream
     level: 5
     currentEXP: 142
     expToNextLevel: 507
+=======
+    level: 4
+    currentEXP: 165
+    expToNextLevel: 338
+>>>>>>> Stashed changes
     availableSkillPoints: 0
