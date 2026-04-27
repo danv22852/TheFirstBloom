@@ -14,6 +14,7 @@ public class EnemyData : ScriptableObject
     public int defense;
     public float combatScale = 1.0f;
     public bool flipSprite;
+    public float hoverHeight = 0f;
     public int expDrop; 
     public List<SkillBase> skills;
 }

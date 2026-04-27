@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Player Data")]
     public PlayerData playerData;
+    public static bool playerFirstStrike = false;
 
     [Header("Persistence")]
     public static Vector3 lastPlayerPosition;
@@ -90,10 +91,17 @@ private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
             }
 
             // (Optional) 3. Reset the player's actual inventory and stats back to default!
+            playerData.expSystem.level = 1;
+            playerData.expSystem.currentEXP = 0;
+            playerData.currentHP = 100;
+            playerData.maxHP = 100;
+            playerData.strength = 10;
+            playerData.speed = 10;
+            playerData.defense = 10;
+            playerData.luck = 0;
             playerData.coins = 0;
             playerData.healthPotions = 3;
-            playerData.expSystem.level = 1; 
-            playerData.expSystem.currentEXP = 0;
+            
 
             Debug.Log("Save Data completely reset! All enemies and items will respawn.");
         }

@@ -36,4 +36,20 @@ public abstract class CoreTemplate : ScriptableObject
             Debug.Log(coreName + " bloom cost revealed: " + bloomCost);
         }
     }
+
+    // This allows the UI to ask the Core for its customized text!
+    // We use 'virtual' so that specific cores (like Symbiote Swipe) can overwrite it with custom math.
+    public virtual string GetDynamicDescription(CombatSystem system)
+    {
+        // By default, just return the description you typed in the Inspector,
+        // plus the bloom cost if it has one!
+        string text = coreDescription;
+        
+        if (bloomCost > 0)
+        {
+            text += "\nCost: " + bloomCost + " Bloom";
+        }
+        
+        return text;
+    }
 }

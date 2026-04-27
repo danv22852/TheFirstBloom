@@ -16,6 +16,7 @@ public class PlayerHitbox : MonoBehaviour
             // 3. If we found the encounter script, force the battle to start!
             if (encounter != null)
             {
+                GameManager.playerFirstStrike = true;
                 Debug.Log("Player struck the enemy! Initiating combat.");
 
                 // Grab the player's transform to pass into your teammate's Engage function

@@ -31,7 +31,11 @@ public class EnemyPatrol : MonoBehaviour
 
     private Rigidbody2D rb;
     private Transform player;
+<<<<<<< Updated upstream
     private EnemyEncounter encounter;
+=======
+    private Animator anim;
+>>>>>>> Stashed changes
 
     private Vector2 moveDir;
     private float timer;
@@ -42,6 +46,7 @@ public class EnemyPatrol : MonoBehaviour
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
         rb.gravityScale = 0f;
         rb.freezeRotation = true;
     }
@@ -86,6 +91,16 @@ public class EnemyPatrol : MonoBehaviour
 
         if (patrolArea != null)
             ClampToArea();
+
+        if (anim != null)
+        {
+            // linearVelocity.magnitude checks how fast the object is currently moving.
+            // If it's greater than 0.1, they are moving! If they hit a wall or stop, it drops to 0.
+            bool moving = rb.linearVelocity.magnitude > 0.1f;
+            
+            // Send that true/false value to the Animator parameter we created
+            anim.SetBool("isMoving", moving);
+        }
     }
 
     void WanderStep()

@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class Collectible : MonoBehaviour
 {
-    public enum ItemType { Coin, HealthPotion }
+    // --- NEW: Added WiltPotion to the list! ---
+    public enum ItemType { Coin, HealthPotion, WiltPotion }
 
     [Header("Item Info")]
     public ItemType type;
@@ -52,6 +53,16 @@ public class Collectible : MonoBehaviour
         {
             pd.healthPotions += amount;
             Debug.Log($"Picked up {amount} potion(s)! Total Potions: {pd.healthPotions}");
+        }
+        // --- NEW: Give the player Wilt Potions! ---
+        else if (type == ItemType.WiltPotion)
+        {
+            pd.wiltPotions += amount;
+            
+            // --- THE FIX: Tell the game the item is officially discovered! ---
+            pd.hasDiscoveredWiltPotions = true; 
+            
+            Debug.Log($"Picked up {amount} Wilt Potion(s)! Total Wilt Potions: {pd.wiltPotions}");
         }
 
         // 2. Save this item's ID to the graveyard so it never respawns

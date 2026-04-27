@@ -19,6 +19,11 @@ public class CombatSystem : MonoBehaviour
     public int playerStrength;
     public int playerSpeed;
     public int playerDefense;
+    public int playerLuck;
+
+    [Header("Critical Hits")]
+    [Tooltip("How much damage a crit multiplies. 1.5x is standard.")]
+    public float critMultiplier = 1.5f;
 
     [Header("Bloom Hijack UI")]
     public TextMeshProUGUI attackButtonText; 
@@ -29,13 +34,18 @@ public class CombatSystem : MonoBehaviour
     public EnemyData currentEnemy;
     private int enemyHealth;
     private int enemySpeed; 
+    private Vector3 baseEnemyPosition;
 
     // --- COMBAT STATE ---
     private bool isPlayerTurn = false;
     private bool hasUsedItemThisTurn = false;
+<<<<<<< Updated upstream
     private float guardDamageReduction = 0f;
     private int guardTurnsRemaining = 0;
     private bool enemyIsStunned = false;
+=======
+    private bool isAutoBattlerExecutingCore = false;
+>>>>>>> Stashed changes
 
     // --- UI ELEMENTS ---
     [Header("UI Elements")]
@@ -76,6 +86,8 @@ public class CombatSystem : MonoBehaviour
     [Header("Item Menu UI")]
     public UnityEngine.UI.Button healItemButton; 
     public TextMeshProUGUI healItemText;
+    public UnityEngine.UI.Button wiltItemButton; 
+    public TMPro.TextMeshProUGUI wiltItemText;
 
     [Header("Animation Settings")]
     public Transform playerTransform;
@@ -84,9 +96,10 @@ public class CombatSystem : MonoBehaviour
 
     [Header("Player Stats (Testing Fallbacks)")]
     public int testPlayerMaxHealth = 100;
-    public int testPlayerStrength = 15;
+    public int testPlayerStrength = 10;
     public int testPlayerSpeed = 10;
-    public int testPlayerDefense = 5;
+    public int testPlayerDefense = 10;
+    public int testPlayerLuck = 10;
     public int testPlayerBloom = 0;
     public List<CoreTemplate> testCores = new List<CoreTemplate>();
     private BloomState testBloomState = BloomState.Stable;
@@ -111,6 +124,9 @@ public class CombatSystem : MonoBehaviour
     public TextMeshProUGUI levelUpPointsText;
     public TextMeshProUGUI levelReadoutText;
     public TextMeshProUGUI warningText;
+
+    [Header("QTE Manager")]
+    public QTEManager qteManager;
     
     // Text to show "Strength: 10 -> 11 (+1)"
     public TextMeshProUGUI hpReadoutText;
@@ -121,6 +137,17 @@ public class CombatSystem : MonoBehaviour
 
     // Snapshot variables to remember what the stats used to be!
     private int oldMaxHP, oldStr, oldSpd, oldDef, oldLuck;
+
+    [Header("Troll Boss Mechanics")]
+    public bool isBossFight = false;
+    private int bossTurnCounter = 0; // Tracks the 3-turn cycle
+    private int bossPhase = 1; // 1 = Guarding, 2 = Frenzy
+    public bool isBossGuarding = false;
+    public SkillBase trollCaveInSkill;
+    public SkillBase trollSeismicSlamSkill;
+
+    [Header("Boss Rewards")]
+    public CoreTemplate bossCoreReward2F; // Drag the Seismic Slam core here in the Inspector!
 
     // --- SMART PROPERTIES FOR BLOOM ---
     // These automatically check if PlayerData exists. If it does, they read/write directly to it.
@@ -161,6 +188,10 @@ public class CombatSystem : MonoBehaviour
 
     private IEnumerator Start() // Changed from 'void' to 'IEnumerator'
     {
+        if (enemyTransform != null)
+        {
+            baseEnemyPosition = enemyTransform.position;
+        }
         // --- 1. THE TUTORIAL PAUSE UI CHECK ---
         // If the tutorial script has set timeScale to 0, we sit in this loop.
         // We use WaitForSecondsRealtime because regular Time is frozen!
@@ -185,6 +216,7 @@ public class CombatSystem : MonoBehaviour
             playerStrength = pd.strength;
             playerSpeed = pd.speed;
             playerDefense = pd.defense;
+            playerLuck = pd.luck;
         }
         else
         {
@@ -194,6 +226,7 @@ public class CombatSystem : MonoBehaviour
             playerStrength = testPlayerStrength;
             playerSpeed = testPlayerSpeed;
             playerDefense = testPlayerDefense;
+            playerLuck = testPlayerLuck;
             UpdateTestBloomState();
         }
 
@@ -208,7 +241,7 @@ public class CombatSystem : MonoBehaviour
             GameManager.pendingEnemyData = null;
         }
 
-        // --- 5. SET ENEMY VISUALS AND STATS ---
+        // --- 4. SET ENEMY VISUALS AND STATS ---
         if (enemyTransform == null)
         {
             Debug.LogError("ERROR: The 'Enemy Transform' slot in your CombatManager Inspector is empty!");
@@ -221,12 +254,26 @@ public class CombatSystem : MonoBehaviour
                 sr.sprite = currentEnemy.enemySprite;
                 enemyTransform.localScale = new Vector3(currentEnemy.combatScale, currentEnemy.combatScale, 1f);
                 sr.flipX = currentEnemy.flipSprite;
+                enemyTransform.position = baseEnemyPosition + new Vector3(0, currentEnemy.hoverHeight, 0);
                 Debug.Log("<color=cyan>3. Sprite assigned successfully!</color>");
             }
         }
 
         enemyHealth = currentEnemy.maxHP;
         enemySpeed = currentEnemy.speed;
+
+        // --- NEW: AUTO-DETECT THE BOSS! ---
+        if (currentEnemy.enemyID == "TrollBoss" || currentEnemy.enemyName == "Underground Troll")
+        {
+            isBossFight = true;
+            bossPhase = 1;      // Reset phase
+            bossTurnCounter = 0; // Reset turn counter
+            Debug.Log("<color=red>BOSS FIGHT DETECTED! Activating Troll AI.</color>");
+        }
+        else
+        {
+            isBossFight = false;
+        }
 
         // Set the maximums for our sliders!
         if (playerHpSlider != null) playerHpSlider.maxValue = playerMaxHealth;
@@ -237,12 +284,10 @@ public class CombatSystem : MonoBehaviour
 
         // --- 5. START THE ROUND ---
         UpdateHealthUI(true);
-        DetermineFirstTurn();
-
-        // DetermineFirstTurn handles calling PlayerStartTurn() or EnemyTurn()
-        // so we don't need to call PlayerStartTurn() again here.
-
+        // DetermineFirstTurn();
         PopulateSkillMenu();
+
+        yield return StartCoroutine(CombatIntroSequence());
     }
 
 
@@ -251,13 +296,13 @@ public class CombatSystem : MonoBehaviour
         if (playerSpeed >= enemySpeed)
         {
             Debug.Log("Player goes first.");
-            ShowBattleText("Speed Advantage! You strike first!", 2f);
+            // ShowBattleText("Speed Advantage! You strike first!", 2f);
             PlayerStartTurn();
         }
         else
         {
             Debug.Log("Enemy goes first.");
-            ShowBattleText(currentEnemy.enemyName + " is faster! They attack first!", 2f);
+            // ShowBattleText(currentEnemy.enemyName + " is faster! They attack first!", 2f);
             EnemyTurn();
         }
     }
@@ -269,7 +314,13 @@ public class CombatSystem : MonoBehaviour
         
         isAttackHijacked = false;
         attackButtonText.text = "Attack"; 
-        attackButtonText.color = Color.black; 
+        attackButtonText.color = Color.black;
+
+        if (ActiveBloomState == BloomState.Total)
+        {
+            StartCoroutine(SymbioteAutoBattleRoutine());
+            return; // Stops the rest of PlayerTurn from running!
+        } 
 
         // 1. Process Hijack Mechanics silently first
         if (ActiveBloomState >= BloomState.High)
@@ -338,25 +389,33 @@ public class CombatSystem : MonoBehaviour
 
     private System.Collections.IEnumerator CombatIntroSequence()
     {
-        // 1. Lock the UI so the player can't click "Attack" while the intro is playing
+        // 1. Lock the UI
         if (cachedEventSystem != null) cachedEventSystem.enabled = false;
 
-        // 2. Grab the speed stats (Change 'currentEnemy.speed' if your variable is named differently!)
-        int playerSpeed = GameManager.Instance.playerData.speed;
-        int enemySpeed = currentEnemy.speed; 
-
-        // 3. Determine who is faster and announce it
-        if (playerSpeed >= enemySpeed)
+        // --- NEW: 2. Check how the battle started! ---
+        if (GameManager.playerFirstStrike)
         {
-            // Player is faster (or it's a tie)
-            isPlayerTurn = true; 
-            ShowBattleText("Speed Advantage! You strike first!", 2f);
+            // Player hit the enemy in the overworld!
+            isPlayerTurn = true;
+            ShowBattleText("Ambush! You strike first!", 2f);
+            
+            // CRITICAL: Reset the flag immediately so the NEXT battle 
+            // doesn't accidentally think it's a first strike too!
+            GameManager.playerFirstStrike = false; 
         }
         else
         {
-            // Enemy is faster
-            isPlayerTurn = false;
-            ShowBattleText(currentEnemy.enemyName + " is faster! They attack first!", 2f);
+            // The enemy touched the player normally. Rely on the Speed Stat!
+            if (playerSpeed >= enemySpeed)
+            {
+                isPlayerTurn = true; 
+                ShowBattleText("Speed Advantage! You strike first!", 2f);
+            }
+            else
+            {
+                isPlayerTurn = false;
+                ShowBattleText(currentEnemy.enemyName + " is faster! They attack first!", 2f);
+            }
         }
 
         // 4. Wait for the player to read the text (2 seconds matches the text display time)
@@ -370,10 +429,13 @@ public class CombatSystem : MonoBehaviour
         {
             // Call whatever function normally starts your player's turn 
             // (e.g., PlayerTurnSetup(), EnablePlayerUI(), etc.)
+            Debug.Log("Player goes first.");
+            PlayerStartTurn();
         }
         else
         {
             // Call your Enemy's attack
+            Debug.Log("Enemy goes first.");
             EnemyTurn();
         }
     }
@@ -405,23 +467,59 @@ public class CombatSystem : MonoBehaviour
         StartCoroutine(PerformMeleeAttack(playerTransform, enemyTransform,
             onHit: () =>
             {
-                var actualDamage = Mathf.Max(1, playerStrength - currentEnemy.defense);
-                enemyHealth -= actualDamage;
+                int effectiveDefense = currentEnemy.defense;
 
+                if (isBossFight && isBossGuarding)
+                {
+                    effectiveDefense *= 5; // The Troll's defense becomes a brick wall!
+                    ShowBattleText("The Troll's rocky skin deflects the blow!", 1.5f);
+                }
+
+                int rawDamage = Mathf.Max(1, playerStrength - effectiveDefense);
+                float varianceMultiplier = UnityEngine.Random.Range(0.85f, 1.15f);
+                int finalDamage = Mathf.RoundToInt(rawDamage * varianceMultiplier);
+
+                // --- NEW: CRITICAL HIT CHECK ---
+                bool isCrit = CheckForCriticalHit();
+                if (isCrit)
+                {
+                    finalDamage = Mathf.RoundToInt(finalDamage * critMultiplier);
+                    
+                    // Flash the screen white for extra impact!
+                    StartCoroutine(FlashVignetteRoutine(Color.white)); 
+                }
+
+                finalDamage = Mathf.Max(1, finalDamage);
+                enemyHealth -= finalDamage;
                 enemyHealth = Mathf.Max(0, enemyHealth);
 
                 UpdateHealthUI();
-                
-                // Text the exact moment the hit connects!
-                ShowBattleText("Dealt " + actualDamage + " damage to the enemy.", 2f);
+
+                // --- NEW: DYNAMIC BATTLE TEXT ---
+                if (isCrit)
+                {
+                    ShowBattleText("CRITICAL HIT! Dealt " + finalDamage + " damage!", 2.5f);
+                }
+                else
+                {
+                    ShowBattleText("Dealt " + finalDamage + " damage to the enemy.", 2f);
+                }
 
                 StartCoroutine(ShakeSprite(enemyTransform, 0.2f, 0.15f));
             },
             onComplete: () =>
             {
-                if (enemyHealth <= 0) HandleEnemyDefeat(); 
+                if (enemyHealth <= 0) HandleEnemyDefeat();
                 else CheckWinConditionOrContinue();
             }));
+    }
+
+    public bool CheckForCriticalHit()
+    {
+        // Random.Range(0, 100) rolls a number from 0 to 99.
+        // If Luck is 5, it returns true if it rolls 0, 1, 2, 3, or 4 (exactly 5% chance!)
+        int roll = UnityEngine.Random.Range(0, 100);
+        return roll < playerLuck;
     }
 
     public void OnSkillButton()
@@ -486,6 +584,52 @@ public class CombatSystem : MonoBehaviour
             }));
     }
 
+    public void UseWiltPotion()
+    {
+        if (hasUsedItemThisTurn)
+        {
+            ShowBattleText("You already used an item this turn.", 1.5f);
+            return;
+        }
+
+        if (GameManager.Instance != null && GameManager.Instance.playerData.wiltPotions <= 0)
+        {
+            ShowBattleText("No Wilt Potions left.", 1.5f);
+            return;
+        }
+        else if (GameManager.Instance != null)
+        {
+            GameManager.Instance.playerData.wiltPotions--;
+        }
+
+        isPlayerTurn = false; 
+        HideAllMenus(); 
+        
+        ShowBattleText("You drink a Wilt Potion...", 1.5f);
+
+        StartCoroutine(PerformItemAnimation(playerTransform, 
+            onComplete: () => 
+            {
+                // Subtract 25 Bloom! (Mathf.Max ensures it doesn't drop below 0)
+                ActiveBloom = Mathf.Max(0, ActiveBloom - 25);
+
+                if (GameManager.Instance != null)
+                {
+                    GameManager.Instance.playerData.SetDecayFloor();
+                }
+                
+                hasUsedItemThisTurn = true;
+                
+                // Force the UI bars to update instantly
+                UpdateHealthUI(true);
+                
+                ShowBattleText("The Symbiote grip weakens. Bloom reduced by 25!", 2.5f);
+                
+                isPlayerTurn = true; 
+                BackToMainMenu(); 
+            }));
+    }
+
     public void OnRunButton()
     {
         if (!isPlayerTurn) return;
@@ -539,6 +683,39 @@ public class CombatSystem : MonoBehaviour
 
     private void HandleEnemyDefeat()
     {
+        // --- 1. INITIAL DEFEAT & REWARDS ---
+        if (isBossFight && currentEnemy.enemyID == "TrollBoss")
+        {
+            if (GameManager.Instance != null && !GameManager.Instance.playerData.defeatedEnemies.Contains("TrollBoss"))
+            {
+                GameManager.Instance.playerData.defeatedEnemies.Add("TrollBoss");
+                Debug.Log("<color=green>Troll Boss permanently added to Graveyard!</color>");
+                
+                if (bossCoreReward2F != null)
+                {
+                    var pData = GameManager.Instance.playerData;
+                    if (pData.equippedCores.Count < pData.maxCoreSlots) pData.equippedCores.Add(bossCoreReward2F);
+                    else pData.knownCoreIDs.Add(bossCoreReward2F.name);
+                }
+            }
+
+            ShowBattleText("The Symbiote devours the Troll's remains...\nAbsorbed Core: SEISMIC SLAM!", 3.5f);
+            
+            // THE FIX: Use Invoke to securely jump to the EXP function!
+            Invoke(nameof(ProcessEXPAndVictory), 3.5f);
+        }
+        else
+        {
+            ShowBattleText("You defeated the " + currentEnemy.enemyName + "!", 2f);
+            
+            // THE FIX: Use Invoke to securely jump to the EXP function!
+            Invoke(nameof(ProcessEXPAndVictory), 2.0f);
+        }
+    }
+
+    // --- 2. EXP & SCENE LOAD (Safe from the Text Box wiping it out!) ---
+    private void ProcessEXPAndVictory()
+    {
         int expGained = currentEnemy != null ? currentEnemy.expDrop : 0;
         bool leveledUp = false;
 
@@ -546,39 +723,39 @@ public class CombatSystem : MonoBehaviour
         {
             var pd = GameManager.Instance.playerData;
             
-            // 1. TAKE THE SNAPSHOT BEFORE ADDING EXP!
             oldMaxHP = pd.maxHP;
             oldStr = pd.strength;
             oldSpd = pd.speed;
             oldDef = pd.defense;
             oldLuck = pd.luck;
 
-            // 2. Add EXP and roll the random stats
             leveledUp = pd.expSystem.AddEXP(expGained, pd);
         }
 
+        // Log the enemy in the graveyard (checks Instance ID first, then falls back to regular ID)
+        if (GameManager.Instance != null)
+        {
+            var targetID = !string.IsNullOrEmpty(GameManager.encounteredInstanceID) ? GameManager.encounteredInstanceID : GameManager.currentEnemyID;
+            
+            if (!string.IsNullOrEmpty(targetID) && !GameManager.Instance.playerData.defeatedEnemies.Contains(targetID))
+            {
+                GameManager.Instance.playerData.defeatedEnemies.Add(targetID);
+            }
+            GameManager.encounteredInstanceID = ""; 
+        }
+
+        PersistStatsToPlayerData(); 
+
+        // Chain the final scene transition!
         if (leveledUp)
         {
             ShowBattleText($"Victory!\nGained {expGained} EXP. LEVEL UP!", 2.5f);
-            
-            // If we leveled up, stop the battle text and open the menu after a delay!
             Invoke(nameof(OpenLevelUpMenu), 2.5f);
         }
         else
         {
             ShowBattleText($"Victory! {currentEnemy.enemyName} defeated.\nGained {expGained} EXP.", 2.5f);
-            
-            // If we didn't level up, just return to the map normally.
             Invoke(nameof(ReturnToOverworld), 2.5f);
-        }
-
-        PersistStatsToPlayerData(); 
-
-        if (GameManager.Instance != null && !string.IsNullOrEmpty(GameManager.encounteredInstanceID))
-        {
-            if (!GameManager.Instance.playerData.defeatedEnemies.Contains(GameManager.encounteredInstanceID))
-                GameManager.Instance.playerData.defeatedEnemies.Add(GameManager.encounteredInstanceID);
-            GameManager.encounteredInstanceID = ""; 
         }
     }
 
@@ -614,6 +791,15 @@ public class CombatSystem : MonoBehaviour
 
         // 3. Wait for exactly 1 second
         yield return new WaitForSeconds(1.0f);
+
+        if (GameManager.Instance != null && GameManager.Instance.playerData != null)
+        {
+            // Grab the absolute latest Max HP (in case they just spent a point on the HP stat)
+            playerMaxHealth = GameManager.Instance.playerData.maxHP; 
+            
+            // Fully heal the player to that new maximum!
+            playerHealth = playerMaxHealth; 
+        }
 
         // 4. Close the panel, save the stats, and head back to the Overworld
         levelUpPanel.SetActive(false);
@@ -695,6 +881,8 @@ public class CombatSystem : MonoBehaviour
             // Tell the next scene that we didn't just boot up the game; we are coming back from a fight!
             GameManager.isReturningFromCombat = true;
 
+            GameManager.Instance.playerData.SetDecayFloor();
+
             // Load the correct floor
             if (!string.IsNullOrEmpty(GameManager.Instance.playerData.floorName))
             {
@@ -716,23 +904,26 @@ public class CombatSystem : MonoBehaviour
     {
         if (enemyHealth <= 0)
         {
-            Debug.Log("Enemy defeated!");
-
-            PersistStatsToPlayerData();
-
-            if (GameManager.Instance != null)
-            {
-                if (!GameManager.Instance.playerData.defeatedEnemies.Contains(GameManager.currentEnemyID))
-                {
-                    GameManager.Instance.playerData.defeatedEnemies.Add(GameManager.currentEnemyID);
-                    Debug.Log(GameManager.currentEnemyID + " added to the graveyard.");
-                }
-
-                SceneManager.LoadScene(GameManager.Instance.playerData.floorName);
-            }
+            // Call it normally. It is no longer a Coroutine!
+            HandleEnemyDefeat(); 
         }
         else
         {
+            // Boss Phase 2 Transition Logic
+            if (isBossFight && bossPhase == 1 && enemyHealth <= (currentEnemy.maxHP / 2))
+            {
+                bossPhase = 2;
+                isBossGuarding = false; 
+
+                ShowBattleText("The Troll roars! The deafening sound enrages your Symbiote! (+25 Bloom)", 3.0f);
+
+                int panicHeal = Mathf.RoundToInt(playerMaxHealth * 0.30f);
+                playerHealth = Mathf.Min(playerMaxHealth, playerHealth + panicHeal);
+                UpdateHealthUI();
+                AddBloom(25);
+                StartCoroutine(ShakeSprite(playerTransform, 0.5f, 0.4f));
+            }
+
             EnemyTurn();
         }
     }
@@ -757,11 +948,17 @@ public class CombatSystem : MonoBehaviour
 
     private void EnemyTurn()
     {
+<<<<<<< Updated upstream
         if (enemyIsStunned)
         {
             enemyIsStunned = false;
             ShowBattleText(currentEnemy.enemyName + " is stunned and can't move!", 2f);
             StartCoroutine(WaitAndPassTurn(2f));
+=======
+        if (isBossFight)
+        {
+            ExecuteTrollBossAI();
+>>>>>>> Stashed changes
             return;
         }
 
@@ -795,6 +992,56 @@ public class CombatSystem : MonoBehaviour
             {
                 StartCoroutine(WaitAndPassTurn(1.0f));
             }));
+    }
+
+    private void ExecuteTrollBossAI()
+    {
+        // PHASE 2: SEISMIC SLAM FRENZY
+        if (bossPhase == 2)
+        {
+            isBossGuarding = false;
+            
+            ShowBattleText("The Troll uses SEISMIC SLAM!", 1.5f);
+            StartCoroutine(PerformMeleeAttack(enemyTransform, playerTransform,
+                onHit: () => 
+                { 
+                    if (trollSeismicSlamSkill != null) trollSeismicSlamSkill.Execute(this, currentEnemy);
+                },
+                onComplete: () => { StartCoroutine(WaitAndPassTurn(1.0f)); }));
+            return;
+        }
+
+        // PHASE 1: STONE SKIN CYCLE
+        bossTurnCounter++;
+
+        if (bossTurnCounter == 1)
+        {
+            // Turn 1: Guard!
+            isBossGuarding = true;
+            ShowBattleText("The Troll uses STONE SKIN! Its defense skyrockets.", 2f);
+            StartCoroutine(WaitAndPassTurn(2.0f));
+        }
+        else if (bossTurnCounter == 2)
+        {
+            // Turn 2: Still Guarding, charging up!
+            isBossGuarding = true;
+            ShowBattleText("The Troll's Stone Skin holds strong as it raises its club...", 2f);
+            StartCoroutine(WaitAndPassTurn(2.0f));
+        }
+        else if (bossTurnCounter >= 3)
+        {
+            // Turn 3: SMASH!
+            isBossGuarding = false;
+            bossTurnCounter = 0; // Reset the cycle
+            
+            ShowBattleText("CAVE-IN! The Troll brings the club down!", 2f);
+            StartCoroutine(PerformMeleeAttack(enemyTransform, playerTransform,
+                onHit: () => 
+                { 
+                    if (trollCaveInSkill != null) trollCaveInSkill.Execute(this, currentEnemy);
+                },
+                onComplete: () => { StartCoroutine(WaitAndPassTurn(1.0f)); }));
+        }
     }
 
     private IEnumerator WaitAndPassTurn(float delayTime)
@@ -1105,22 +1352,61 @@ public class CombatSystem : MonoBehaviour
     {
         if (GameManager.Instance != null && GameManager.Instance.playerData != null)
         {
-            var potions = GameManager.Instance.playerData.healthPotions;
-            if (potions > 0)
+            var pd = GameManager.Instance.playerData;
+            bool isSymbioteInControl = (ActiveBloomState == BloomState.Total);
+
+            // 1. Health Potions
+            if (healItemText != null && healItemButton != null)
             {
-                healItemText.text = "Health Potion (x" + potions + ")";
-                healItemButton.interactable = true;
+                if (isSymbioteInControl)
+                {
+                    healItemText.text = "BLOCKED BY SYMBIOTE";
+                    healItemButton.interactable = false;
+                }
+                else if (pd.healthPotions > 0)
+                {
+                    healItemText.text = "Health Potion (x" + pd.healthPotions + ")";
+                    healItemButton.interactable = true;
+                }
+                else
+                {
+                    healItemText.text = "Out of Potions!";
+                    healItemButton.interactable = false;
+                }
             }
-            else
+
+            // 2. Wilt Potions
+            if (wiltItemText != null && wiltItemButton != null)
             {
-                healItemText.text = "Out of Potions!";
-                healItemButton.interactable = false;
+                // --- THE DISCOVERY CHECK ---
+                if (pd.hasDiscoveredWiltPotions)
+                {
+                    // 1. Ensure the slot is turned ON because they found the item!
+                    wiltItemButton.gameObject.SetActive(true);
+
+                    // 2. Your normal logic continues here...
+                    if (isSymbioteInControl)
+                    {
+                        wiltItemText.text = "BLOCKED BY SYMBIOTE";
+                        wiltItemButton.interactable = false;
+                    }
+                    else if (pd.wiltPotions > 0)
+                    {
+                        wiltItemText.text = "Wilt Potion (x" + pd.wiltPotions + ")";
+                        wiltItemButton.interactable = true;
+                    }
+                    else
+                    {
+                        wiltItemText.text = "Out of Wilt Potions!";
+                        wiltItemButton.interactable = false;
+                    }
+                }
+                else
+                {
+                    // 3. If they have NEVER picked one up, completely hide the slot!
+                    wiltItemButton.gameObject.SetActive(false);
+                }
             }
-        }
-        else
-        {
-            healItemText.text = "Health Potion";
-            healItemButton.interactable = true;
         }
     }
     
@@ -1185,9 +1471,27 @@ public class CombatSystem : MonoBehaviour
     // Calculates the dynamic math for the Attack Button!
     public string GetBasicAttackTooltip()
     {
-        // Calculate the exact damage they will do right now
-        int expectedDamage = Mathf.Max(1, playerStrength - currentEnemy.defense);
-        return $"Basic Attack\nDeals physical damage to the enemy.\nExpected Damage: {expectedDamage}";
+        // 1. Calculate the raw base damage
+        int rawDamage = Mathf.Max(1, playerStrength - currentEnemy.defense);
+
+        // 2. Calculate the lowest and highest possible hits based on your 15% variance
+        int minDamage = Mathf.Max(1, Mathf.RoundToInt(rawDamage * 0.85f));
+        int maxDamage = Mathf.Max(1, Mathf.RoundToInt(rawDamage * 1.15f));
+
+        // 3. Format the string cleanly
+        string damageText;
+        if (minDamage == maxDamage)
+        {
+            // If they are identical (e.g., both are 1 due to heavy armor), just show the single number
+            damageText = minDamage.ToString();
+        }
+        else
+        {
+            // Otherwise, show the range!
+            damageText = $"{minDamage} - {maxDamage}";
+        }
+
+        return $"Basic Attack\nDeals physical damage to the enemy.\nExpected Damage: {damageText}";
     }
 
     // Call this exactly like a Debug.Log! 
@@ -1273,6 +1577,9 @@ public class CombatSystem : MonoBehaviour
         UpdateHealthUI();
     }
 
+    // Quick helper so Cores can read the player's Max HP!
+    public int GetPlayerMaxHealth() => playerMaxHealth;
+
     public void AddBloom(int amount)
     {
         int currentMaxBloom = (GameManager.Instance != null && GameManager.Instance.playerData != null)
@@ -1318,6 +1625,13 @@ public class CombatSystem : MonoBehaviour
 
     public void OnCoreComplete()
     {
+        // --- NEW: Intercept the end of the attack if the Symbiote is in control! ---
+        if (isAutoBattlerExecutingCore)
+        {
+            isAutoBattlerExecutingCore = false;
+            return; // Skip normal turn-passing so the Coroutine can resume!
+        }
+
         if (enemyHealth <= 0) HandleEnemyDefeat();
         else CheckWinConditionOrContinue();
     }
@@ -1371,4 +1685,125 @@ public class CombatSystem : MonoBehaviour
 
         skillDefaultButton.transform.SetAsLastSibling();
     }
+
+    private int symbioteTurnsTaken = 0; // Tracks how long it's been in control
+
+    private System.Collections.IEnumerator SymbioteAutoBattleRoutine()
+    {
+        symbioteTurnsTaken++;
+        Debug.Log("Symbiote is taking Turn " + symbioteTurnsTaken);
+
+        // 1. Hide the Combat Menu and show a warning
+        HideAllMenus();
+        ShowBattleText("<color=red>THE SYMBIOTE IS IN CONTROL.</color>", 1.5f);
+        yield return new WaitForSeconds(1.5f);
+
+        ShowBattleText("The Symbiote lashes out violently!", 1.0f);
+
+        // --- THE POWERSPIKE ---
+        // Save the real strength, then buff it by 35% for the attack!
+        int originalStrength = playerStrength;
+        playerStrength = Mathf.RoundToInt(playerStrength * 1.35f);
+
+        // --- EXECUTE THE CORE ---
+        isAutoBattlerExecutingCore = true;
+        
+        if (innateSymbioteSwipe != null)
+        {
+            innateSymbioteSwipe.Execute(this);
+            StartCoroutine(FlashVignetteRoutine(Color.red)); // Keep that cool red flash!
+        }
+        else
+        {
+            Debug.LogError("No Symbiote Swipe assigned to the Inspector!");
+            isAutoBattlerExecutingCore = false;
+        }
+
+        // Pause this routine until OnCoreComplete() flips the flag back to false
+        while (isAutoBattlerExecutingCore) yield return null;
+
+        // Restore the original strength so stats are accurate
+        playerStrength = originalStrength;
+
+        // 4. Check if the enemy died from the attack
+        if (enemyHealth <= 0)
+        {
+            HandleEnemyDefeat();
+            yield break; // Stop the routine early, the battle is over!
+        }
+
+        // 5. The Parasitic Drain! (Take 10% max HP from the player)
+        int drainAmount = Mathf.RoundToInt(playerMaxHealth * 0.05f);
+        ShowBattleText("The Symbiote drains " + drainAmount + " HP to fuel its attack!", 1.5f);
+        
+        DealDamageToPlayer(drainAmount, true);
+
+        // Wait for the drain text to be read!
+        yield return new WaitForSeconds(1.5f);
+
+        // 6. Check if the player died from the drain
+        if (playerHealth <= 0)
+        {
+            TriggerConsumedGameOver();
+            yield break;
+        }
+
+        // 7. Check if we need to trigger the QTE Struggle
+        if (symbioteTurnsTaken >= 2)
+        {
+            if (qteManager != null)
+            {
+                ShowBattleText("FIGHT BACK! Press the sequence to break free!", 1.5f);
+                yield return new WaitForSeconds(1.5f); 
+                qteManager.StartQTE(3.0f); 
+            }
+            else
+            {
+                Debug.LogError("QTE Manager is missing from the Inspector!");
+                EnemyTurn();
+            }
+        }
+        else
+        {
+            // End the player's turn and let the enemy go
+            EnemyTurn(); 
+        }
+    }
+
+    // Your QTE script calls this when the timer ends!
+    public void OnQTEFinished(bool success)
+    {
+        if (success)
+        {
+            Debug.Log("Player wrestles control back!");
+            
+            // Drop them down to Medium Bloom (e.g., 50)
+            GameManager.Instance.playerData.currentBloom = 50; 
+            GameManager.Instance.playerData.UpdateBloomState();
+            
+            // Reset the counter for next time
+            symbioteTurnsTaken = 0; 
+            
+            // Pass the turn to the enemy, but NEXT turn the player has control!
+            EnemyTurn(); 
+        }
+        else
+        {
+            Debug.Log("Player failed to break free. Symbiote keeps control.");
+            // Do not lower bloom. Do not reset the counter.
+            // The player just sits there and the enemy gets to attack!
+            EnemyTurn(); 
+        }
+    }
+
+    private void TriggerConsumedGameOver()
+    {
+        // Hide UI and show the terrifying death message
+        HideAllMenus();
+        ShowBattleText("<color=red>THE HOST HAS BEEN CONSUMED.</color>", 3f);
+        
+        // Wait 3 seconds, then go to the Main Menu
+        Invoke(nameof(LoadMainMenu), 3f);
+    }
 }
+

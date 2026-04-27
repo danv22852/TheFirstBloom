@@ -2,12 +2,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-
-
 // Requiring a Button component ensures we only put this on clickable skills
 [RequireComponent(typeof(Button))]
-
-
 public class BloomPreviewTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, ISelectHandler, IDeselectHandler
 {
     [Header("Skill Settings")]
@@ -21,9 +17,10 @@ public class BloomPreviewTrigger : MonoBehaviour, IPointerEnterHandler, IPointer
     [TextArea(3, 5)] 
     public string actionDescription; 
 
-    // A simple direct reference to your main system. 
-    // If you use a generic GameManager instance, you can reference that instead.
     private CombatSystem combatSystem;
+    
+    // --- NEW: A reference to the Core this button is holding! ---
+    private CoreTemplate assignedCore; 
 
     private void Start()
     {
@@ -38,16 +35,13 @@ public class BloomPreviewTrigger : MonoBehaviour, IPointerEnterHandler, IPointer
     }
 
     // --- 1. THE HIGHLIGHT TRIGGERS ---
-    // These functions fire when the preview should shoot out!
 
-    // Mouse is hovering over the button
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (bloomCost > 0) combatSystem?.PreviewBloomCost(bloomCost);
         ShowMyTooltip();
     }
 
-    // Keyboard/Controller has highlighted the button using arrow keys
     public void OnSelect(BaseEventData eventData)
     {
         if (bloomCost > 0) combatSystem?.PreviewBloomCost(bloomCost);
@@ -55,16 +49,13 @@ public class BloomPreviewTrigger : MonoBehaviour, IPointerEnterHandler, IPointer
     }
 
     // --- 2. THE CLEAR TRIGGERS ---
-    // These functions fire when the preview should hide back into place
 
-    // Mouse has left the button
     public void OnPointerExit(PointerEventData eventData)
     {
         combatSystem?.ClearBloomPreview();
         combatSystem?.HideTooltip();
     }
 
-    // Keyboard navigation moved away from this button
     public void OnDeselect(BaseEventData eventData)
     {
         combatSystem?.ClearBloomPreview();
@@ -80,9 +71,14 @@ public class BloomPreviewTrigger : MonoBehaviour, IPointerEnterHandler, IPointer
             // If it's the attack button, ask the CombatSystem for the exact math!
             combatSystem.ShowTooltip(combatSystem.GetBasicAttackTooltip());
         }
+        else if (assignedCore != null)
+        {
+            // --- NEW: If this button has a Core, ask the Core for its dynamic math! ---
+            combatSystem.ShowTooltip(assignedCore.GetDynamicDescription(combatSystem));
+        }
         else if (!string.IsNullOrEmpty(actionDescription))
         {
-            // Otherwise, just show whatever you typed in the Inspector
+            // Otherwise, just show whatever you typed in the Inspector (used for Items/Run)
             combatSystem.ShowTooltip(actionDescription);
         }
     }
@@ -90,8 +86,11 @@ public class BloomPreviewTrigger : MonoBehaviour, IPointerEnterHandler, IPointer
     public void Setup(CoreTemplate core, CombatSystem system)
     {
         combatSystem = system;
+        assignedCore = core; // --- NEW: Save the Core reference! ---
         bloomCost = core.bloomCost;
-        actionDescription = core.coreDescription;
+        
+        // Clear the static text so the dynamic text takes over
+        actionDescription = ""; 
 
         var label = GetComponentInChildren<TMPro.TextMeshProUGUI>();
         if (label != null) label.text = core.coreName;
@@ -103,6 +102,8 @@ public class BloomPreviewTrigger : MonoBehaviour, IPointerEnterHandler, IPointer
 
     public void SetupEmpty()
     {
+        assignedCore = null; // --- NEW: Clear the core reference just in case! ---
+
         var label = GetComponentInChildren<TMPro.TextMeshProUGUI>();
         if (label != null) label.text = "Empty";
 
