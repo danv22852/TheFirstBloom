@@ -62369,7 +62369,7 @@ Animator:
   m_GameObject: {fileID: 1572520867}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 92437aa354339b048abb52ab84550c9a, type: 2}
+  m_Controller: {fileID: 9100000, guid: 573f2fa336c5047e7b0f875869f83191, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -62421,8 +62421,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 813bd039a4ffb694696d61575d1cfcff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uniqueEnemyID: FinalBoss
-  enemyType: {fileID: 11400000, guid: a639f5bd9007bff4bbfac4ea51ba1f39, type: 2}
+  uniqueEnemyID: FinalBoss1
+  enemyType: {fileID: 11400000, guid: 8ebcca443a5d74426b42d6a18d4c21b8, type: 2}
 --- !u!61 &1572520872
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -62461,7 +62461,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 2.9, y: 1.71}
+    oldSize: {x: 1.73, y: 2.26}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -62540,7 +62540,7 @@ SpriteRenderer:
   m_SortingLayerID: -341100307
   m_SortingLayer: 2
   m_SortingOrder: 9
-  m_Sprite: {fileID: -5609690867295641496, guid: dd973c9771d6add4c9c582d91900310a, type: 3}
+  m_Sprite: {fileID: -7873438511016410276, guid: 7c5f3febc9609084fbbd18ce953955c0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

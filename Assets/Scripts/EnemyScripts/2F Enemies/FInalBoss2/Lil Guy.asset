@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0566ed46712c3a4ca4ddde06a429795, type: 3}
+  m_Name: Lil Guy
+  m_EditorClassIdentifier: 
+  enemyID: LilGuy_1
+  enemyName: LilGuy
+  enemySprite: {fileID: -8318744207672894160, guid: ece4719973fecd5499778521d278dd0a, type: 3}
+  maxHP: 225
+  strength: 17
+  speed: 9
+  defense: 4
+  combatScale: 3
+  flipSprite: 1
+  expDrop: 35
+  skills:
+  - {fileID: 11400000, guid: a662d6c363e70ff469adf11fc0d5652c, type: 2}
