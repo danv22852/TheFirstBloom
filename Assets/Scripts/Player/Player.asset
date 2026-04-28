@@ -12,80 +12,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 643f6fa934a3e6444af7093168124ef8, type: 3}
   m_Name: Player
   m_EditorClassIdentifier: 
-<<<<<<< Updated upstream
-  currentHP: 255
-  maxHP: 255
-  strength: 58
-  speed: 8
-<<<<<<< Updated upstream
-  defense: 9
-  luck: 7
-  floorName: thirdFloor
-  healthPotions: 6
-  coins: 27
-  defeatedEnemies: []
-=======
   currentHP: 100
   maxHP: 100
   strength: 10
   speed: 10
   defense: 10
   luck: 0
-  floorName: secondFloor
+  floorName: thirdFloor
   healthPotions: 3
   coins: 0
   wiltPotions: 0
-  defeatedEnemies:
-  - TrollBoss
->>>>>>> Stashed changes
+  defeatedEnemies: []
   collectedItems: []
-=======
-  defense: 8
-  luck: 6
-  floorName: firstFloor
-  healthPotions: 4
-  coins: 475
-  defeatedEnemies:
-  - 
-  - tutorial_boss
-  collectedItems:
-  - (5.75, -0.54, 0.00)
->>>>>>> Stashed changes
   hasAlien: 1
-<<<<<<< Updated upstream
-  currentBloom: 10
+  currentBloom: 0
   maxBloom: 100
   currentBloomState: 0
   equippedCores:
   - {fileID: 11400000, guid: d87afa192aaa68143a5996f7f459264a, type: 2}
-=======
-  currentBloom: 32
-  maxBloom: 100
-  currentBloomState: 1
-  equippedCores:
-  - {fileID: 11400000, guid: d87afa192aaa68143a5996f7f459264a, type: 2}
-  - {fileID: 11400000, guid: dafe25a74e7e5d54790d7f65dc3b391e, type: 2}
->>>>>>> Stashed changes
   maxCoreSlots: 5
   knownCoreIDs:
   - swipe01
   finishedTutorial: 1
   expSystem:
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-    level: 5
-    currentEXP: 142
-    expToNextLevel: 507
-=======
-    level: 4
-    currentEXP: 165
-    expToNextLevel: 338
->>>>>>> Stashed changes
-=======
     level: 1
-    currentEXP: 500
-    expToNextLevel: 760
->>>>>>> Stashed changes
+    currentEXP: 0
+    expToNextLevel: 100
     availableSkillPoints: 0
   decayFloor: 0
-  hasDiscoveredWiltPotions: 0
+  hasDiscoveredWiltPotions: 1

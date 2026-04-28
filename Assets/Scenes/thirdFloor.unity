@@ -2150,6 +2150,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1527476212647559894, guid: 1c8ebd97700e54676b0bff345cacda30, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4770012497920681087, guid: 1c8ebd97700e54676b0bff345cacda30, type: 3}
       propertyPath: m_Name
       value: UI
@@ -3299,6 +3303,11 @@ MonoBehaviour:
   alienTint: {r: 0, g: 0, b: 0, a: 1}
   canMove: 1
   Aim: {fileID: 1497343644}
+  enableBloomDecay: 1
+  fastDecayDistance: 15
+  slowDecayDistance: 40
+  twitchForce: 12
+  twitchDuration: 0.15
 --- !u!212 &680971540
 SpriteRenderer:
   m_ObjectHideFlags: 0

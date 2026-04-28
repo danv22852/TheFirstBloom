@@ -13,17 +13,6 @@ MonoBehaviour:
   m_Name: One Eye Bat
   m_EditorClassIdentifier: 
   enemyID: Batty_1
-<<<<<<<< Updated upstream:Assets/Scripts/EnemyScripts/2F Enemies/Batty/Batty 1.asset
-  enemyName: Batty
-  enemySprite: {fileID: -854814284746086398, guid: 09182d07e257b3b4cab44942b5263746, type: 3}
-  maxHP: 60
-  strength: 15
-  speed: 9
-  defense: 4
-  combatScale: 3
-  flipSprite: 1
-  expDrop: 35
-========
   enemyName: One Eyed Bat
   enemySprite: {fileID: -6967379832849187672, guid: 408c774694728384caec812dd84ddfdd, type: 3}
   maxHP: 50
@@ -34,6 +23,5 @@ MonoBehaviour:
   flipSprite: 1
   hoverHeight: 2.5
   expDrop: 160
->>>>>>>> Stashed changes:Assets/Scripts/EnemyScripts/2F Enemies/One Eye Bat/One Eye Bat.asset
   skills:
   - {fileID: 11400000, guid: a662d6c363e70ff469adf11fc0d5652c, type: 2}

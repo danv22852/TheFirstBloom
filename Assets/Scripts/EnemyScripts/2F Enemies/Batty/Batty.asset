@@ -15,17 +15,6 @@ MonoBehaviour:
   enemyID: Hornet_2
   enemyName: Bat
   enemySprite: {fileID: 4286265989511706523, guid: 792a70b7b30780c42b3f0f1b503d9205, type: 3}
-<<<<<<< Updated upstream:Assets/Scripts/EnemyScripts/2F Enemies/Hornet 2.asset
-  maxHP: 95
-  strength: 17
-  speed: 9
-  defense: 2
-  combatScale: 1
-  flipSprite: 0
-  expDrop: 35
-  skills:
-  - {fileID: 11400000, guid: b82d5658507633a498bec0905665d400, type: 2}
-=======
   maxHP: 35
   strength: 13
   speed: 15
@@ -35,4 +24,3 @@ MonoBehaviour:
   hoverHeight: 2.5
   expDrop: 65
   skills: []
->>>>>>> Stashed changes:Assets/Scripts/EnemyScripts/2F Enemies/Batty/Batty.asset

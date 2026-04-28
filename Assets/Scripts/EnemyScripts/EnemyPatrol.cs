@@ -31,11 +31,8 @@ public class EnemyPatrol : MonoBehaviour
 
     private Rigidbody2D rb;
     private Transform player;
-<<<<<<< Updated upstream
     private EnemyEncounter encounter;
-=======
     private Animator anim;
->>>>>>> Stashed changes
 
     private Vector2 moveDir;
     private float timer;

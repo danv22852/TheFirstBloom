@@ -6,6 +6,7 @@ using TMPro;
 using System.Collections;
 using System;
 using System.Collections.Generic;
+using NUnit.Framework.Constraints;
 
 public enum VignetteType { Low, Medium, High }
 
@@ -39,13 +40,14 @@ public class CombatSystem : MonoBehaviour
     // --- COMBAT STATE ---
     private bool isPlayerTurn = false;
     private bool hasUsedItemThisTurn = false;
-<<<<<<< Updated upstream
-    private float guardDamageReduction = 0f;
-    private int guardTurnsRemaining = 0;
-    private bool enemyIsStunned = false;
-=======
     private bool isAutoBattlerExecutingCore = false;
->>>>>>> Stashed changes
+    private int guardTurnsRemaining = 0; // Tracks how many turns of guard are left
+
+    private float guardDamageReduction = 0f; // 50% damage reduction when guarding
+
+    private bool enemyIsStunned = false; // New flag to track if the enemy is stunned
+
+
 
     // --- UI ELEMENTS ---
     [Header("UI Elements")]
@@ -948,17 +950,9 @@ public class CombatSystem : MonoBehaviour
 
     private void EnemyTurn()
     {
-<<<<<<< Updated upstream
-        if (enemyIsStunned)
-        {
-            enemyIsStunned = false;
-            ShowBattleText(currentEnemy.enemyName + " is stunned and can't move!", 2f);
-            StartCoroutine(WaitAndPassTurn(2f));
-=======
         if (isBossFight)
         {
             ExecuteTrollBossAI();
->>>>>>> Stashed changes
             return;
         }
 

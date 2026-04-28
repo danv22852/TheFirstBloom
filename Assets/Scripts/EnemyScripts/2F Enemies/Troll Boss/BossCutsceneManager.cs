@@ -13,16 +13,15 @@ public class BossCutsceneManager : MonoBehaviour
     public float trollRunSpeed = 7f;
     public float cameraZoomSize = 3.5f; 
     public float cameraPanSpeed = 2.5f;
-    public string combatSceneName = "CombatScene"; 
+    public string combatSceneName = "CombatUI"; 
 
     private bool hasTriggered = false;
 
     private void Start()
     {
-        // --- UPDATED: CHECK THE PLAYER DATA GRAVEYARD ---
+        // Check the PlayerData graveyard to see if the boss is already dead
         if (GameManager.Instance != null && GameManager.Instance.playerData != null && trollBossData != null)
         {
-            // We dive into the playerData to check the defeatedEnemies list!
             if (GameManager.Instance.playerData.defeatedEnemies.Contains(trollBossData.enemyID))
             {
                 if (trollBossOverworld != null) Destroy(trollBossOverworld.gameObject);
@@ -47,9 +46,11 @@ public class BossCutsceneManager : MonoBehaviour
         if (pController != null) pController.enabled = false;
 
         var rb = player.GetComponent<Rigidbody2D>();
+        // Use linearVelocity for Unity 6 compatibility
         if (rb != null) rb.linearVelocity = Vector2.zero; 
 
         var anim = player.GetComponent<Animator>(); 
+        // Only set the parameter that exists in your Animator controller
         if (anim != null) anim.SetBool("isRunning", false);
 
         // 2. HIJACK THE CAMERA
@@ -98,18 +99,11 @@ public class BossCutsceneManager : MonoBehaviour
         if (cmCamObject != null) cmCamObject.SetActive(true);
         mainCam.orthographicSize = originalOrthoSize;
 
-        // --- 5. TRIGGER THE BATTLE (MAPPED TO GAMEMANAGER VARIABLES) ---
-        
-        // Because these variables are 'static' in your GameManager, we set them directly!
+        // 5. TRIGGER THE BATTLE & SAVE DATA
         GameManager.pendingEnemyData = trollBossData;
         GameManager.playerFirstStrike = false; 
-        
-        // Save where we are standing
         GameManager.lastPlayerPosition = player.transform.position;
-        
-        // Tell the combat scene exactly which ID to put in the defeatedEnemies list!
         GameManager.currentEnemyID = trollBossData.enemyID;
-
         GameManager.encounteredInstanceID = trollBossData.enemyID;
 
         SceneManager.LoadScene(combatSceneName);

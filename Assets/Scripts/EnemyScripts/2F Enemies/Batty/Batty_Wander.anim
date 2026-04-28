@@ -17,10 +17,6 @@ AnimationClip:
   m_PositionCurves: []
   m_ScaleCurves: []
   m_FloatCurves: []
-<<<<<<< Updated upstream
-  m_PPtrCurves: []
-  m_SampleRate: 60
-=======
   m_PPtrCurves:
   - serializedVersion: 2
     curve:
@@ -66,16 +62,11 @@ AnimationClip:
     script: {fileID: 0}
     flags: 2
   m_SampleRate: 24
->>>>>>> Stashed changes
   m_WrapMode: 0
   m_Bounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
   m_ClipBindingConstant:
-<<<<<<< Updated upstream
-    genericBindings: []
-    pptrCurveMapping: []
-=======
     genericBindings:
     - serializedVersion: 2
       path: 0
@@ -105,17 +96,12 @@ AnimationClip:
     - {fileID: -4957956815542214306, guid: 63d1ee31880fd944f9beb6107dc85e78, type: 3}
     - {fileID: 5109973367014290458, guid: 38840a6033d7a244a867b2b9dbbbfe0c, type: 3}
     - {fileID: 6659194135160123437, guid: 70b4f7c5839898748a395842bb819eb4, type: 3}
->>>>>>> Stashed changes
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-<<<<<<< Updated upstream
-    m_StopTime: 0
-=======
     m_StopTime: 0.75
->>>>>>> Stashed changes
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -134,15 +120,4 @@ AnimationClip:
   m_EulerEditorCurves: []
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
-<<<<<<< Updated upstream
-  m_Events:
-  - time: 0
-    functionName: 
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
-=======
   m_Events: []
->>>>>>> Stashed changes

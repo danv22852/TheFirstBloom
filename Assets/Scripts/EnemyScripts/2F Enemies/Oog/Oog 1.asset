@@ -15,15 +15,6 @@ MonoBehaviour:
   enemyID: Oog_1
   enemyName: Oog
   enemySprite: {fileID: -2780019765234666871, guid: dd0c7a3b1e6e02840afa27908e6051d8, type: 3}
-<<<<<<< Updated upstream:Assets/Scripts/EnemyScripts/2F Enemies/Oog 1.asset
-  maxHP: 180
-  strength: 7
-  speed: 15
-  defense: 2
-  combatScale: 1
-  flipSprite: 1
-  expDrop: 35
-=======
   maxHP: 115
   strength: 15
   speed: 8
@@ -32,6 +23,5 @@ MonoBehaviour:
   flipSprite: 1
   hoverHeight: 0.8
   expDrop: 140
->>>>>>> Stashed changes:Assets/Scripts/EnemyScripts/2F Enemies/Oog/Oog 1.asset
   skills:
   - {fileID: 11400000, guid: a662d6c363e70ff469adf11fc0d5652c, type: 2}
