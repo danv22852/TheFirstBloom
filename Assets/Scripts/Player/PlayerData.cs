@@ -35,6 +35,7 @@ public class PlayerData : ScriptableObject
     public int healthPotions = 3;
     public int coins = 0; // <-- NEW: Track the player's money
     public int wiltPotions = 0;
+    public int thirdItem = 0; //placeholder
 
     [Header("World State")]
     public List<string> defeatedEnemies = new List<string>();

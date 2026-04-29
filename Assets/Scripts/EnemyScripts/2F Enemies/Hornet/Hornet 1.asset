@@ -12,18 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0566ed46712c3a4ca4ddde06a429795, type: 3}
   m_Name: Worm
   m_EditorClassIdentifier: 
-<<<<<<<< Updated upstream:Assets/Scripts/EnemyScripts/2F Enemies/Hornet/Hornet 1.asset
-  enemyID: Hornet_1
-  enemyName: Hornet
-  enemySprite: {fileID: 4286265989511706523, guid: 792a70b7b30780c42b3f0f1b503d9205, type: 3}
-  maxHP: 160
-  strength: 15
-  speed: 6
-  defense: 1
-  combatScale: 1
-  flipSprite: 1
-  expDrop: 35
-========
   enemyID: Worm_1
   enemyName: Worm
   enemySprite: {fileID: 4286265989511706523, guid: 2a898f23fd96d554d9dd45a5058d7b76, type: 3}
@@ -35,5 +23,4 @@ MonoBehaviour:
   flipSprite: 1
   hoverHeight: 0.25
   expDrop: 85
->>>>>>>> Stashed changes:Assets/Scripts/EnemyScripts/2F Enemies/Worm/Worm.asset
   skills: []

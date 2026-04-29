@@ -18,7 +18,7 @@ MonoBehaviour:
   speed: 10
   defense: 10
   luck: 0
-  floorName: thirdFloor
+  floorName: secondFloor
   healthPotions: 3
   coins: 0
   wiltPotions: 0

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI; // Needed for the Image component
 using TMPro;
+using System.Collections;
 
 public class CoreUIManager : MonoBehaviour
 {
@@ -21,10 +22,16 @@ public class CoreUIManager : MonoBehaviour
     private int currentIndex = 0;
 
     void OnEnable()
-    {
-        currentIndex = 0;
-        UpdateDisplay();
-    }
+{
+    currentIndex = 0;
+    StartCoroutine(DelayedDisplay());
+}
+
+private IEnumerator DelayedDisplay()
+{
+    yield return null; // wait one frame
+    UpdateDisplay();
+}
 
     void Update()
     {
@@ -62,7 +69,7 @@ public class CoreUIManager : MonoBehaviour
             }
             else
             {
-                // No core in this slot, hide the image
+                
                 slotIcons[i].enabled = false;
             }
         }

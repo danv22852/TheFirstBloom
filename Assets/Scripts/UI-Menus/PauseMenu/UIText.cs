@@ -7,7 +7,13 @@ public enum StatType
     Strength,
     Defense,
     Speed,
-    Luck
+    Luck,
+    wiltPotions,
+    Coins,
+    healthPotions,
+    placeholder, // Add more stats as needed
+    Level
+    
 }
 
 public class UIStatText : MonoBehaviour
@@ -59,6 +65,21 @@ public class UIStatText : MonoBehaviour
                 break;
             case StatType.Luck:
                 label.text = $"{prefix}{playerData.luck}";
+                break;
+            case StatType.wiltPotions:
+                label.text = $"{prefix}{playerData.wiltPotions}";
+                break;
+            case StatType.Coins:
+                label.text = $"{prefix}{playerData.coins}";
+                break;
+            case StatType.healthPotions:
+                label.text = $"{prefix}{playerData.healthPotions}";
+                break;
+            case StatType.placeholder:
+                label.text = $"{prefix}{playerData.thirdItem}"; // Placeholder for future stats
+                break;
+             case StatType.Level:
+                label.text = $"{prefix}{playerData.expSystem.level}";
                 break;
         }
     }
