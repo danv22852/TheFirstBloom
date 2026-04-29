@@ -2,9 +2,6 @@ using UnityEngine;
 using System.Collections.Generic;
 using System;
 
-
-
-// Moved the enum here so it is globally accessible across the project
 public enum BloomState
 {
     Stable, // 0-24
@@ -13,8 +10,6 @@ public enum BloomState
     High,   // 75-99
     Total   // 100
 }
-
-
 
 [CreateAssetMenu(fileName = "PlayerData", menuName = "Player/Player Data")]
 public class PlayerData : ScriptableObject
@@ -33,15 +28,13 @@ public class PlayerData : ScriptableObject
 
     [Header("Inventory")]
     public int healthPotions = 3;
-    public int coins = 0; // <-- NEW: Track the player's money
+    public int coins = 0;
     public int wiltPotions = 0;
-
-    public int keys = 0; // <-- NEW: Track the player's keys
-    public int thirdItem = 0; //placeholder
+    public int keys = 0;
+    public int thirdItem = 0;
 
     [Header("World State")]
     public List<string> defeatedEnemies = new List<string>();
-    // --- NEW: Track which items have been picked up so they stay gone! ---
     public List<string> collectedItems = new List<string>();
 
     [Header("Equipment")]
@@ -57,34 +50,27 @@ public class PlayerData : ScriptableObject
     public int maxCoreSlots = 5;
     public List<string> knownCoreIDs = new List<string>();
 
-    public bool finishedTutorial = false;
-    
-
     [Header("Progression")]
-    // This creates an instance of your new script directly inside PlayerData!
+    public bool finishedTutorial = false;
+
     public ExperienceSystem expSystem = new ExperienceSystem();
 
     [Header("Bloom Mechanics")]
     public int decayFloor = 0;
 
     [Header("Item Discovery")]
-    // Tracks if the player has ever picked up a Wilt Potion
     public bool hasDiscoveredWiltPotions = false;
 
-    // Call this whenever the player finishes a fight or drinks a Wilt Potion!
+    // -------------------------
+    // BLOOM LOGIC
+    // -------------------------
     public void SetDecayFloor()
     {
-        // High (75+) stops decaying at 50 (Bottom of Medium)
         if (currentBloom >= 75) decayFloor = 50;
-        
-        // Medium (50-74) stops decaying at 25 (Bottom of Low)
         else if (currentBloom >= 50) decayFloor = 25;
-        
-        // Low (25-49) or Stable naturally decays all the way to 0
-        else decayFloor = 0; 
+        else decayFloor = 0;
     }
 
-    // Call this whenever Bloom is modified outside of combat
     public void UpdateBloomState()
     {
         if (currentBloom > 100) currentBloom = 100;
@@ -98,16 +84,22 @@ public class PlayerData : ScriptableObject
         OnStatsChanged?.Invoke();
     }
 
+    // -------------------------
+    // DAMAGE / DEATH
+    // -------------------------
     public void TakeDamage(int damage)
     {
         currentHP -= damage;
+
         if (currentHP <= 0)
         {
             currentHP = 0;
             Debug.Log("Player died.");
+
+            ResetOnDeath(); // 🔥 IMPORTANT
         }
-        
-        OnStatsChanged?.Invoke(); 
+
+        OnStatsChanged?.Invoke();
     }
 
     public void AcquireAlienPower()
@@ -116,22 +108,82 @@ public class PlayerData : ScriptableObject
         OnStatsChanged?.Invoke();
     }
 
+    // -------------------------
+    // RESET: NEW RUN
+    // -------------------------
     public void ResetForNewRun()
     {
         Debug.Log("Resetting Player Data for New Run");
+
         currentHP = maxHP;
         healthPotions = 3;
+        coins = 0;
+        wiltPotions = 0;
+
         equippedCores = new List<CoreTemplate>();
         knownCoreIDs = new List<string>();
-        defeatedEnemies = new List<string>();
+
+        defeatedEnemies.Clear();
+        collectedItems.Clear();
+
         hasAlien = false;
         finishedTutorial = false;
+
         floorName = "firstFloor";
-        
-        // Reset Bloom for the new run
+
         currentBloom = 0;
         UpdateBloomState();
 
-        OnStatsChanged?.Invoke(); 
+        OnStatsChanged?.Invoke();
     }
+
+    // -------------------------
+    // RESET: SCENE CHANGE
+    // -------------------------
+    public void ResetSceneState()
+    {
+        Debug.Log("Resetting Scene State");
+
+        defeatedEnemies.Clear();
+        collectedItems.Clear();
+
+        OnStatsChanged?.Invoke();
+    }
+
+    // -------------------------
+    // RESET: PLAYER DEATH
+    // -------------------------
+    public void ResetOnDeath()
+{
+    Debug.Log("Resetting On Death → Full Reset + Save Sync");
+
+    currentHP = maxHP;
+    healthPotions = 3;
+    coins = 0;
+    wiltPotions = 0;
+
+    equippedCores.Clear();
+    knownCoreIDs.Clear();
+
+    defeatedEnemies.Clear();
+    collectedItems.Clear();
+
+    hasAlien = false;
+    finishedTutorial = false;
+
+    currentBloom = 0;
+    UpdateBloomState();
+
+    floorName = "firstFloor";
+
+    expSystem = new ExperienceSystem();
+
+    OnStatsChanged?.Invoke();
+
+    // 🔥 CRITICAL: sync to save file immediately
+    if (GameManager.Instance != null)
+    {
+        // GameManager.Instance.SaveGame();
+    }
+}
 }

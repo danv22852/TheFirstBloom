@@ -11,62 +11,24 @@ public class EnemyEncounter : MonoBehaviour
 
     private bool engaged = false;
 
-    private void OnTriggerEnter2D(Collider2D collision)
-{
-    // Check if the thing hitting us is the Player
-    if (collision.CompareTag("Player"))
-    {
-        Engage(collision.transform);    
-    }
-    }
     private void Start()
     {
-        // 1) Graveyard Check: If we already killed this exact enemy, delete it immediately.
+        // 🪦 Graveyard check: remove enemy if already defeated
         if (GameManager.Instance != null &&
             GameManager.Instance.playerData.defeatedEnemies.Contains(uniqueEnemyID))
         {
             Destroy(gameObject);
             return;
         }
+
+        
     }
 
-    /// <summary>
-    /// Call this from chase logic when the enemy "catches" the player, 
-    /// or when the player's attack hitbox strikes the enemy.
-    /// </summary>
-    public void Engage(Transform player)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("ENEMY ENGAGED: " + uniqueEnemyID);
-        if (engaged || player == null) return;
-
-        engaged = true;
-
-        // Save the player's exact safe position to drop them back here after combat
-        GameManager.lastPlayerPosition = player.position;
-        GameManager.isReturningFromCombat = true;
-
-        // Direct hand-off of the enemy's stat block
-        if (enemyType != null)
-            GameManager.pendingEnemyData = enemyType;
-
-        // Tell the GameManager which specific enemy we are fighting so it can be added to the Graveyard if we win
-        GameManager.encounteredInstanceID = uniqueEnemyID;
-        Debug.Log("Encountered Enemy: " + uniqueEnemyID);
-        // Load correct scene
-        if (GameManager.Instance != null &&
-            GameManager.Instance.playerData.finishedTutorial == false)
-        {
-            SceneManager.LoadScene("TutorialBattle");
-        }
-        else
-        {
-            SceneManager.LoadScene("CombatUI");
-        }
+        if (collision.CompareTag("Player"))
+            Engage(collision.transform);
     }
-
-    // --- COLLISION DETECTION (AMBUSH TRIGGERS) ---
-
-    // 1. If the enemy's collider is set to "Is Trigger"
 
     private void OnTriggerStay2D(Collider2D other)
     {
@@ -74,7 +36,6 @@ public class EnemyEncounter : MonoBehaviour
             Engage(other.transform);
     }
 
-    // 2. If the enemy's collider is solid (Physical bump)
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
@@ -85,5 +46,41 @@ public class EnemyEncounter : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
             Engage(collision.transform);
+    }
+
+    /// <summary>
+    /// Starts combat encounter
+    /// </summary>
+    public void Engage(Transform player)
+    {
+        if (engaged || player == null) return;
+
+        engaged = true;
+
+        Debug.Log("ENEMY ENGAGED: " + uniqueEnemyID);
+
+        // Store return position after combat
+        GameManager.lastPlayerPosition = player.position;
+        GameManager.isReturningFromCombat = true;
+
+        // Pass enemy data into combat system
+        if (enemyType != null)
+            GameManager.pendingEnemyData = enemyType;
+
+        // Store ID for graveyard system
+        GameManager.encounteredInstanceID = uniqueEnemyID;
+
+        Debug.Log("Encountered Enemy: " + uniqueEnemyID);
+
+        // Load correct combat scene
+        if (GameManager.Instance != null &&
+            GameManager.Instance.playerData.finishedTutorial == false)
+        {
+            SceneManager.LoadScene("TutorialBattle");
+        }
+        else
+        {
+            SceneManager.LoadScene("CombatUI");
+        }
     }
 }

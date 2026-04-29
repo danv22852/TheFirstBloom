@@ -9,4 +9,22 @@ public class PlayerDataInitializer : MonoBehaviour
     {
         playerData.floorName = SceneManager.GetActiveScene().name;
     }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        playerData.floorName = scene.name;
+
+        // ONLY reset temporary stuff (not enemies)
+        // playerData.ResetSceneState();
+    }
 }

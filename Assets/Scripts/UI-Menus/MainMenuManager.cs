@@ -61,17 +61,26 @@ public class MainMenuManager : MonoBehaviour
     }
 
     public void StartNewGame()
-    {
-        Debug.Log("Starting New Game...");
+{
+    Debug.Log("Starting New Game...");
 
-        if (GameManager.Instance != null)
+    if (GameManager.Instance != null)
+    {
+        var pd = GameManager.Instance.playerData;
+
+        // 🔥 HARD RESET FIRST
+        pd.ResetForNewRun();
+
+        // 🔥 THEN immediately wipe save file so it cannot override reset
+        string savePath = Application.persistentDataPath + "/saveData.json";
+        if (System.IO.File.Exists(savePath))
         {
-            GameManager.Instance.ResetSaveData(); 
+            System.IO.File.Delete(savePath);
         }
-        
-        // Define your starting level here
-        SceneManager.LoadScene("firstFloor");
     }
+
+    SceneManager.LoadScene("firstFloor");
+}
 
     public void QuitGame()
     {
