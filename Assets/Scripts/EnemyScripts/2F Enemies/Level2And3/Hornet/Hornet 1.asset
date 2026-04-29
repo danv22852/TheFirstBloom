@@ -10,16 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b0566ed46712c3a4ca4ddde06a429795, type: 3}
-  m_Name: Hornet 1
+  m_Name: Worm
   m_EditorClassIdentifier: 
-  enemyID: Hornet_1
-  enemyName: Hornet
-  enemySprite: {fileID: 4286265989511706523, guid: 792a70b7b30780c42b3f0f1b503d9205, type: 3}
-  maxHP: 160
-  strength: 15
-  speed: 6
-  defense: 1
+  enemyID: Worm_1
+  enemyName: Worm
+  enemySprite: {fileID: 4286265989511706523, guid: 2a898f23fd96d554d9dd45a5058d7b76, type: 3}
+  maxHP: 25
+  strength: 14
+  speed: 10
+  defense: 15
   combatScale: 1
   flipSprite: 1
-  expDrop: 35
+  hoverHeight: 0.25
+  expDrop: 85
   skills: []

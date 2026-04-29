@@ -1,55 +1,81 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Unity.Cinemachine; // Needed for the Confiner
+using Unity.Cinemachine; 
 
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float BASE_SPEED = 5f;
-    // Added this so you can set the color in the Inspector once
-    [SerializeField] private Color alienTint = Color.black; 
+    [SerializeField] private Color alienTint = Color.black;
 
     public bool canMove = true;
 
     private Rigidbody2D rb;
     private Animator animator;
-    private SpriteRenderer spriteRenderer; // Added reference
+    private SpriteRenderer spriteRenderer; 
     private float currentSpeed;
 
     private Vector2 movementInput;
     public Transform Aim;
 
     private bool isRunning = false;
+    private bool alreadyTinted = false; 
 
-    private bool alreadyTinted = false; // To prevent multiple tints
+    [Header("Bloom Decay (Step-Based)")]
+    public bool enableBloomDecay = true;
+    [Tooltip("How many units/tiles the player must walk to lose 1 Bloom when under 75")]
+    public float fastDecayDistance = 15f;
+    [Tooltip("How many units/tiles the player must walk to lose 1 Bloom when >= 75")]
+    public float slowDecayDistance = 40f;
 
-    void Start()
-{
-    rb = GetComponent<Rigidbody2D>();
-    animator = GetComponent<Animator>();
-    spriteRenderer = GetComponent<SpriteRenderer>();
-    currentSpeed = BASE_SPEED;
+    private float distanceTraveled = 0f;
+    private Vector3 lastPosition;
 
-    UpdateAppearance();
+    [Header("Symbiote Twitch")]
+    public float twitchForce = 12.0f; 
+    public float twitchDuration = 0.15f; 
 
-    if (GameManager.isReturningFromCombat)
+    private bool isTwitching = false;
+    private bool isMovementLocked = false;
+
+    void Awake()
     {
-        transform.position = GameManager.lastPlayerPosition;
-        RestoreCameraBoundary();
-        GameManager.isReturningFromCombat = false;
+        rb = GetComponent<Rigidbody2D>();
     }
 
-    ForceResetMovement();
-}
+    void Start()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        currentSpeed = BASE_SPEED;
 
-    // Logic to check if the player should look like an alien
+        UpdateAppearance();
+
+        // Cleaned up merge artifact here!
+        if (GameManager.isReturningFromCombat)
+        {
+            lastPosition = transform.position;
+            
+            // 1. Teleport Player
+            transform.position = GameManager.lastPlayerPosition;
+
+            // 2. Restore Camera Boundary
+            RestoreCameraBoundary();
+
+            GameManager.isReturningFromCombat = false;
+        }
+
+        ForceResetMovement();
+    }
+
     public void UpdateAppearance()
     {
         if (GameManager.Instance != null && GameManager.Instance.playerData.hasAlien && !alreadyTinted)
         {
             if (spriteRenderer != null)
             {
-                alreadyTinted = true; // Set this to true to prevent future tints
+                alreadyTinted = true; 
                 spriteRenderer.color = alienTint;
             }
         }
@@ -64,7 +90,7 @@ public class PlayerController : MonoBehaviour
             {
                 PolygonCollider2D poly = boundaryObj.GetComponent<PolygonCollider2D>();
                 CinemachineConfiner2D confiner = FindFirstObjectByType<CinemachineConfiner2D>();
-                
+
                 if (confiner != null && poly != null)
                 {
                     confiner.BoundingShape2D = poly;
@@ -81,64 +107,129 @@ public class PlayerController : MonoBehaviour
         currentSpeed = BASE_SPEED;
     }
 
-    void FixedUpdate()
-{
-    if (!canMove)
-    {
-        rb.linearVelocity = Vector2.zero;
-        return;
-    }
-
-    rb.linearVelocity = movementInput * currentSpeed;
-}
-
     void Update()
-{
-    if (Time.timeScale == 0 && canMove)
     {
-        Debug.LogWarning("Time.timeScale was 0! Forcing it to 1.");
-        Time.timeScale = 1f;
+        if (Time.timeScale == 0 && canMove)
+        {
+            Debug.LogWarning("Time.timeScale was 0! Forcing it to 1.");
+            Time.timeScale = 1f;
+        }
+
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        float vertical = Input.GetAxisRaw("Vertical");
+
+        // THE MISSING LINK: Actually assign the input!
+        movementInput = new Vector2(horizontal, vertical).normalized;
+
+        if (movementInput != Vector2.zero && canMove)
+        {
+            if (horizontal > 0)
+                spriteRenderer.flipX = false;
+            else if (horizontal < 0)
+                spriteRenderer.flipX = true;
+                
+            isRunning = true;
+            animator.SetBool("isRunning", isRunning);
+        }
+        else
+        {
+            isRunning = false;
+            animator.SetBool("isRunning", false);
+        }
+
+        if (enableBloomDecay && GameManager.Instance != null && GameManager.Instance.playerData != null)
+        {
+            var pd = GameManager.Instance.playerData;
+
+            if (pd.currentBloom > pd.decayFloor)
+            {
+                float distanceThisFrame = Vector3.Distance(lastPosition, transform.position);
+                distanceTraveled += distanceThisFrame;
+
+                float currentTargetDistance = (pd.currentBloom >= 75) ? slowDecayDistance : fastDecayDistance;
+
+                if (distanceTraveled >= currentTargetDistance)
+                {
+                    pd.currentBloom--;
+                    if (pd.currentBloom < pd.decayFloor) pd.currentBloom = pd.decayFloor;
+                    distanceTraveled = 0f;
+                }
+            }
+        }
+
+        lastPosition = transform.position;
     }
 
-    float horizontal = Input.GetAxisRaw("Horizontal");
-    float vertical = Input.GetAxisRaw("Vertical");
+    public void ForceResetMovement()
+    {
+        if (rb == null)
+            rb = GetComponent<Rigidbody2D>();
 
-    movementInput = new Vector2(horizontal, vertical).normalized;
+        canMove = true;
+        currentSpeed = BASE_SPEED;
 
-    // Flip sprite left/right
-    if (horizontal > 0)
-        spriteRenderer.flipX = false;
-    else if (horizontal < 0)
-        spriteRenderer.flipX = true;
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        rb.linearVelocity = Vector2.zero;
 
-    // Better animation detection
-    isRunning = horizontal != 0 || vertical != 0;
-    animator.SetBool("isRunning", isRunning);
-}
+        Debug.Log("Player movement HARD reset");
+    }
 
+    public void EnableMovement()
+    {
+        if (rb == null)
+            rb = GetComponent<Rigidbody2D>();
 
-public void ForceResetMovement()
-{
-    if (rb == null)
-        rb = GetComponent<Rigidbody2D>();
+        canMove = true;
+        currentSpeed = BASE_SPEED;
 
-    canMove = true;
-    currentSpeed = BASE_SPEED;
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        rb.linearVelocity = Vector2.zero;
+    }
 
-    rb.constraints = RigidbodyConstraints2D.FreezeRotation;
-    rb.linearVelocity = Vector2.zero;
+    void FixedUpdate()
+    {
+        if (isTwitching || isMovementLocked) return;
 
-    Debug.Log("Player movement HARD reset");
-}
-public void EnableMovement()
-{
-    if (rb == null)
-        rb = GetComponent<Rigidbody2D>();
+        if (canMove)
+        {
+            if (rb.constraints != RigidbodyConstraints2D.FreezeRotation)
+            {
+                rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+            }
 
-    canMove = true;
-    currentSpeed = BASE_SPEED;
+            rb.linearVelocity = movementInput * currentSpeed;
+        }
+        else
+        {
+            rb.linearVelocity = Vector2.zero;
+            rb.constraints = RigidbodyConstraints2D.FreezeAll;
+        }
+    }
 
-    rb.constraints = RigidbodyConstraints2D.FreezeRotation;
-    rb.linearVelocity = Vector2.zero;
-}
+    public void ApplySymbioteTwitch(Vector2 direction)
+    {
+        if (rb != null && !isTwitching)
+        {
+            Debug.Log("Violent Symbiote Twitch!");
+            StartCoroutine(TwitchRoutine(direction));
+        }
+    }
+
+    public void SetMovementLock(bool isLocked)
+    {
+        isMovementLocked = isLocked;
+        if (isLocked && rb != null)
+        {
+            rb.linearVelocity = Vector2.zero; 
+        }
+    }
+
+    private System.Collections.IEnumerator TwitchRoutine(Vector2 direction)
+    {
+        isTwitching = true;
+        rb.linearVelocity = direction * twitchForce;
+        yield return new WaitForSeconds(twitchDuration);
+        rb.linearVelocity = Vector2.zero;
+        isTwitching = false;
+    }
 }

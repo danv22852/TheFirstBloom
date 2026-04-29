@@ -22,11 +22,11 @@ public class PlayerData : ScriptableObject
     public event Action OnStatsChanged;
 
     [Header("Stats")]
-    public int currentHP = 5;
-    public int maxHP = 5;
-    public int strength = 15;
+    public int currentHP = 100;
+    public int maxHP = 100;
+    public int strength = 10;
     public int speed = 10;
-    public int defense = 5;
+    public int defense = 10;
     public int luck = 0;
 
     public string floorName = "firstFloor";
@@ -34,7 +34,8 @@ public class PlayerData : ScriptableObject
     [Header("Inventory")]
     public int healthPotions = 3;
     public int coins = 0; // <-- NEW: Track the player's money
-    public int keys = 0; // <-- NEW: Track the player's keys
+    public int wiltPotions = 0;
+    public int thirdItem = 0; //placeholder
 
     [Header("World State")]
     public List<string> defeatedEnemies = new List<string>();
@@ -60,6 +61,26 @@ public class PlayerData : ScriptableObject
     [Header("Progression")]
     // This creates an instance of your new script directly inside PlayerData!
     public ExperienceSystem expSystem = new ExperienceSystem();
+
+    [Header("Bloom Mechanics")]
+    public int decayFloor = 0;
+
+    [Header("Item Discovery")]
+    // Tracks if the player has ever picked up a Wilt Potion
+    public bool hasDiscoveredWiltPotions = false;
+
+    // Call this whenever the player finishes a fight or drinks a Wilt Potion!
+    public void SetDecayFloor()
+    {
+        // High (75+) stops decaying at 50 (Bottom of Medium)
+        if (currentBloom >= 75) decayFloor = 50;
+        
+        // Medium (50-74) stops decaying at 25 (Bottom of Low)
+        else if (currentBloom >= 50) decayFloor = 25;
+        
+        // Low (25-49) or Stable naturally decays all the way to 0
+        else decayFloor = 0; 
+    }
 
     // Call this whenever Bloom is modified outside of combat
     public void UpdateBloomState()
