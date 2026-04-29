@@ -17,4 +17,9 @@ public class EnemyData : ScriptableObject
     public float hoverHeight = 0f;
     public int expDrop; 
     public List<SkillBase> skills;
+
+    [Header("Core Drop Pool")]
+    public List<CoreTemplate> coreDropPool = new List<CoreTemplate>();
+    [Range(0, 3)]
+    public int coreDropCount = 3; // how many cores to offer from this enemy
 }

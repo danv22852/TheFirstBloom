@@ -23,6 +23,9 @@ public class GameManager : MonoBehaviour
 
     [Header("Enemy Roster")]
     public EnemyData[] enemyRoster;
+
+    [Header("Core System")]
+    public CoreTemplate[] generalCorePool;
     
     private void OnEnable()
 {

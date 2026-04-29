@@ -49,6 +49,12 @@ public class CombatSystem : MonoBehaviour
 
 
 
+    // --- CORE FIELDS ---
+    private float revitalizeHealPercent = 0f;
+    private int revitalizeTurnsRemaining = 0;
+    private bool isChargedUp = false;
+    private float weakenMultiplier = 1f;
+
     // --- UI ELEMENTS ---
     [Header("UI Elements")]
     public TextMeshProUGUI playerHP;
@@ -311,6 +317,9 @@ public class CombatSystem : MonoBehaviour
 
     public void PlayerStartTurn()
     {
+        TickPlayerStatusEffects();
+        if (playerHealth <= 0) return;
+
         isPlayerTurn = true;
         hasUsedItemThisTurn = false;
         
@@ -384,6 +393,19 @@ public class CombatSystem : MonoBehaviour
             guardTurnsRemaining--;
             if (guardTurnsRemaining == 0)
                 ShowBattleText("Guard has worn off.", 2f);
+        }
+
+        if (revitalizeTurnsRemaining > 0)
+        {
+            int healAmount = Mathf.RoundToInt(playerMaxHealth * revitalizeHealPercent);
+            playerHealth = Mathf.Min(playerHealth + healAmount, playerMaxHealth);
+            UpdateHealthUI();
+            revitalizeTurnsRemaining--;
+            
+            if (revitalizeTurnsRemaining > 0)
+                ShowBattleText("Revitalize heals " + healAmount + " HP! (" + revitalizeTurnsRemaining + " turns left)", 2f);
+            else
+                ShowBattleText("Revitalize has worn off.", 2f);
         }
 
         BackToMainMenu();
@@ -956,6 +978,29 @@ public class CombatSystem : MonoBehaviour
             return;
         }
 
+        if (enemyHealth <= 0) return;
+
+        // Apply status effects first
+        TickStatusEffects();
+
+        if (chilledStacks > 0)
+        {
+            chilledStacks--;
+            if (chilledStacks > 0)
+                ShowBattleText(currentEnemy.enemyName + " is thawing... (" + chilledStacks + " chill stacks remaining)", 1.5f);
+            else
+                ShowBattleText(currentEnemy.enemyName + " has thawed out.", 1.5f);
+        }
+
+        // If stunned, skip rest of turn
+        if (enemyIsStunned)
+        {
+            enemyIsStunned = false;
+            ShowBattleText(currentEnemy.enemyName + " is stunned and can't move!", 2f);
+            StartCoroutine(WaitAndPassTurn(2f));
+            return;
+        }
+
         var skill = PickSkill();
         
         ShowBattleText(currentEnemy.enemyName + " lunges at you!", 1.5f);
@@ -990,6 +1035,27 @@ public class CombatSystem : MonoBehaviour
 
     private void ExecuteTrollBossAI()
     {
+        TickStatusEffects();
+        if (enemyHealth <= 0) return;
+
+        if (chilledStacks > 0)
+        {
+            chilledStacks--;
+            if (chilledStacks > 0)
+                ShowBattleText(currentEnemy.enemyName + " is thawing... (" + chilledStacks + " stacks remaining)", 1.5f);
+            else
+                ShowBattleText(currentEnemy.enemyName + " has thawed out.", 1.5f);
+        }
+
+        if (enemyIsStunned)
+        {
+            enemyIsStunned = false;
+            ShowBattleText(currentEnemy.enemyName + " is stunned and can't move!", 2f);
+            StartCoroutine(WaitAndPassTurn(2f));
+            return;
+        }
+
+
         // PHASE 2: SEISMIC SLAM FRENZY
         if (bossPhase == 2)
         {
@@ -1566,12 +1632,29 @@ public class CombatSystem : MonoBehaviour
 
     public void DealDamageToEnemy(int amount)
     {
+        if (isChargedUp)
+        {
+            amount *= 2;
+            isChargedUp = false;
+        }
+        amount = Mathf.RoundToInt(amount * GetChilledDamageMultiplier());
         enemyHealth -= amount;
         enemyHealth = Mathf.Max(0, enemyHealth);
         UpdateHealthUI();
     }
 
-    // Quick helper so Cores can read the player's Max HP!
+    public void DealDamageToEnemyIgnoreDefense(int amount)
+    {
+        if (isChargedUp)
+        {
+            amount *= 2;
+            isChargedUp = false;
+        }
+        enemyHealth -= amount;
+        enemyHealth = Mathf.Max(0, enemyHealth);
+        UpdateHealthUI();
+    }
+
     public int GetPlayerMaxHealth() => playerMaxHealth;
 
     public void AddBloom(int amount)
@@ -1597,6 +1680,168 @@ public class CombatSystem : MonoBehaviour
     {
         enemyIsStunned = true;
         ShowBattleText("The enemy is stunned and will skip their turn!", 2.5f);
+    }
+
+    public void ApplyRevitalize(float percentPerTurn, int duration)
+    {
+        revitalizeHealPercent = percentPerTurn;
+        revitalizeTurnsRemaining = duration;
+    }
+
+    public string GetEnemyName() => currentEnemy.enemyName;
+
+    // STATUS EFFECTS
+    private List<StatusEffect> enemyStatusEffects = new List<StatusEffect>();
+    private List<StatusEffect> playerStatusEffects = new List<StatusEffect>();
+    private int chilledStacks = 0;
+
+    public void ApplyStatusEffect(StatusEffect effect)
+    {
+        if (effect.type == StatusEffectType.Poison)
+        {
+            var existing = enemyStatusEffects.Find(e => e.type == StatusEffectType.Poison);
+            if (existing != null)
+            {
+                existing.damage += effect.damage;
+                ShowBattleText("Poison intensifies! Now dealing " + existing.damage + " per turn.", 2f);
+                return;
+            }
+        }
+        if (effect.type == StatusEffectType.Weaken)
+        {
+            weakenMultiplier = effect.weakenMultiplier;
+            ShowBattleText(currentEnemy.enemyName + " is weakened!", 2f);
+        }
+        enemyStatusEffects.Add(effect);
+    }
+
+    public void TickStatusEffects()
+    {
+        for (int i = enemyStatusEffects.Count - 1; i >= 0; i--)
+        {
+            var effect = enemyStatusEffects[i];
+            enemyHealth -= effect.damage;
+            UpdateHealthUI();
+
+            if (effect.type == StatusEffectType.Burn)
+            {
+                effect.damage = Mathf.Max(0, effect.damage - 2); // decrement burn
+                ShowBattleText(currentEnemy.enemyName + " burns for " + effect.damage + " damage!", 1.5f);
+                effect.turnsRemaining--;
+                if (effect.turnsRemaining <= 0 || effect.damage <= 0)
+                {
+                    enemyStatusEffects.RemoveAt(i);
+                    ShowBattleText("The burn fades.", 1.5f);
+                }
+            }
+            else if (effect.type == StatusEffectType.Poison)
+            {
+                ShowBattleText(currentEnemy.enemyName + " is poisoned for " + effect.damage + " damage!", 1.5f);
+                // Poison doesn't decrement or expire naturally
+            }
+            else if (effect.type == StatusEffectType.Weaken)
+            {
+                effect.turnsRemaining--;
+                if (effect.turnsRemaining <= 0)
+                {
+                    weakenMultiplier = 1f;
+                    enemyStatusEffects.RemoveAt(i);
+                    ShowBattleText(currentEnemy.enemyName + " is no longer weakened.", 2f);
+                }
+            }
+
+            if (enemyHealth <= 0)
+            {
+                HandleEnemyDefeat();
+                return;
+            }
+        }
+    }
+
+    public void CleanseEnemyEffects()
+    {
+        enemyStatusEffects.Clear();
+        chilledStacks = 0;
+        ShowBattleText(currentEnemy.enemyName + " shrugs off all status effects!", 2f);
+    }
+
+    public void ApplyStatusEffectToPlayer(StatusEffect effect)
+    {
+        playerStatusEffects.Add(effect);
+    }
+
+    public void TickPlayerStatusEffects()
+    {
+        for (int i = playerStatusEffects.Count - 1; i >= 0; i--)
+        {
+            var effect = playerStatusEffects[i];
+            playerHealth -= effect.damage;
+            UpdateHealthUI();
+
+            ShowBattleText("You are affected by " + effect.type + " for " + effect.damage + " damage!", 1.5f);
+
+            if (effect.type == StatusEffectType.Burn)
+            {
+                effect.damage = Mathf.Max(0, effect.damage - 2);
+                effect.turnsRemaining--;
+                if (effect.turnsRemaining <= 0 || effect.damage <= 0)
+                {
+                    playerStatusEffects.RemoveAt(i);
+                    ShowBattleText("The " + effect.type + " fades.", 1.5f);
+                }
+            }
+
+            if (playerHealth <= 0)
+            {
+                ShowBattleText("The host has fallen... Game Over.", 3f);
+                Invoke(nameof(LoadMainMenu), 3f);
+                return;
+            }
+        }
+    }
+
+    public int CleansePlayerEffects()
+    {
+        int count = playerStatusEffects.Count;
+        playerStatusEffects.Clear();
+        return count;
+    }
+
+
+    public void ApplyChilled(int stacks)
+    {
+        chilledStacks += stacks;
+        ShowBattleText(currentEnemy.enemyName + " is chilled! (" + chilledStacks + " stacks)", 2f);
+    }
+
+    public int ConsumeChilled()
+    {
+        int stacks = chilledStacks;
+        chilledStacks = 0;
+        return stacks;
+    }
+
+    public int GetChilledStacks() => chilledStacks;
+
+    public float GetChilledDamageMultiplier()
+    {
+        return 1f + (chilledStacks * 0.25f);
+    }
+
+    public int GetLastStandDamage(int baseDamage, int maxDamage)
+    {
+        float missingHPPercent = 1f - ((float)playerHealth / playerMaxHealth);
+        return Mathf.RoundToInt(Mathf.Lerp(baseDamage, maxDamage, missingHPPercent));
+    }
+
+    public bool IsEnemyBelowThreshold(float threshold)
+    {
+        return (float)enemyHealth / currentEnemy.maxHP <= threshold;
+    }
+
+    public void ApplyChargeUp()
+    {
+        isChargedUp = true;
     }
 
     public void TriggerItemAnimation(Action onComplete)
@@ -1633,6 +1878,18 @@ public class CombatSystem : MonoBehaviour
     public void GivePlayerAnotherTurn()
     {
         PlayerStartTurn();
+    }
+
+    public int GetHealAmount(float percentOfMissing)
+    {
+        int missing = playerMaxHealth - playerHealth;
+        return Mathf.RoundToInt(missing * percentOfMissing);
+    }
+
+    public void HealPlayer(int amount)
+    {
+        playerHealth = Mathf.Min(playerHealth + amount, playerMaxHealth);
+        UpdateHealthUI();
     }
 
     public void TriggerGameOver()
