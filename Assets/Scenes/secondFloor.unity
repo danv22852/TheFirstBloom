@@ -1931,6 +1931,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: cc1a33ab7a68744a3adbc1201287054b, type: 2}
   - {fileID: 11400000, guid: 6d35684ff73a842798920c04a4779cc5, type: 2}
   - {fileID: 11400000, guid: 92d20c9f2802e6a4a99196250dff6460, type: 2}
+  generalCorePool: []
 --- !u!1 &431351227
 GameObject:
   m_ObjectHideFlags: 0
@@ -38898,6 +38899,51 @@ Transform:
   m_Children: []
   m_Father: {fileID: 79340849}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1052721453
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1052721455}
+  - component: {fileID: 1052721454}
+  m_Layer: 0
+  m_Name: IntializeCurrentScene
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1052721454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1052721453}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 072c64decf18c49d582a45a3ceb62903, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerData: {fileID: 11400000, guid: bd7a55abcffdb6543b43fb6753c17475, type: 2}
+--- !u!4 &1052721455
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1052721453}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -37.584274, y: 8.957193, z: 0.32202116}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1131747999
 GameObject:
   m_ObjectHideFlags: 0
@@ -65763,3 +65809,4 @@ SceneRoots:
   - {fileID: 376451546}
   - {fileID: 1479364331}
   - {fileID: 1848634127}
+  - {fileID: 1052721455}
