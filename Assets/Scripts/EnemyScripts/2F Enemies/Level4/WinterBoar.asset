@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b0566ed46712c3a4ca4ddde06a429795, type: 3}
-  m_Name: Fall
+  m_Name: WinterBoar
   m_EditorClassIdentifier: 
-  enemyID: FallHare1
-  enemyName: Fall Hare
-  enemySprite: {fileID: 8083103891581464553, guid: 825ce5d495d4c4248bcf7fcf32b6b1a3, type: 3}
-  maxHP: 160
-  strength: 19
+  enemyID: WinterBoar1
+  enemyName: Fiesty Boar
+  enemySprite: {fileID: -6456488867754719127, guid: c61cc41931e5547daacd82e54225528c, type: 3}
+  maxHP: 170
+  strength: 22
   speed: 6
-  defense: 2
+  defense: 1
   combatScale: 1
-  flipSprite: 0
+  flipSprite: 1
   expDrop: 35
   skills:
   - {fileID: 11400000, guid: 30c7a6f2d58cf0a4e8a4c660b6c66fbb, type: 2}
