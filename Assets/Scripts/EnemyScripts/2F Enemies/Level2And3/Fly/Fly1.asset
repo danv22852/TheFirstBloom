@@ -14,14 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyID: Fly_01
   enemyName: Fly
-  enemySprite: {fileID: 8392581270707691353, guid: ad0d3ed000d686f4499e5588d2ee309b, type: 3}
+  enemySprite: {fileID: -8318744207672894160, guid: 745f540d35317114290a235da6bf6678, type: 3}
   maxHP: 120
   strength: 15
   speed: 6
   defense: 1
   combatScale: 1
   flipSprite: 1
-  hoverHeight: 0
+  hoverHeight: 2
   expDrop: 35
   skills:
   - {fileID: 11400000, guid: a662d6c363e70ff469adf11fc0d5652c, type: 2}
+  coreDropPool: []
+  coreDropCount: 3

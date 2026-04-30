@@ -21,6 +21,9 @@ MonoBehaviour:
   defense: 4
   combatScale: 3
   flipSprite: 1
+  hoverHeight: 1.2
   expDrop: 35
   skills:
   - {fileID: 11400000, guid: a662d6c363e70ff469adf11fc0d5652c, type: 2}
+  coreDropPool: []
+  coreDropCount: 3
