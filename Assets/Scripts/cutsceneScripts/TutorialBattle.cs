@@ -53,10 +53,17 @@ public class TutorialBattle : MonoBehaviour
     public UnityEngine.UI.Button healItemButton;
     public TextMeshProUGUI healItemText;
 
+    [Header("Tooltip UI")]
+    private Coroutine battleTextCoroutine;
+    public GameObject tooltipPanel;
+    public TextMeshProUGUI tooltipText;
+
     [Header("Animation Settings")]
     public Transform playerTransform;
     public Transform enemyTransform;
     public float moveSpeed = 15f;
+
+    
 
     private void Start()
     {
@@ -112,6 +119,7 @@ public class TutorialBattle : MonoBehaviour
         isPlayerTurn = false;
 
         Debug.Log("Player uses Basic Attack!");
+        ShowBattleText("You attack the enemy!", 1f);
 
         StartCoroutine(PerformMeleeAttack(playerTransform, enemyTransform,
             onHit: () =>
@@ -176,6 +184,7 @@ public class TutorialBattle : MonoBehaviour
         isPlayerTurn = false;
 
         Debug.Log("There's no escaping this tutorial fight! You stumbled and wasted your turn.");
+        ShowBattleText("The enemy blocks your escape! You cannot run!", 2f);
         EnemyTurn();
     }
 
@@ -486,5 +495,25 @@ public class TutorialBattle : MonoBehaviour
                 BackToMainMenu();
             }
         }
+    }
+
+    public void ShowBattleText(string message, float displayTime = 1.5f)
+    {
+        if (battleTextCoroutine != null) StopCoroutine(battleTextCoroutine);
+        battleTextCoroutine = StartCoroutine(BattleTextRoutine(message, displayTime));
+    }
+
+    private System.Collections.IEnumerator BattleTextRoutine(string message, float displayTime)
+    {
+        if (tooltipPanel != null) tooltipPanel.SetActive(true);
+        if (tooltipText != null) tooltipText.text = message;
+
+        yield return new WaitForSeconds(displayTime);
+
+        if (tooltipPanel != null) tooltipPanel.SetActive(false);
+        
+        // --- THE CRITICAL FIX ---
+        // Tell the game the battle text is officially done so mouse hovers work again!
+        battleTextCoroutine = null; 
     }
 }

@@ -7,10 +7,7 @@ public class CombatTutorial : MonoBehaviour
     [Header("UI References")]
     public GameObject tutorialPanel;
     public Button closeButton; 
-
     public GameObject tooltipPanel;
-
-
     private bool isTutorialActive = false;
 
     private void Start()

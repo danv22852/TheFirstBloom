@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b0566ed46712c3a4ca4ddde06a429795, type: 3}
-  m_Name: Worm
+  m_Name: Hornet 1
   m_EditorClassIdentifier: 
   enemyID: Worm_1
   enemyName: Worm
@@ -24,3 +24,5 @@ MonoBehaviour:
   hoverHeight: 0.25
   expDrop: 85
   skills: []
+  coreDropPool: []
+  coreDropCount: 3

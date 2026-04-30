@@ -15,8 +15,14 @@ MonoBehaviour:
   enemyID: tutorial_boss
   enemyName: Monster
   enemySprite: {fileID: 21300000, guid: 2c485f404f6b79e46bf40f28682b23d3, type: 3}
-  maxHP: 30
-  strength: 5
-  speed: 5
-  defense: 5
+  maxHP: 130
+  strength: 30
+  speed: 8
+  defense: 12
+  combatScale: 1
+  flipSprite: 0
+  hoverHeight: 2
+  expDrop: 0
   skills: []
+  coreDropPool: []
+  coreDropCount: 3

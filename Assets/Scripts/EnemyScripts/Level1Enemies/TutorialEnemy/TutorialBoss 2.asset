@@ -10,22 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b0566ed46712c3a4ca4ddde06a429795, type: 3}
-  m_Name: Stag
+  m_Name: TutorialBoss 2
   m_EditorClassIdentifier: 
-  enemyID: stag_01
+  enemyID: tutorial_boss
   enemyName: Monster
-  enemySprite: {fileID: 4286265989511706523, guid: 2a898f23fd96d554d9dd45a5058d7b76, type: 3}
+  enemySprite: {fileID: 21300000, guid: 2c485f404f6b79e46bf40f28682b23d3, type: 3}
   maxHP: 130
   strength: 30
   speed: 8
-  defense: 12
+  defense: 1
   combatScale: 1
-  flipSprite: 1
-  hoverHeight: 0
-  expDrop: 35
-  skills:
-  - {fileID: 11400000, guid: b82d5658507633a498bec0905665d400, type: 2}
-  - {fileID: 11400000, guid: 30c7a6f2d58cf0a4e8a4c660b6c66fbb, type: 2}
-  - {fileID: 11400000, guid: a662d6c363e70ff469adf11fc0d5652c, type: 2}
+  flipSprite: 0
+  hoverHeight: 2
+  expDrop: 0
+  skills: []
   coreDropPool: []
   coreDropCount: 3

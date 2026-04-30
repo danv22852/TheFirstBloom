@@ -2320,7 +2320,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 7
   isChasing: 0
-  targetCoordinates: {x: 0, y: 0}
+  targetCoordinates: {x: 19, y: -25}
   encounterDialogue:
   - text: Hello, I am the symbiote lets team up
     portrait: {fileID: -7495639087065630338, guid: fd4ff9a2cd8404cccb4d2c0e6f16ce28, type: 3}
@@ -3207,7 +3207,7 @@ Transform:
   m_GameObject: {fileID: 685779733}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.100774765, y: 4.8, z: 0.07859284}
+  m_LocalPosition: {x: 0.31, y: 4.8, z: 0.07859284}
   m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3819,7 +3819,7 @@ Transform:
   m_GameObject: {fileID: 848256123}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 19.0605, y: -24.0204, z: 0}
+  m_LocalPosition: {x: 19.471273, y: -24.0204, z: 0}
   m_LocalScale: {x: 2.7842114, y: 2.7843094, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7913,7 +7913,7 @@ GameObject:
   - component: {fileID: 1791441746}
   - component: {fileID: 1791441745}
   - component: {fileID: 1791441747}
-  m_Layer: 7
+  m_Layer: 6
   m_Name: Walls
   m_TagString: Untagged
   m_Icon: {fileID: 0}
