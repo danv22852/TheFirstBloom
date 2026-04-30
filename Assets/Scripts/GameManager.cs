@@ -104,6 +104,9 @@ private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
             playerData.luck = 0;
             playerData.coins = 0;
             playerData.healthPotions = 3;
+            playerData.floorName = "firstFloor";
+            playerData.hasAlien = false;
+            playerData.finishedTutorial = false;
             
 
             Debug.Log("Save Data completely reset! All enemies and items will respawn.");
