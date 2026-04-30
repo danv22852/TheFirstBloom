@@ -18,18 +18,18 @@ MonoBehaviour:
   speed: 10
   defense: 10
   luck: 0
-  floorName: firstFloor
+  floorName: fourthFloor
   healthPotions: 3
   coins: 0
   wiltPotions: 0
-  keys: 0
+  keys: 4
   thirdItem: 0
   defeatedEnemies: []
   collectedItems: []
   hasAlien: 1
-  currentBloom: 100
+  currentBloom: 0
   maxBloom: 100
-  currentBloomState: 4
+  currentBloomState: 0
   equippedCores:
   - {fileID: 11400000, guid: d87afa192aaa68143a5996f7f459264a, type: 2}
   - {fileID: 11400000, guid: 446d4297bf8d09e40a66619d307f59f8, type: 2}
@@ -39,7 +39,7 @@ MonoBehaviour:
   finishedTutorial: 1
   expSystem:
     level: 1
-    currentEXP: 0
+    currentEXP: 65
     expToNextLevel: 1140
     availableSkillPoints: 0
   decayFloor: 50
