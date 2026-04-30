@@ -70,6 +70,9 @@ public class DialogueManager : MonoBehaviour
         
         Time.timeScale = 0f; 
         playerController.canMove = false; // Disable player movement during dialogue
+
+        
+
         dialogueBox.SetActive(true);
         linesQueue.Clear();
 
@@ -124,14 +127,12 @@ public class DialogueManager : MonoBehaviour
     Debug.Log("Dialogue ended. Running callback if it exists.");
     dialogueBox.SetActive(false);
     Time.timeScale = 1f; 
-    playerController.canMove = true;
+    if(GameManager.Instance.playerData.hasAlien)
+        playerController.canMove = true;
     
 
     // --- ADD THIS: Re-enable movement ---
-    if (playerController != null && !GameManager.Instance.playerData.hasAlien)
-    {
-        playerController.canMove = true;
-    }
+
 
     // Run the callback if one was provided
     onDialogueComplete?.Invoke();

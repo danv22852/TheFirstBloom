@@ -12,51 +12,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 643f6fa934a3e6444af7093168124ef8, type: 3}
   m_Name: Player
   m_EditorClassIdentifier: 
-  currentHP: 1
-  maxHP: 100
-  strength: 10
-  speed: 10
-  defense: 10
-  luck: 0
-<<<<<<< Updated upstream
-  floorName: fourthFloor
-=======
+  currentHP: 135
+  maxHP: 135
+  strength: 13
+  speed: 12
+  defense: 12
+  luck: 3
   floorName: firstFloor
->>>>>>> Stashed changes
-  healthPotions: 3
-  coins: 1
+  healthPotions: 0
+  coins: 4
   wiltPotions: 0
-<<<<<<< Updated upstream
   keys: 4
-=======
->>>>>>> Stashed changes
   thirdItem: 0
   defeatedEnemies: []
   collectedItems:
   - (5.75, -0.54, 0.00)
+  - (28.18, -7.00, 0.00)
+  - (-39.55, -26.33, 0.00)
+  - (-27.58, -45.68, 0.00)
+  - (-49.74, 18.25, 0.00)
+  - (-14.42, 31.51, 0.00)
   hasAlien: 0
-  currentBloom: 0
+  currentBloom: 39
   maxBloom: 100
-  currentBloomState: 0
+  currentBloomState: 1
   equippedCores:
-  - {fileID: 11400000, guid: d87afa192aaa68143a5996f7f459264a, type: 2}
+  - {fileID: 11400000, guid: dafe25a74e7e5d54790d7f65dc3b391e, type: 2}
   - {fileID: 11400000, guid: 446d4297bf8d09e40a66619d307f59f8, type: 2}
   maxCoreSlots: 5
   knownCoreIDs:
-  - swipe01
+  - Stab
   finishedTutorial: 0
   expSystem:
-    level: 1
-<<<<<<< Updated upstream
-    currentEXP: 65
-    expToNextLevel: 1140
+    level: 5
+    currentEXP: 7
+    expToNextLevel: 507
     availableSkillPoints: 0
-  decayFloor: 50
-  hasDiscoveredWiltPotions: 1
-=======
-    currentEXP: 0
-    expToNextLevel: 100
-    availableSkillPoints: 1
   decayFloor: 0
   hasDiscoveredWiltPotions: 0
->>>>>>> Stashed changes
