@@ -16,7 +16,7 @@ MonoBehaviour:
   enemyName: Underground Troll
   enemySprite: {fileID: 8539477739022601218, guid: 8f5ee1c12ca8a6443ae3b110129227d7, type: 3}
   maxHP: 300
-  strength: 23
+  strength: 19
   speed: 4
   defense: 5
   combatScale: 0.6

@@ -12,14 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 643f6fa934a3e6444af7093168124ef8, type: 3}
   m_Name: Player
   m_EditorClassIdentifier: 
-  currentHP: 30
+  currentHP: 100
   maxHP: 100
   strength: 10
   speed: 10
   defense: 10
   luck: 0
-  floorName: fourthFloor
-  healthPotions: 2
+  floorName: secondFloor
+  healthPotions: 3
   coins: 0
   wiltPotions: 0
   keys: 0
@@ -27,10 +27,9 @@ MonoBehaviour:
   defeatedEnemies:
   - 
   - popup_secondfloor
-  collectedItems:
-  - (-51.42, -15.74, 0.00)
-  hasAlien: 1
-  currentBloom: 0
+  collectedItems: []
+  hasAlien: 0
+  currentBloom: 75
   maxBloom: 100
   currentBloomState: 0
   equippedCores: []
