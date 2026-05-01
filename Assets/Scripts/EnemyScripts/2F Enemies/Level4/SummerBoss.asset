@@ -14,13 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyID: SummerMrBBlob1
   enemyName: Mr B Blob
-  enemySprite: {fileID: -7050993540882883828, guid: a65298b1d30f140aba3103638b4cd6b0, type: 3}
+  enemySprite: {fileID: -7050993540882883828, guid: c567515561fe9460084640810710300f, type: 3}
   maxHP: 190
   strength: 13
   speed: 5
   defense: 3
   combatScale: 2
   flipSprite: 0
+  hoverHeight: 0
   expDrop: 50
   skills:
   - {fileID: 11400000, guid: 30c7a6f2d58cf0a4e8a4c660b6c66fbb, type: 2}
+  coreDropPool: []
+  coreDropCount: 3

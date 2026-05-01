@@ -100,6 +100,12 @@ public class OverworldBloomManager : MonoBehaviour
                 // NEW: Twitches every 5 to 9 seconds
                 twitchRoutine = StartCoroutine(TwitchRoutine(5f, 9f));
                 lashRoutine = StartCoroutine(LashOutRoutine(15f, 25f)); 
+
+                if (visionMask != null) 
+                {
+                    visionMask.SetActive(true);
+                    visionMask.transform.localScale = highBloomVisionScale;
+                }
                 break;
 
             case BloomState.High:

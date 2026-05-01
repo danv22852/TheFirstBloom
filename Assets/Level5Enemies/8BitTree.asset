@@ -10,19 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b0566ed46712c3a4ca4ddde06a429795, type: 3}
-  m_Name: Worm
+  m_Name: 8BitTree
   m_EditorClassIdentifier: 
-  enemyID: Worm_1
-  enemyName: Worm
-  enemySprite: {fileID: 4286265989511706523, guid: 2a898f23fd96d554d9dd45a5058d7b76, type: 3}
-  maxHP: 40
-  strength: 14
-  speed: 10
-  defense: 15
+  enemyID: 8BitTree_1
+  enemyName: BitTree
+  enemySprite: {fileID: 1516799481756205129, guid: 9fa3a71c990024e328b9dc5bd80a9299, type: 3}
+  maxHP: 120
+  strength: 15
+  speed: 3
+  defense: 2
   combatScale: 1
-  flipSprite: 1
-  hoverHeight: 0.25
-  expDrop: 85
-  skills: []
+  flipSprite: 0
+  hoverHeight: 0
+  expDrop: 0
+  skills:
+  - {fileID: 11400000, guid: 51967a39591da554288bfe45d221db85, type: 2}
   coreDropPool: []
   coreDropCount: 3

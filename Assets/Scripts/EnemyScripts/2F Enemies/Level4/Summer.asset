@@ -14,13 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyID: SummerBlob1
   enemyName: Summer Blob
-  enemySprite: {fileID: 4723107735738678597, guid: ab8c36c1fe17e45a7921c0a79d484027, type: 3}
+  enemySprite: {fileID: 4723107735738678597, guid: df8c0beec9b7a4bb3bc4dd14f56dbb67, type: 3}
   maxHP: 160
   strength: 14
   speed: 7
   defense: 2
   combatScale: 2
   flipSprite: 0
+  hoverHeight: 0
   expDrop: 35
   skills:
   - {fileID: 11400000, guid: 30c7a6f2d58cf0a4e8a4c660b6c66fbb, type: 2}
+  coreDropPool: []
+  coreDropCount: 3

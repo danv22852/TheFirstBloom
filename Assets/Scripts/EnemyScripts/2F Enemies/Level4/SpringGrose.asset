@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyID: SpringGrose
   enemyName: SIlly Grose
-  enemySprite: {fileID: 21300000, guid: 594a82bfa4795466c98f29017b8aa7e4, type: 2}
+  enemySprite: {fileID: 7638301751727024416, guid: 56e96437a223c434a85607a9b3801aaa, type: 3}
   maxHP: 130
   strength: 16
   speed: 6
   defense: 2
   combatScale: 1
-  flipSprite: 1
+  flipSprite: 0
   hoverHeight: 0
   expDrop: 50
   skills:

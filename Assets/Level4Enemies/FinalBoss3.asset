@@ -10,20 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b0566ed46712c3a4ca4ddde06a429795, type: 3}
-  m_Name: WinterBoar
+  m_Name: FinalBoss3
   m_EditorClassIdentifier: 
-  enemyID: WinterBoar1
-  enemyName: Fiesty Boar
-  enemySprite: {fileID: -4687280150429565515, guid: ca50dd752bc0f41dbad1b8c0f4a63b4d, type: 3}
-  maxHP: 170
-  strength: 22
-  speed: 6
+  enemyID: FinalBoss_3
+  enemyName: Underground Undead
+  enemySprite: {fileID: 7995749117020595232, guid: 1dc72465f4e414485a26f8810043e93d, type: 3}
+  maxHP: 200
+  strength: 16
+  speed: 2
   defense: 1
   combatScale: 1
   flipSprite: 1
   hoverHeight: 0
-  expDrop: 35
+  expDrop: 0
   skills:
-  - {fileID: 11400000, guid: 30c7a6f2d58cf0a4e8a4c660b6c66fbb, type: 2}
-  coreDropPool: []
+  - {fileID: 11400000, guid: 51967a39591da554288bfe45d221db85, type: 2}
+  - {fileID: 11400000, guid: b82d5658507633a498bec0905665d400, type: 2}
+  coreDropPool:
+  - {fileID: 11400000, guid: 0e9ef32c6159c7a479bcd231ad9c1b02, type: 2}
   coreDropCount: 3

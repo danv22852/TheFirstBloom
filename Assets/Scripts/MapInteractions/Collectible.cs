@@ -46,14 +46,26 @@ public class Collectible : MonoBehaviour
         }
 
         // ❤️ POTION
-        else if (type == ItemType.HealthPotion)
+        if (type == ItemType.HealthPotion)
         {
             pd.healthPotions += amount;
             Debug.Log($"Picked up {amount} potion(s)! Total Potions: {pd.healthPotions}");
         }
 
+        if (type == ItemType.WiltPotion)
+        {
+            pd.wiltPotions += amount;
+            Debug.Log($"Picked up {amount} wilt potion(s)! Total Wilt Potions: {pd.wiltPotions}");
+
+            if (!pd.hasDiscoveredWiltPotions)
+            {
+                pd.hasDiscoveredWiltPotions = true;
+                Debug.Log("Wilt Potion discovered for the first time!");
+    }
+        }
+
         // 🔑 KEY (THIS IS WHAT YOU NEEDED)
-        else if (type == ItemType.Key)
+        if (type == ItemType.Key)
         {
             pd.keys += amount;
             Debug.Log($"Picked up {amount} key(s)! Total Keys: {pd.keys}");

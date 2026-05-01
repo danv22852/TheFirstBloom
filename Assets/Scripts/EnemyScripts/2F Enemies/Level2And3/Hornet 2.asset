@@ -15,12 +15,14 @@ MonoBehaviour:
   enemyID: Hornet_2
   enemyName: Bat
   enemySprite: {fileID: 4286265989511706523, guid: 792a70b7b30780c42b3f0f1b503d9205, type: 3}
-  maxHP: 35
+  maxHP: 50
   strength: 13
   speed: 15
   defense: 6
   combatScale: 1
   flipSprite: 1
   hoverHeight: 2.5
-  expDrop: 65
+  expDrop: 100
   skills: []
+  coreDropPool: []
+  coreDropCount: 3

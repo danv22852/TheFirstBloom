@@ -15,7 +15,7 @@ MonoBehaviour:
   enemyID: Batty_1
   enemyName: One Eyed Bat
   enemySprite: {fileID: -6967379832849187672, guid: 408c774694728384caec812dd84ddfdd, type: 3}
-  maxHP: 50
+  maxHP: 60
   strength: 17
   speed: 12
   defense: 8
@@ -25,3 +25,5 @@ MonoBehaviour:
   expDrop: 160
   skills:
   - {fileID: 11400000, guid: a662d6c363e70ff469adf11fc0d5652c, type: 2}
+  coreDropPool: []
+  coreDropCount: 3
