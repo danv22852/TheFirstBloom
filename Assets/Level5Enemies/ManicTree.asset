@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0566ed46712c3a4ca4ddde06a429795, type: 3}
+  m_Name: ManicTree
+  m_EditorClassIdentifier: 
+  enemyID: manictree_1
+  enemyName: Manic Tree
+  enemySprite: {fileID: -4331948892352828423, guid: 344718a8f15a942138e94e06f65497b3, type: 3}
+  maxHP: 140
+  strength: 13
+  speed: 3
+  defense: 3
+  combatScale: 1
+  flipSprite: 0
+  hoverHeight: 0
+  expDrop: 60
+  skills:
+  - {fileID: 11400000, guid: a662d6c363e70ff469adf11fc0d5652c, type: 2}
+  coreDropPool: []
+  coreDropCount: 3
