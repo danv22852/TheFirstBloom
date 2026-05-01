@@ -17,7 +17,7 @@ MonoBehaviour:
   coreDescription: A violent slam of symbiote tendrils on the enemy, shaking the
     earth!
   rarity: 0
-  coreSprite: {fileID: 0}
+  coreSprite: {fileID: -5444805723756015214, guid: 0a416a9ce0a7745dbba0775d85efbd0f, type: 3}
   bloomCost: 8
   isKnown: 1
   strengthMultiplier: 3

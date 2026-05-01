@@ -918,7 +918,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b571b34b748de422ebbc16d7d9d9cd63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: finalBoss
+  sceneName: ToBeContinued
 --- !u!212 &179050918
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1612,6 +1612,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: cc1a33ab7a68744a3adbc1201287054b, type: 2}
   - {fileID: 11400000, guid: 6d35684ff73a842798920c04a4779cc5, type: 2}
   - {fileID: 11400000, guid: 92d20c9f2802e6a4a99196250dff6460, type: 2}
+  returnScene: 
 --- !u!1 &431351227
 GameObject:
   m_ObjectHideFlags: 0
@@ -3049,6 +3050,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Melee: {fileID: 1691072953}
   Aim: {fileID: 1497343644}
+  attackOffsetDistance: 0.5
 --- !u!95 &680971543
 Animator:
   serializedVersion: 7

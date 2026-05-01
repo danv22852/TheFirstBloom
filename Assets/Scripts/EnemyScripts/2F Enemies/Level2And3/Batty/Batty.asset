@@ -21,6 +21,8 @@ MonoBehaviour:
   defense: 6
   combatScale: 1
   flipSprite: 1
-  hoverHeight: 2.5
+  hoverHeight: 1
   expDrop: 65
   skills: []
+  coreDropPool: []
+  coreDropCount: 3
