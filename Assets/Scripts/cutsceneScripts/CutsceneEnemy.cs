@@ -78,7 +78,10 @@ public class CutsceneEnemy : MonoBehaviour
     {
         // --- NEW: Lock player movement when the cutscene starts ---
         playerController.canMove = false; // Disable player movement
-        Time.timeScale = 0f; // Pause the game
+       // Pause the game
+
+        Debug.Log("Cutscene triggered. Starting dialogue and locking player movement.");
+        Debug.Log("movement: " + playerController.canMove + " timeScale: " + Time.timeScale);
 
         if (encounterDialogue != null && encounterDialogue.Length > 0)
         {

@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float BASE_SPEED = 5f;
     [SerializeField] private Color alienTint = Color.black;
+    
 
     public bool canMove = true;
 
@@ -164,6 +165,9 @@ public class PlayerController : MonoBehaviour
     {
         if (rb == null)
             rb = GetComponent<Rigidbody2D>();
+
+        if(!GameManager.Instance.playerData.hasAlien)
+            return;
 
         canMove = true;
         currentSpeed = BASE_SPEED;
