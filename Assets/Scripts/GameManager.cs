@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
     
     [Header("Scene Flow")]
     public string returnScene;
+    
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;

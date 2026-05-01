@@ -3,6 +3,7 @@ using TMPro;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public enum VendingItemType { Core, HealthPotion }
 
@@ -160,7 +161,9 @@ public class VendingMachine : MonoBehaviour
         
         if (slot.itemType == VendingItemType.Core)
         {
-            playerData.equippedCores.Add(slot.core);
+            CoreOfferManager.currentSource = CoreOfferSource.Shop;
+            CoreOfferManager.pendingOffer = CoreOfferManager.Instance.GenerateOffer(new List<CoreTemplate>(), 3);
+            UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("CorePopup", LoadSceneMode.Additive);
         }
         else if (slot.itemType == VendingItemType.HealthPotion)
         {
