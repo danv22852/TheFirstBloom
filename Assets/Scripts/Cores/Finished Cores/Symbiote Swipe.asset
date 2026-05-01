@@ -14,9 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   coreID: swipe01
   coreName: Symbiote Swipe
-  coreDescription: Swipe forward with the Symbiote to deal damage based on your STR and BLOOM.
+  coreDescription: Swipe forward with the Symbiote to deal damage based on your STR
+    and BLOOM.
   rarity: 0
-  coreSprite: {fileID: 7678816605655809102, guid: e9583105d1325421ab7b2aff3cb8f019, type: 3}
+  coreSprite: {fileID: 3728470143793757091, guid: 8a717012dabf04dd492cddccba78b33d, type: 3}
   bloomCost: 5
   isKnown: 1
   strengthMultiplier: 2.5

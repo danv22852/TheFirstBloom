@@ -16,8 +16,8 @@ MonoBehaviour:
   coreName: Guard
   coreDescription: Brace yourself, reducing incoming damage by 60% for 2 turns.
   rarity: 0
-  coreSprite: {fileID: 6010440991981832460, guid: e9583105d1325421ab7b2aff3cb8f019, type: 3}
+  coreSprite: {fileID: -2655186797916866052, guid: 63cd1a345d09042759d1fe86df9e02d1, type: 3}
   bloomCost: 7
-  isKnown: 0
+  isKnown: 1
   damageReduction: 0.6
   guardDuration: 2
