@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillName: Seismic Slam
   weight: 0
-  damageAmount: 40
+  damageAmount: 30
