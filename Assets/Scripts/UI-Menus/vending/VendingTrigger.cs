@@ -6,6 +6,7 @@ public class VendingTrigger : MonoBehaviour
     public PlayerController player;
     public GameObject vendingUI; // Drag the Vending Canvas here
     private bool playerInRange = false;
+    public  GameObject firstButton;
 
     void Update()
     {
@@ -20,10 +21,12 @@ public class VendingTrigger : MonoBehaviour
 {
     vendingUI.SetActive(true);
     Time.timeScale = 0f;
+    Debug.Log("paused time " + Time.timeScale);
+    player.canMove = false;
 
     // FIND THE FIRST BUTTON (e.g., Button A)
     // Make sure 'firstButton' is assigned in the Inspector!
-    GameObject firstButton = vendingUI.transform.Find("Path/To/ButtonA").gameObject; 
+    
     
     // Clear current selection and set the new one
     EventSystem.current.SetSelectedGameObject(null);
