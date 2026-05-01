@@ -125,19 +125,20 @@ public class CoreOfferUI : MonoBehaviour
         ReturnToSource();
     }
 
-    private void ReturnToSource()
+   private void ReturnToSource()
+{
+    string scene = GameManager.Instance.returnScene;
+
+    if (string.IsNullOrEmpty(scene))
     {
-        switch (CoreOfferManager.currentSource)
-        {
-            case CoreOfferSource.Combat:
-                SceneManager.UnloadSceneAsync("CorePopup");
-                break;
-            case CoreOfferSource.WorldPickup:
-                SceneManager.UnloadSceneAsync("CorePopup");
-                break;
-            case CoreOfferSource.Shop:
-                SceneManager.UnloadSceneAsync("CorePopup");
-                break;
-        }
+        Debug.LogWarning("returnScene missing, defaulting to Overworld");
+        scene = "Overworld";
     }
+
+    // Close popup first (optional safety)
+    SceneManager.UnloadSceneAsync("CorePopup");
+
+    // IMPORTANT: actually move back to origin scene
+    SceneManager.LoadScene(scene);
+}
 }

@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyID: 8BitTree_1
   enemyName: BitTree
-  enemySprite: {fileID: 1516799481756205129, guid: 9fa3a71c990024e328b9dc5bd80a9299, type: 3}
+  enemySprite: {fileID: 1516799481756205129, guid: 17e7bd070ef354846a6581b416540240, type: 3}
   maxHP: 120
   strength: 15
   speed: 3
   defense: 2
   combatScale: 1
-  flipSprite: 0
+  flipSprite: 1
   hoverHeight: 0
   expDrop: 0
   skills:

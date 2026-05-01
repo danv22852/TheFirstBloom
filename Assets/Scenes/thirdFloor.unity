@@ -3020,7 +3020,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 577ae9effed9b4b3a90c5d8f642b48c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BASE_SPEED: 15
+  BASE_SPEED: 5
   alienTint: {r: 0, g: 0, b: 0, a: 1}
   Aim: {fileID: 1497343644}
   enableBloomDecay: 1
@@ -53538,7 +53538,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6561221849165880265, guid: 1e695e76047d3440d89b14ff400f7f5b, type: 3}
       propertyPath: BASE_SPEED
-      value: 15
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6561221849165880265, guid: 1e695e76047d3440d89b14ff400f7f5b, type: 3}
       propertyPath: alienTint.a

@@ -24,6 +24,8 @@ public class GameManager : MonoBehaviour
     [Header("Enemy Roster")]
     public EnemyData[] enemyRoster;
     
+    [Header("Scene Flow")]
+    public string returnScene;
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;

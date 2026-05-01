@@ -197,6 +197,7 @@ public class CombatSystem : MonoBehaviour
 
     private IEnumerator Start() // Changed from 'void' to 'IEnumerator'
     {
+         CoreOfferManager.EnsureExists();
         if (enemyTransform != null)
         {
             baseEnemyPosition = enemyTransform.position;
@@ -936,20 +937,31 @@ public class CombatSystem : MonoBehaviour
     }
 
     private void TriggerCoreOffer()
+{
+    if (currentEnemy.coreDropPool != null && currentEnemy.coreDropPool.Count > 0)
     {
-        if (currentEnemy.coreDropPool != null && currentEnemy.coreDropPool.Count > 0)
+        CoreOfferManager.currentSource = CoreOfferSource.Combat;
+
+        // 👇 ADD THIS CHECK HERE
+        if (CoreOfferManager.Instance == null)
         {
-            CoreOfferManager.currentSource = CoreOfferSource.Combat;
-            CoreOfferManager.pendingOffer = CoreOfferManager.Instance.GenerateOffer(
-                currentEnemy.coreDropPool, 
-                currentEnemy.coreDropCount);
-            SceneManager.LoadSceneAsync("CorePopup", LoadSceneMode.Additive);
-        }
-        else
-        {
+            Debug.LogError("CoreOfferManager.Instance is NULL. Cannot generate core offer.");
             ReturnToOverworld();
+            return;
         }
+
+        CoreOfferManager.pendingOffer = CoreOfferManager.Instance.GenerateOffer(
+            currentEnemy.coreDropPool,
+            currentEnemy.coreDropCount
+        );
+
+        SceneManager.LoadSceneAsync("CorePopup", LoadSceneMode.Additive);
     }
+    else
+    {
+        ReturnToOverworld();
+    }
+}
 
     private void CheckWinConditionOrContinue()
     {
