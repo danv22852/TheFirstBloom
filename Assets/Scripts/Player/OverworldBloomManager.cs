@@ -118,7 +118,7 @@ public class OverworldBloomManager : MonoBehaviour
                 if (visionMask != null) 
                 {
                     visionMask.SetActive(true);
-                    visionMask.transform.localScale = highBloomVisionScale;
+                    visionMask.transform.localScale = totalBloomVisionScale;
                 }
                 break;
 
@@ -128,11 +128,13 @@ public class OverworldBloomManager : MonoBehaviour
                 lashRoutine = StartCoroutine(LashOutRoutine(4f, 8f)); 
                 
                 if (hallucinationAudio != null && !hallucinationAudio.isPlaying) hallucinationAudio.Play();
+
                 if (visionMask != null) 
                 {
                     visionMask.SetActive(true);
                     visionMask.transform.localScale = totalBloomVisionScale;
                 }
+                
                 break;
         }
     }
