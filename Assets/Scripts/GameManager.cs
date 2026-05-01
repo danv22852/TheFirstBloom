@@ -96,6 +96,8 @@ public class GameManager : MonoBehaviour
             // (Optional) 3. Reset the player's actual inventory and stats back to default!
             playerData.expSystem.level = 1;
             playerData.expSystem.currentEXP = 0;
+            playerData.expSystem.expToNextLevel = 150;
+            playerData.expSystem.availableSkillPoints = 0;
             playerData.currentHP = 100;
             playerData.maxHP = 100;
             playerData.strength = 10;
@@ -104,6 +106,9 @@ public class GameManager : MonoBehaviour
             playerData.luck = 0;
             playerData.coins = 0;
             playerData.healthPotions = 3;
+            playerData.wiltPotions = 0;
+            playerData.keys = 0;
+            playerData.coins = 0;
             playerData.floorName = "firstFloor";
             playerData.hasAlien = false;
             playerData.finishedTutorial = false;
