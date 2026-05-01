@@ -17,7 +17,7 @@ MonoBehaviour:
   coreDescription: Flick a spark at the enemy, dealing light damage and applying
     a small burn.
   rarity: 0
-  coreSprite: {fileID: -5505206405424069097, guid: e9583105d1325421ab7b2aff3cb8f019, type: 3}
+  coreSprite: {fileID: 8973215692548420186, guid: 1304277d0bc424b6daf5b24b4a16c031, type: 3}
   bloomCost: 5
   isKnown: 0
   minDamage: 8

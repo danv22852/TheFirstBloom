@@ -17,9 +17,9 @@ MonoBehaviour:
   coreDescription: Hurl a massive fireball ahead of you, dealing high damage and
     a applying a large burn.
   rarity: 2
-  coreSprite: {fileID: -4576344500660898487, guid: 7e71482434bce475a95fe06cc8c45629, type: 3}
+  coreSprite: {fileID: -4012938956621109650, guid: 5753a108499534662bd46a139c78661c, type: 3}
   bloomCost: 18
-  isKnown: 0
+  isKnown: 1
   minDamage: 20
   maxDamage: 28
   burnDamage: 18
