@@ -5444,7 +5444,7 @@ MonoBehaviour:
     core: {fileID: 11400000, guid: d87afa192aaa68143a5996f7f459264a, type: 2}
     displayImage: {fileID: 3247558379045311218}
     itemSprite: {fileID: 0}
-    inStock: 0
+    inStock: 1
   - slotCode: A2
     price: 0
     itemType: 0

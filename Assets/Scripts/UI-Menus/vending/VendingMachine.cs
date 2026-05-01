@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public enum VendingItemType { Core, HealthPotion }
+public enum VendingItemType { Core, HealthPotion, WiltPotion }
 
 [System.Serializable]
 public class VendingSlot 
@@ -59,10 +59,7 @@ public class VendingMachine : MonoBehaviour
                     else
                     {
                         slot.displayImage.gameObject.SetActive(true);
-                        if (slot.itemType == VendingItemType.Core && slot.core != null)
-                            slot.displayImage.sprite = slot.core.coreSprite;
-                        else if (slot.itemType == VendingItemType.HealthPotion)
-                            slot.displayImage.sprite = slot.itemSprite;
+                        slot.displayImage.sprite = slot.itemSprite;
                     }
                 }
             }
@@ -149,7 +146,7 @@ public class VendingMachine : MonoBehaviour
         playerData.coins -= slot.price;
         topDisplay.text = "PURCHASING...";
         
-        string itemName = (slot.itemType == VendingItemType.Core) ? slot.core.coreName : "Health Potion";
+        string itemName = (slot.itemType == VendingItemType.Core) ? "CORE PACK" : (slot.itemType == VendingItemType.HealthPotion) ? "HEALTH POTION" : "WILT POTION";
         bottomDisplay.text = itemName;
 
         yield return new WaitForSecondsRealtime(1.2f); // Use Realtime because Time.timeScale is 0!
@@ -168,6 +165,10 @@ public class VendingMachine : MonoBehaviour
         else if (slot.itemType == VendingItemType.HealthPotion)
         {
             playerData.healthPotions++;
+        }
+        else if (slot.itemType == VendingItemType.WiltPotion)
+        {
+            playerData.wiltPotions++;
         }
 
         yield return new WaitForSecondsRealtime(1.0f);
