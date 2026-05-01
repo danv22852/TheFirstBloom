@@ -18,7 +18,7 @@ MonoBehaviour:
   speed: 10
   defense: 10
   luck: 0
-  floorName: secondFloor
+  floorName: firstFloor
   healthPotions: 3
   coins: 0
   wiltPotions: 0
@@ -26,6 +26,7 @@ MonoBehaviour:
   thirdItem: 0
   defeatedEnemies:
   - popup_secondfloor
+  - tutorialboss
   - 
   collectedItems: []
   hasAlien: 1
