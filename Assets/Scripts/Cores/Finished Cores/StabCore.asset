@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 853b695bcf07b954aa5a5afa6330414a, type: 3}
   m_Name: StabCore
   m_EditorClassIdentifier: 
-  coreID: 1
-  coreName: Old Stab
-  coreDescription: Lunge forward with the symbiote dealing high damage
+  coreID: stab
+  coreName: Stab
+  coreDescription: Lunge forward with the symbiote dealing high damage.
   rarity: 0
   coreSprite: {fileID: 2976213060296922012, guid: 377d9d49cada84bf1a3116daf17892c0, type: 3}
-  bloomCost: 0
+  bloomCost: 9
   isKnown: 1
   minDamage: 35
   maxDamage: 45
