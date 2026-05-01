@@ -1045,6 +1045,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerData: {fileID: 11400000, guid: bd7a55abcffdb6543b43fb6753c17475, type: 2}
   enemyRoster: []
+  returnScene: 
 --- !u!4 &1360469850
 Transform:
   m_ObjectHideFlags: 0
@@ -1078,7 +1079,16 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0e9ef32c6159c7a479bcd231ad9c1b02, type: 2}
   - {fileID: 11400000, guid: cb89da3851861b84d8b50f1abbe45143, type: 2}
   - {fileID: 11400000, guid: dafe25a74e7e5d54790d7f65dc3b391e, type: 2}
-  - {fileID: 11400000, guid: 446d4297bf8d09e40a66619d307f59f8, type: 2}
+  - {fileID: 11400000, guid: 41fbbb80109c786408668fd9938b424e, type: 2}
+  - {fileID: 11400000, guid: 696232aa605cfa342b0b487fbacffebf, type: 2}
+  - {fileID: 11400000, guid: ffdd10a3ffb80064a8a09853229a1386, type: 2}
+  - {fileID: 11400000, guid: 6efe8f86baacf9940986dab06f70605f, type: 2}
+  - {fileID: 11400000, guid: e9bd42c6f99306c4ab042cdb7b747ce7, type: 2}
+  - {fileID: 11400000, guid: 06e09d534ac60c14c927fce7f375729f, type: 2}
+  - {fileID: 11400000, guid: 06aec3bf21b6259419db9d88b3443bdf, type: 2}
+  - {fileID: 11400000, guid: f05643ed0f2135f47a0be7b5a3fbbee8, type: 2}
+  - {fileID: 11400000, guid: 132bac9b389a40d41a8a1819447f37e0, type: 2}
+  - {fileID: 11400000, guid: 9453e798be7d77249954af7469f62bf3, type: 2}
 --- !u!1 &1456508837
 GameObject:
   m_ObjectHideFlags: 0

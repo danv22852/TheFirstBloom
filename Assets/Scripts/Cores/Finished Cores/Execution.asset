@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa4b0c295f1b7ea43ba546f8867eef1b, type: 3}
+  m_Name: Execution
+  m_EditorClassIdentifier: 
+  coreID: execution
+  coreName: Execution
+  coreDescription: Strike the enemy hard. If they're near death, the blow becomes
+    devastating.
+  rarity: 2
+  coreSprite: {fileID: 21300000, guid: 68a3834f2b1dd354787570e78cf15747, type: 3}
+  bloomCost: 15
+  isKnown: 0
+  minDamage: 15
+  maxDamage: 22
+  executeThreshold: 0.25
+  bonusDamage: 40

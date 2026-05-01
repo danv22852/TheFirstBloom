@@ -18,7 +18,7 @@ MonoBehaviour:
     a applying a large burn.
   rarity: 2
   coreSprite: {fileID: -4576344500660898487, guid: 7e71482434bce475a95fe06cc8c45629, type: 3}
-  bloomCost: 18
+  bloomCost: 13
   isKnown: 0
   minDamage: 20
   maxDamage: 28

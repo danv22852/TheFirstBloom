@@ -17,7 +17,7 @@ MonoBehaviour:
   coreDescription: Scorch the enemy, applying an intense burn
   rarity: 1
   coreSprite: {fileID: -8172678257058920382, guid: e9583105d1325421ab7b2aff3cb8f019, type: 3}
-  bloomCost: 9
+  bloomCost: 7
   isKnown: 0
   burnDamage: 14
   burnDuration: 4

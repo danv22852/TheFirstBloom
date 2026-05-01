@@ -937,31 +937,25 @@ public class CombatSystem : MonoBehaviour
     }
 
     private void TriggerCoreOffer()
-{
-    if (currentEnemy.coreDropPool != null && currentEnemy.coreDropPool.Count > 0)
     {
-        CoreOfferManager.currentSource = CoreOfferSource.Combat;
+        if (GameManager.Instance == null) { ReturnToOverworld(); return; }
 
-        // 👇 ADD THIS CHECK HERE
-        if (CoreOfferManager.Instance == null)
+        string floor = GameManager.Instance.playerData.floorName;
+        bool isThirdFloorOrHigher = floor == "thirdFloor" || floor == "fourthFloor" || floor == "fifthFloor" || floor == "finalBoss";
+
+        if (isThirdFloorOrHigher && CoreOfferManager.Instance != null)
         {
-            Debug.LogError("CoreOfferManager.Instance is NULL. Cannot generate core offer.");
-            ReturnToOverworld();
-            return;
+            CoreOfferManager.currentSource = CoreOfferSource.Combat;
+            CoreOfferManager.pendingOffer = CoreOfferManager.Instance.GenerateOffer(
+                new List<CoreTemplate>(),
+                3);
+            SceneManager.LoadSceneAsync("CorePopup", LoadSceneMode.Additive);
         }
-
-        CoreOfferManager.pendingOffer = CoreOfferManager.Instance.GenerateOffer(
-            currentEnemy.coreDropPool,
-            currentEnemy.coreDropCount
-        );
-
-        SceneManager.LoadSceneAsync("CorePopup", LoadSceneMode.Additive);
+        else
+        {
+            ReturnToOverworld();
+        }
     }
-    else
-    {
-        ReturnToOverworld();
-    }
-}
 
     private void CheckWinConditionOrContinue()
     {

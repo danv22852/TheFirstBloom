@@ -18,7 +18,7 @@ MonoBehaviour:
     a small burn.
   rarity: 0
   coreSprite: {fileID: -5505206405424069097, guid: e9583105d1325421ab7b2aff3cb8f019, type: 3}
-  bloomCost: 5
+  bloomCost: 4
   isKnown: 0
   minDamage: 8
   maxDamage: 12

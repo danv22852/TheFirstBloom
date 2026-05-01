@@ -19,7 +19,7 @@ public class Rush : CoreTemplate
                 int damage = Random.Range(minDamage, maxDamage + 1);
                 damage = Mathf.RoundToInt(damage * system.GetBloomMultiplier());
                 system.DealDamageToEnemy(damage);
-                system.ShowBattleText("Quick Strike deals " + damage + " damage!", 2f);
+                system.ShowBattleText("Rush deals " + damage + " damage!", 2f);
                 system.TriggerShake(true, 0.2f, 0.15f);
             },
             onComplete: () =>
