@@ -6707,7 +6707,7 @@ MonoBehaviour:
   - floorName: thirdFloor
     bgImage: {fileID: 5917205222156892951, guid: ab4459f1f170247b580d7cec6baaafcf, type: 3}
   - floorName: fourthFloor
-    bgImage: {fileID: -6698820183470072620, guid: 7eb572c9f45004a36aef497eccb1c773, type: 3}
+    bgImage: {fileID: 2751645547950363833, guid: 3f48c645f24634a508d765c5c59c9c93, type: 3}
   - floorName: fifthFloor
     bgImage: {fileID: -8103043628945361217, guid: 40a6ceef5e090435e84eae75653c972c, type: 3}
 --- !u!4 &1713652991
