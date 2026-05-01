@@ -9,7 +9,17 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Color alienTint = Color.black;
     
 
-    public bool canMove = true;
+    private bool _canMove = true;
+    public bool canMove
+    {
+        get => _canMove;
+        set
+        {
+            if (value == false)
+                Debug.Log("canMove set to FALSE\n" + StackTraceUtility.ExtractStackTrace());
+            _canMove = value;
+        }
+    }
 
     private Rigidbody2D rb;
     private Animator animator;
@@ -110,9 +120,12 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        // TEMP for debug
+        if (!canMove)
+            Debug.Log("canMove is false. TimeScale: " + Time.timeScale + " | Stack: " + StackTraceUtility.ExtractStackTrace());
+
         if (Time.timeScale == 0 && canMove)
         {
-            Debug.LogWarning("Time.timeScale was 0! Forcing it to 1.");
             Time.timeScale = 1f;
         }
 
@@ -165,9 +178,6 @@ public class PlayerController : MonoBehaviour
     {
         if (rb == null)
             rb = GetComponent<Rigidbody2D>();
-
-        if(!GameManager.Instance.playerData.hasAlien)
-            return;
 
         canMove = true;
         currentSpeed = BASE_SPEED;

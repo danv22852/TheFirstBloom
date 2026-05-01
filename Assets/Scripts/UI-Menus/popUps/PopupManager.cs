@@ -11,15 +11,16 @@ public class PopupManager : MonoBehaviour
 
     // Call this method to show the popup
     public void ShowPopup(string message)
-{
-    if (popupPanel != null)
     {
-        messageText.text = message;
-        popupPanel.SetActive(true); 
-        Time.timeScale = 0f; // This is why your character stops!
-        pc.canMove = false; // Disable player movement when popup is active
+        if (popupPanel != null)
+        {
+            if (messageText != null)
+                messageText.text = message;
+            popupPanel.SetActive(true); 
+            Time.timeScale = 0f;
+            pc.canMove = false;
+        }
     }
-}
 
     // Call this method to hide the popup
     public void HidePopup()

@@ -35,5 +35,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TutorialBattle.unity
     guid: 6bebc2e03ab29db4fbd9ed7a2eb2e126
+  - enabled: 1
+    path: Assets/Scenes/CorePopup.unity
+    guid: 0759307f61a11f845b65eacc686446bb
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

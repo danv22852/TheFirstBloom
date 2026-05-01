@@ -47,8 +47,6 @@ public class CombatSystem : MonoBehaviour
 
     private bool enemyIsStunned = false; // New flag to track if the enemy is stunned
 
-
-
     // --- CORE FIELDS ---
     private float revitalizeHealPercent = 0f;
     private int revitalizeTurnsRemaining = 0;
@@ -156,6 +154,9 @@ public class CombatSystem : MonoBehaviour
 
     [Header("Boss Rewards")]
     public CoreTemplate bossCoreReward2F; // Drag the Seismic Slam core here in the Inspector!
+
+    [Header("Forced Core Drops")]
+    public CoreTemplate guardCore;
 
     // --- SMART PROPERTIES FOR BLOOM ---
     // These automatically check if PlayerData exists. If it does, they read/write directly to it.
@@ -707,6 +708,13 @@ public class CombatSystem : MonoBehaviour
 
     private void HandleEnemyDefeat()
     {
+        if (currentEnemy.enemyID == "tutorial_boss")
+        {
+            var pd = GameManager.Instance.playerData;
+            if (!pd.equippedCores.Contains(guardCore))
+                pd.equippedCores.Add(guardCore);
+        }
+
         // --- 1. INITIAL DEFEAT & REWARDS ---
         if (isBossFight && currentEnemy.enemyID == "TrollBoss")
         {
@@ -779,7 +787,7 @@ public class CombatSystem : MonoBehaviour
         else
         {
             ShowBattleText($"Victory! {currentEnemy.enemyName} defeated.\nGained {expGained} EXP.", 2.5f);
-            Invoke(nameof(ReturnToOverworld), 2.5f);
+            Invoke(nameof(TriggerCoreOffer), 2.5f);
         }
     }
 
@@ -828,7 +836,7 @@ public class CombatSystem : MonoBehaviour
         // 4. Close the panel, save the stats, and head back to the Overworld
         levelUpPanel.SetActive(false);
         PersistStatsToPlayerData();
-        ReturnToOverworld();
+        TriggerCoreOffer();
     }
 
     private void UpdateLevelUpUI()
@@ -907,6 +915,9 @@ public class CombatSystem : MonoBehaviour
 
             GameManager.Instance.playerData.SetDecayFloor();
 
+            Time.timeScale = 1f;
+            Debug.Log("Returning to overworld. TimeScale: " + Time.timeScale + " | isPlayerTurn: " + isPlayerTurn);
+
             // Load the correct floor
             if (!string.IsNullOrEmpty(GameManager.Instance.playerData.floorName))
             {
@@ -921,6 +932,22 @@ public class CombatSystem : MonoBehaviour
         {
             // Ultimate fallback for testing
             UnityEngine.SceneManagement.SceneManager.LoadScene("firstFloor"); 
+        }
+    }
+
+    private void TriggerCoreOffer()
+    {
+        if (currentEnemy.coreDropPool != null && currentEnemy.coreDropPool.Count > 0)
+        {
+            CoreOfferManager.currentSource = CoreOfferSource.Combat;
+            CoreOfferManager.pendingOffer = CoreOfferManager.Instance.GenerateOffer(
+                currentEnemy.coreDropPool, 
+                currentEnemy.coreDropCount);
+            SceneManager.LoadSceneAsync("CorePopup", LoadSceneMode.Additive);
+        }
+        else
+        {
+            ReturnToOverworld();
         }
     }
 
@@ -1480,9 +1507,21 @@ public class CombatSystem : MonoBehaviour
                 BackToMainMenu();
             }
         }
+
+        // TEMP CORE POPUP TEST
+        if (Input.GetKeyDown(KeyCode.F2))
+        {
+            if (CoreOfferManager.Instance == null)
+            {
+                Debug.LogError("CoreOfferManager not found!");
+                return;
+            }
+            CoreOfferManager.currentSource = CoreOfferSource.Combat;
+            CoreOfferManager.pendingOffer = CoreOfferManager.Instance.GenerateOffer(new List<CoreTemplate>(), 3);
+            SceneManager.LoadSceneAsync("CorePopup", LoadSceneMode.Additive);
+        }
     }
 
-    // Call this when the mouse hovers OVER the button
     public void PreviewBloomCost(int cost)
     {
         if (bloomPreviewSlider != null)

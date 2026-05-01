@@ -96,7 +96,10 @@ public class EnemyPatrol : MonoBehaviour
             bool moving = rb.linearVelocity.magnitude > 0.1f;
             
             // Send that true/false value to the Animator parameter we created
-            anim.SetBool("isMoving", moving);
+            if (anim != null && anim.runtimeAnimatorController != null)
+            {
+                anim.SetBool("isMoving", moving);
+            }
         }
     }
 

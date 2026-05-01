@@ -8,6 +8,9 @@ public class MenuController : MonoBehaviour
     void Start()
     {
         menuCanvas.SetActive(false);
+        Time.timeScale = 1f;
+        if (player != null)
+            player.canMove = true;
     }
 
     // Update is called once per frame
@@ -15,6 +18,7 @@ public class MenuController : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Tab))
         {
+            Debug.Log("Menu toggled. Active: " + menuCanvas.activeSelf);
             menuCanvas.SetActive(!menuCanvas.activeSelf);
             if(menuCanvas.activeSelf)
             {

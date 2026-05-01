@@ -96,7 +96,7 @@ public class PlayerData : ScriptableObject
             currentHP = 0;
             Debug.Log("Player died.");
 
-            ResetOnDeath(); // 🔥 IMPORTANT
+            ResetOnDeath();
         }
 
         OnStatsChanged?.Invoke();

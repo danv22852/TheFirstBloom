@@ -2518,8 +2518,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Attack/Skill/Item Description
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: a79c057cfe25f9b4c912c7831cb81404, type: 2}
-  m_sharedMaterial: {fileID: -821502857201728850, guid: a79c057cfe25f9b4c912c7831cb81404, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -3246,6 +3246,7 @@ MonoBehaviour:
   trollCaveInSkill: {fileID: 11400000, guid: 51967a39591da554288bfe45d221db85, type: 2}
   trollSeismicSlamSkill: {fileID: 11400000, guid: 0f4846fca31c04546b698b0b69f5a732, type: 2}
   bossCoreReward2F: {fileID: 11400000, guid: 446d4297bf8d09e40a66619d307f59f8, type: 2}
+  guardCore: {fileID: 11400000, guid: cb89da3851861b84d8b50f1abbe45143, type: 2}
   skillButtonPrefab: {fileID: 4363498878755684909, guid: 684c289d04f996d4db1ea33299a13a45, type: 3}
   skillButtonContainer: {fileID: 1168045368}
 --- !u!1 &1082444586

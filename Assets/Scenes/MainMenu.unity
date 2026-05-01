@@ -1023,6 +1023,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1360469850}
   - component: {fileID: 1360469849}
+  - component: {fileID: 1360469851}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1044,7 +1045,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerData: {fileID: 11400000, guid: bd7a55abcffdb6543b43fb6753c17475, type: 2}
   enemyRoster: []
-  generalCorePool: []
 --- !u!4 &1360469850
 Transform:
   m_ObjectHideFlags: 0
@@ -1060,6 +1060,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1360469851
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1360469848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d85afaf73ec75e4188bda7dc5fb97ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  generalCorePool:
+  - {fileID: 11400000, guid: d3a4ce62a23b7794796e860a5fc0f3c2, type: 2}
+  - {fileID: 11400000, guid: 0b8631f50a4876647aecbecb4fe2f5d7, type: 2}
+  - {fileID: 11400000, guid: 0e9ef32c6159c7a479bcd231ad9c1b02, type: 2}
+  - {fileID: 11400000, guid: cb89da3851861b84d8b50f1abbe45143, type: 2}
+  - {fileID: 11400000, guid: dafe25a74e7e5d54790d7f65dc3b391e, type: 2}
+  - {fileID: 11400000, guid: 446d4297bf8d09e40a66619d307f59f8, type: 2}
 --- !u!1 &1456508837
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 194bfe98c83c73d46ac349b7b41ff341, type: 3}
+  m_Name: Spark
+  m_EditorClassIdentifier: 
+  coreID: spark
+  coreName: Spark
+  coreDescription: Flick a spark at the enemy, dealing light damage and applying
+    a small burn.
+  rarity: 0
+  coreSprite: {fileID: -5505206405424069097, guid: e9583105d1325421ab7b2aff3cb8f019, type: 3}
+  bloomCost: 5
+  isKnown: 0
+  minDamage: 8
+  maxDamage: 12
+  burnDamage: 4
+  burnDuration: 2

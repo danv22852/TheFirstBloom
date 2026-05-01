@@ -7,6 +7,8 @@ public class AlienPickup : MonoBehaviour
 
     public PlayerController playerController;
 
+    [Header("Core Rewards")]
+    public CoreTemplate symbioteSwipeCore;
 
     [SerializeField] PolygonCollider2D targetTransition;
     private CinemachineConfiner2D confiner;
@@ -36,32 +38,35 @@ public class AlienPickup : MonoBehaviour
         }
     }
     private void OnTriggerEnter2D(Collider2D other)
-{
-    if (other.CompareTag("Player"))
     {
-        GameManager.Instance.playerData.hasAlien = true;
-        
-        Debug.Log("alienPickup: " + playerController.canMove);
-    
-        playerController.canMove = true;
-        Time.timeScale = 1f; 
-        Debug.Log("alienPickup: " + playerController.canMove); // Debug statement to check movement state
-
-        GameManager.Instance.playerData.currentHP = GameManager.Instance.playerData.maxHP; // Heal the player to full health
-
-
-
-        // Tell the player to update their look immediately
-        var playerScript = other.GetComponent<PlayerController>();
-      
-        if (playerScript != null)
+        if (other.CompareTag("Player"))
         {
+            GameManager.Instance.playerData.hasAlien = true;
+
+            if (symbioteSwipeCore != null)
+            GameManager.Instance.playerData.equippedCores.Add(symbioteSwipeCore);
             
+            Debug.Log("alienPickup: " + playerController.canMove);
+        
+            playerController.canMove = true;
+            Time.timeScale = 1f; 
+            Debug.Log("alienPickup: " + playerController.canMove); // Debug statement to check movement state
 
-            playerScript.UpdateAppearance();
+            GameManager.Instance.playerData.currentHP = GameManager.Instance.playerData.maxHP; // Heal the player to full health
+
+
+
+            // Tell the player to update their look immediately
+            var playerScript = other.GetComponent<PlayerController>();
+        
+            if (playerScript != null)
+            {
+                
+
+                playerScript.UpdateAppearance();
+            }
+
+            gameObject.SetActive(false);
         }
-
-        gameObject.SetActive(false);
     }
-}
 }   
