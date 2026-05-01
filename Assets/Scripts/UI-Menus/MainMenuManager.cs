@@ -61,26 +61,73 @@ public class MainMenuManager : MonoBehaviour
     }
 
     public void StartNewGame()
-{
-    Debug.Log("Starting New Game...");
-
-    if (GameManager.Instance != null)
     {
-        var pd = GameManager.Instance.playerData;
+        Debug.Log("Starting New Game...");
 
-        // 🔥 HARD RESET FIRST
-        pd.ResetForNewRun();
-
-        // 🔥 THEN immediately wipe save file so it cannot override reset
-        string savePath = Application.persistentDataPath + "/saveData.json";
-        if (System.IO.File.Exists(savePath))
+        if (GameManager.Instance != null)
         {
-            System.IO.File.Delete(savePath);
-        }
-    }
+            var playerData = GameManager.Instance.playerData;
 
-    SceneManager.LoadScene("firstFloor");
-}
+            // 🔥 1. HARD RESET IN-MEMORY DATA FIRST
+            if (playerData != null)
+            {
+                // Empty the Enemy Graveyard
+                if (playerData.defeatedEnemies != null)
+                {
+                    playerData.defeatedEnemies.Clear();
+                }
+
+                // Empty the Collected Items list
+                if (playerData.collectedItems != null)
+                {
+                    playerData.collectedItems.Clear();
+                }
+
+                // Reset the player's actual inventory and stats back to default!
+                playerData.expSystem.level = 1;
+                playerData.expSystem.currentEXP = 0;
+                playerData.expSystem.expToNextLevel = 150;
+                playerData.expSystem.availableSkillPoints = 0;
+                
+                playerData.currentHP = 100;
+                playerData.maxHP = 100;
+                playerData.strength = 10;
+                playerData.speed = 10;
+                playerData.defense = 10;
+                playerData.luck = 0;
+                
+                playerData.healthPotions = 3;
+                playerData.wiltPotions = 0;
+                playerData.keys = 0;
+                playerData.coins = 0;
+                
+                playerData.floorName = "firstFloor";
+                playerData.hasAlien = false;
+                playerData.finishedTutorial = false;
+
+                // Reset Bloom Stats to be safe!
+                playerData.currentBloom = 0;
+                playerData.currentBloomState = BloomState.Stable;
+
+                Debug.Log("Save Data completely reset! All enemies and items will respawn.");
+            }
+            else
+            {
+                Debug.LogWarning("Could not reset data: PlayerData is missing.");
+            }
+
+            // 🔥 2. THEN immediately wipe save file so it cannot override reset
+            string savePath = Application.persistentDataPath + "/saveData.json";
+            if (File.Exists(savePath))
+            {
+                File.Delete(savePath);
+                Debug.Log("Old save file deleted from hard drive.");
+            }
+        }
+
+        // 3. Load the starting floor
+        SceneManager.LoadScene("firstFloor");
+    }
 
     public void QuitGame()
     {
