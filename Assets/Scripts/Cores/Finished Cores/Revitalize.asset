@@ -17,7 +17,7 @@ MonoBehaviour:
   coreDescription: Channel the symbiote's regenerative power, healing yourself over
     3 turns.
   rarity: 0
-  coreSprite: {fileID: 21300000, guid: d3e97dc46c3ce5243979b58db6d4921c, type: 3}
+  coreSprite: {fileID: 6577916116985241854, guid: e192d462f38454336b55e48b49ee32c5, type: 3}
   bloomCost: 13
   isKnown: 0
   healPercentPerTurn: 0.15

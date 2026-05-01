@@ -52869,7 +52869,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -277, y: -731}
+  m_AnchoredPosition: {x: 37.64258, y: -21.692444}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1463848894
@@ -55112,6 +55112,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -43
       objectReference: {fileID: 0}
+    - target: {fileID: 1527476212647559894, guid: 74a741911d8c74bd99c3aeb0c2302fa2, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2266713783790627271, guid: 74a741911d8c74bd99c3aeb0c2302fa2, type: 3}
       propertyPath: slots.Array.data[0].inStock
       value: 1
@@ -55391,8 +55395,46 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 150299883914159025, guid: 74a741911d8c74bd99c3aeb0c2302fa2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2119354261}
   m_SourcePrefab: {fileID: 100100000, guid: 74a741911d8c74bd99c3aeb0c2302fa2, type: 3}
+--- !u!1 &2119354260 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 150299883914159025, guid: 74a741911d8c74bd99c3aeb0c2302fa2, type: 3}
+  m_PrefabInstance: {fileID: 2119354259}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2119354261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2119354260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 5917205222156892951, guid: ab4459f1f170247b580d7cec6baaafcf, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1001 &2133861031
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -17,7 +17,7 @@ MonoBehaviour:
   coreDescription: Channel your pain into power. The lower your HP, the harder you
     hit.
   rarity: 0
-  coreSprite: {fileID: 0}
+  coreSprite: {fileID: -3185304150632429782, guid: 1a67e5375b22b4b57b0c0d012526f744, type: 3}
   bloomCost: 9
   isKnown: 0
   baseDamage: 10

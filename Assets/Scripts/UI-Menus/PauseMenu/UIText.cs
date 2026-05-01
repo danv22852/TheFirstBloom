@@ -12,7 +12,9 @@ public enum StatType
     Coins,
     healthPotions,
     placeholder, // Add more stats as needed
-    Level
+    Level,
+    xpCur,
+    xpMax
     
 }
 
@@ -80,6 +82,12 @@ public class UIStatText : MonoBehaviour
                 break;
              case StatType.Level:
                 label.text = $"{prefix}{playerData.expSystem.level}";
+                break;
+            case StatType.xpCur:
+                label.text = $"{prefix}{playerData.expSystem.currentEXP}";
+                break;
+            case StatType.xpMax:
+                label.text = $"{prefix}{playerData.expSystem.expToNextLevel}";
                 break;
         }
     }

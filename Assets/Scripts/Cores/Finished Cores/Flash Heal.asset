@@ -17,7 +17,7 @@ MonoBehaviour:
   coreDescription: A surge of symbiotic energy instantly restores a moderate amount
     of HP.
   rarity: 0
-  coreSprite: {fileID: 21300000, guid: 75bbd849a8be84a4dbc03e1a589904bf, type: 3}
+  coreSprite: {fileID: 104987668402850553, guid: 9c9516185ccc845c086203a3703c178b, type: 3}
   bloomCost: 10
   isKnown: 0
   healAmount: 30

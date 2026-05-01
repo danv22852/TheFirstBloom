@@ -17,7 +17,7 @@ MonoBehaviour:
   coreDescription: A quick burst of electricity that deals low damage with a small
     chance to stun.
   rarity: 0
-  coreSprite: {fileID: 21300000, guid: 75bbd849a8be84a4dbc03e1a589904bf, type: 3}
+  coreSprite: {fileID: 6853224452459935310, guid: bb0f2705272f44f73b9e7a33bbeaad94, type: 3}
   bloomCost: 4
   isKnown: 0
   minDamage: 8

@@ -17,7 +17,7 @@ MonoBehaviour:
   coreDescription: Drain the enemies lifefoce, dealing medium damage, but healing
     for half the amount
   rarity: 1
-  coreSprite: {fileID: 21300000, guid: d3e97dc46c3ce5243979b58db6d4921c, type: 3}
+  coreSprite: {fileID: -6913078320303876897, guid: 6167c579742034954be3f433a58b5be2, type: 3}
   bloomCost: 9
   isKnown: 0
   minDamage: 15

@@ -16,6 +16,6 @@ MonoBehaviour:
   coreName: Charge Up!
   coreDescription: Focus your energy, doubling the damage of your next move.
   rarity: 1
-  coreSprite: {fileID: 0}
+  coreSprite: {fileID: 4637361614008872959, guid: fbd118ef6eba14797958d764a367098a, type: 3}
   bloomCost: 8
   isKnown: 0

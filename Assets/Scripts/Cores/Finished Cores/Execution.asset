@@ -17,7 +17,7 @@ MonoBehaviour:
   coreDescription: Strike the enemy hard. If they're near death, the blow becomes
     devastating.
   rarity: 2
-  coreSprite: {fileID: 21300000, guid: 68a3834f2b1dd354787570e78cf15747, type: 3}
+  coreSprite: {fileID: -6180487313704207218, guid: 3ace837f03a854185828a0f111501758, type: 3}
   bloomCost: 15
   isKnown: 0
   minDamage: 15

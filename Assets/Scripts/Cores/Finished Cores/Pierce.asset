@@ -17,7 +17,7 @@ MonoBehaviour:
   coreDescription: Drive through the enemy's defenses, dealing damage that ignores
     their armor entirely.
   rarity: 0
-  coreSprite: {fileID: 0}
+  coreSprite: {fileID: -280439132813250817, guid: 1553af8f8337f40dc9c040e93e5ff3ea, type: 3}
   bloomCost: 7
   isKnown: 0
   minDamage: 17
