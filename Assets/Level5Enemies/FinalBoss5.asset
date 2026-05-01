@@ -10,20 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b0566ed46712c3a4ca4ddde06a429795, type: 3}
-  m_Name: Mushroom
+  m_Name: FinalBoss5
   m_EditorClassIdentifier: 
-  enemyID: mushroom_01
-  enemyName: Mushie
-  enemySprite: {fileID: -654737500350741434, guid: fd88def90aacd4e7e9017b9386218c7f, type: 3}
-  maxHP: 130
-  strength: 14
+  enemyID: FinalBoss5
+  enemyName: Shroomed Mushie
+  enemySprite: {fileID: 8990997568487377531, guid: 7736ebb3e819347fc84639a2391fb2ad, type: 3}
+  maxHP: 180
+  strength: 15
   speed: 2
-  defense: 4
+  defense: 3
   combatScale: 1
-  flipSprite: 0
+  flipSprite: 1
   hoverHeight: 0
-  expDrop: 40
-  skills: []
+  expDrop: 500
+  skills:
+  - {fileID: 11400000, guid: a662d6c363e70ff469adf11fc0d5652c, type: 2}
   coreDropPool:
-  - {fileID: 11400000, guid: 446d4297bf8d09e40a66619d307f59f8, type: 2}
+  - {fileID: 11400000, guid: 0b8631f50a4876647aecbecb4fe2f5d7, type: 2}
   coreDropCount: 3

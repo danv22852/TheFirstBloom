@@ -52,35 +52,38 @@ public class EnemyEncounter : MonoBehaviour
     /// Starts combat encounter
     /// </summary>
     public void Engage(Transform player)
+{
+    if (engaged || player == null) return;
+
+    engaged = true;
+
+    Debug.Log("ENEMY ENGAGED: " + uniqueEnemyID);
+
+    // ✅ STORE RETURN SCENE (THIS IS THE MISSING PIECE)
+    if (GameManager.Instance != null)
     {
-        if (engaged || player == null) return;
-
-        engaged = true;
-
-        Debug.Log("ENEMY ENGAGED: " + uniqueEnemyID);
-
-        // Store return position after combat
-        GameManager.lastPlayerPosition = player.position;
-        GameManager.isReturningFromCombat = true;
-
-        // Pass enemy data into combat system
-        if (enemyType != null)
-            GameManager.pendingEnemyData = enemyType;
-
-        // Store ID for graveyard system
-        GameManager.encounteredInstanceID = uniqueEnemyID;
-
-        Debug.Log("Encountered Enemy: " + uniqueEnemyID);
-
-        // Load correct combat scene
-        if (GameManager.Instance != null &&
-            GameManager.Instance.playerData.finishedTutorial == false)
-        {
-            SceneManager.LoadScene("TutorialBattle");
-        }
-        else
-        {
-            SceneManager.LoadScene("CombatUI");
-        }
+        GameManager.Instance.returnScene = SceneManager.GetActiveScene().name;
     }
+
+    // Store return position after combat
+    GameManager.lastPlayerPosition = player.position;
+    GameManager.isReturningFromCombat = true;
+
+    if (enemyType != null)
+        GameManager.pendingEnemyData = enemyType;
+
+    GameManager.encounteredInstanceID = uniqueEnemyID;
+
+    Debug.Log("Encountered Enemy: " + uniqueEnemyID);
+
+    if (GameManager.Instance != null &&
+        GameManager.Instance.playerData.finishedTutorial == false)
+    {
+        SceneManager.LoadScene("TutorialBattle");
+    }
+    else
+    {
+        SceneManager.LoadScene("CombatUI");
+    }
+}
 }
