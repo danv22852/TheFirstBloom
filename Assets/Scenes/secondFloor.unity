@@ -3114,7 +3114,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 0
-  amount: 1
+  amount: 2
   uniqueID: 
 --- !u!61 &581995806
 BoxCollider2D:
@@ -60591,7 +60591,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 0
-  amount: 1
+  amount: 2
   uniqueID: 
 --- !u!61 &1272133342
 BoxCollider2D:
@@ -62996,6 +62996,14 @@ PrefabInstance:
       propertyPath: tilemapBreaker
       value: 
       objectReference: {fileID: 334621346}
+    - target: {fileID: 6561221849165880265, guid: b04f180b040833e4c8593354a12c0b59, type: 3}
+      propertyPath: fastDecayDistance
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6561221849165880265, guid: b04f180b040833e4c8593354a12c0b59, type: 3}
+      propertyPath: slowDecayDistance
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 7556611422782344113, guid: b04f180b040833e4c8593354a12c0b59, type: 3}
       propertyPath: m_Name
       value: Player
@@ -63751,7 +63759,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 0
-  amount: 1
+  amount: 2
   uniqueID: 
 --- !u!61 &1934862841
 BoxCollider2D:

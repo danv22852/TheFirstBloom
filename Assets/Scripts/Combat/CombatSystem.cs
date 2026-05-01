@@ -467,78 +467,88 @@ public class CombatSystem : MonoBehaviour
     }
 
     public void OnAttackButton()
-    {
-        if (!isPlayerTurn) return;
+{
+    if (!isPlayerTurn) return;
 
-        if (isAttackHijacked)
+    if (isAttackHijacked)
+    {
+        // The Symbiote doesn't care if it's equipped. It forces the attack!
+        if (innateSymbioteSwipe != null)
         {
-            // The Symbiote doesn't care if it's equipped. It forces the attack!
-            if (innateSymbioteSwipe != null)
+            UseCore(innateSymbioteSwipe);
+        }
+        else
+        {
+            Debug.LogError("CRITICAL: innate Symbiote Swipe Core is missing from the Inspector!");
+        }
+        return;
+    }
+
+    HideAllMenus();
+    isPlayerTurn = false;
+
+    // --- UPDATED: DYNAMIC ATTACK INITIATION TEXT ---
+    if (GameManager.Instance != null && GameManager.Instance.playerData.currentBloomState == BloomState.Total) 
+    {
+        ShowBattleText("The Symbiote violently lashes out!", 1.5f);
+    }
+    else 
+    {
+        ShowBattleText("You attack!", 1.5f);
+    }
+
+    StartCoroutine(PerformMeleeAttack(playerTransform, enemyTransform,
+        onHit: () =>
+        {
+            int effectiveDefense = currentEnemy.defense;
+
+            if (isBossFight && isBossGuarding)
             {
-                UseCore(innateSymbioteSwipe);
+                effectiveDefense *= 5; // The Troll's defense becomes a brick wall!
+                ShowBattleText("The Troll's rocky skin deflects the blow!", 1.5f);
+            }
+
+            // --- UPDATED: 1.8x STRENGTH MULTIPLIER ---
+            int baseAttackPower = Mathf.RoundToInt(playerStrength * 1.8f);
+            int rawDamage = Mathf.Max(1, baseAttackPower - effectiveDefense);
+            
+            float varianceMultiplier = UnityEngine.Random.Range(0.85f, 1.15f);
+            int finalDamage = Mathf.RoundToInt(rawDamage * varianceMultiplier);
+
+            // --- CRITICAL HIT CHECK ---
+            bool isCrit = CheckForCriticalHit();
+            if (isCrit)
+            {
+                finalDamage = Mathf.RoundToInt(finalDamage * critMultiplier);
+                
+                // Flash the screen white for extra impact!
+                StartCoroutine(FlashVignetteRoutine(Color.white)); 
+            }
+
+            finalDamage = Mathf.Max(1, finalDamage);
+            enemyHealth -= finalDamage;
+            enemyHealth = Mathf.Max(0, enemyHealth);
+
+            UpdateHealthUI();
+
+            // --- DYNAMIC BATTLE TEXT ---
+            if (isCrit)
+            {
+                ShowBattleText("CRITICAL HIT! Dealt " + finalDamage + " damage!", 2.5f);
             }
             else
             {
-                Debug.LogError("CRITICAL: innate Symbiote Swipe Core is missing from the Inspector!");
+                ShowBattleText("Dealt " + finalDamage + " damage to the enemy.", 2f);
             }
-            return;
-        }
 
-        HideAllMenus();
-        isPlayerTurn = false;
-
-        // Text before the animation starts
-        ShowBattleText("You attack!", 1.5f);
-
-        StartCoroutine(PerformMeleeAttack(playerTransform, enemyTransform,
-            onHit: () =>
-            {
-                int effectiveDefense = currentEnemy.defense;
-
-                if (isBossFight && isBossGuarding)
-                {
-                    effectiveDefense *= 5; // The Troll's defense becomes a brick wall!
-                    ShowBattleText("The Troll's rocky skin deflects the blow!", 1.5f);
-                }
-
-                int rawDamage = Mathf.Max(1, playerStrength - effectiveDefense);
-                float varianceMultiplier = UnityEngine.Random.Range(0.85f, 1.15f);
-                int finalDamage = Mathf.RoundToInt(rawDamage * varianceMultiplier);
-
-                // --- NEW: CRITICAL HIT CHECK ---
-                bool isCrit = CheckForCriticalHit();
-                if (isCrit)
-                {
-                    finalDamage = Mathf.RoundToInt(finalDamage * critMultiplier);
-                    
-                    // Flash the screen white for extra impact!
-                    StartCoroutine(FlashVignetteRoutine(Color.white)); 
-                }
-
-                finalDamage = Mathf.Max(1, finalDamage);
-                enemyHealth -= finalDamage;
-                enemyHealth = Mathf.Max(0, enemyHealth);
-
-                UpdateHealthUI();
-
-                // --- NEW: DYNAMIC BATTLE TEXT ---
-                if (isCrit)
-                {
-                    ShowBattleText("CRITICAL HIT! Dealt " + finalDamage + " damage!", 2.5f);
-                }
-                else
-                {
-                    ShowBattleText("Dealt " + finalDamage + " damage to the enemy.", 2f);
-                }
-
-                StartCoroutine(ShakeSprite(enemyTransform, 0.2f, 0.15f));
-            },
-            onComplete: () =>
-            {
-                if (enemyHealth <= 0) HandleEnemyDefeat();
-                else CheckWinConditionOrContinue();
-            }));
-    }
+            StartCoroutine(ShakeSprite(enemyTransform, 0.2f, 0.15f));
+        },
+        onComplete: () =>
+        {
+            if (enemyHealth <= 0) HandleEnemyDefeat();
+            else CheckWinConditionOrContinue();
+        }));
+}
 
     public bool CheckForCriticalHit()
     {
@@ -1575,29 +1585,39 @@ public class CombatSystem : MonoBehaviour
 
     // Calculates the dynamic math for the Attack Button!
     public string GetBasicAttackTooltip()
+{
+    // 1. Calculate the new raw base damage (Strength x 1.8)
+    // We use Mathf.RoundToInt to ensure we don't get weird decimal damage numbers
+    int baseAttackPower = Mathf.RoundToInt(playerStrength * 1.8f);
+    int rawDamage = Mathf.Max(1, baseAttackPower - currentEnemy.defense);
+
+    // 2. Calculate the lowest and highest possible hits based on your 15% variance
+    int minDamage = Mathf.Max(1, Mathf.RoundToInt(rawDamage * 0.85f));
+    int maxDamage = Mathf.Max(1, Mathf.RoundToInt(rawDamage * 1.15f));
+
+    // 3. Format the string cleanly
+    string damageText;
+    if (minDamage == maxDamage)
     {
-        // 1. Calculate the raw base damage
-        int rawDamage = Mathf.Max(1, playerStrength - currentEnemy.defense);
+        // If they are identical, just show the single number
+        damageText = minDamage.ToString();
+    }
+    else
+    {
+        // Otherwise, show the range!
+        damageText = $"{minDamage} - {maxDamage}";
+    }
 
-        // 2. Calculate the lowest and highest possible hits based on your 15% variance
-        int minDamage = Mathf.Max(1, Mathf.RoundToInt(rawDamage * 0.85f));
-        int maxDamage = Mathf.Max(1, Mathf.RoundToInt(rawDamage * 1.15f));
-
-        // 3. Format the string cleanly
-        string damageText;
-        if (minDamage == maxDamage)
-        {
-            // If they are identical (e.g., both are 1 due to heavy armor), just show the single number
-            damageText = minDamage.ToString();
-        }
-        else
-        {
-            // Otherwise, show the range!
-            damageText = $"{minDamage} - {maxDamage}";
-        }
-
+    // 4. Check if the Symbiote is in control
+    if (GameManager.Instance != null && GameManager.Instance.playerData.currentBloomState == BloomState.Total)
+    {
+        return $"Symbiote Lash\nThe Symbiote violently strikes the enemy.\nExpected Damage: {damageText}";
+    }
+    else
+    {
         return $"Basic Attack\nDeals physical damage to the enemy.\nExpected Damage: {damageText}";
     }
+}
 
     // Call this exactly like a Debug.Log! 
     // Example: ShowBattleText("The Stag attacks for 15 damage!", 2f);
